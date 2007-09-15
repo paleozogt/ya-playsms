@@ -1,0 +1,27 @@
+#!/bin/bash
+
+the_dir=$1;
+if [ -z $1 ]; 
+then 
+echo
+echo "Usage $0 <playsms_directory>"
+echo
+exit 0; 
+fi
+
+# CHMOD 644 CONFIG FILES
+for list in `find $the_dir`; do
+    if [ -f $list ]; then
+	echo "chmod 644 $list";
+	chmod 644 $list;
+    fi
+done
+
+# CHMOD 755 DIRECTORIES
+for list in `find $the_dir`; do
+    if [ -d $list ]; then
+        echo "chmod 755 $list";
+        chmod 755 $list;
+    fi
+done
+
