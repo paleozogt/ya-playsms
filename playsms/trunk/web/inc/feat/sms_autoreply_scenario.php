@@ -125,9 +125,12 @@ switch ($op)
 	}
 	$edit_autoreply_scenario_result = $db_row[autoreply_scenario_result];
 	$content .= "
-    	    <p>SMS autoreply scenario result: <input type=text size=60 maxlength=130 name=edit_autoreply_scenario_result value=\"$edit_autoreply_scenario_result\">
-	    <p><input type=submit class=button value=\"Save\">
-	    <p><li><a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
+    	    <p/>SMS autoreply scenario result:
+            <!--<p/><input type=text size=60 maxlength=130 name=edit_autoreply_scenario_result value=\"$edit_autoreply_scenario_result\">-->
+            
+            <p/><textarea name=\"edit_autoreply_scenario_result\" cols=\"60\" rows= \"10\" wrap=\"off\">$edit_autoreply_scenario_result</textarea>
+	    <p/><input type=submit class=button value=\"Save\">
+	    <p/><li><a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
 	    </form>
 	";
 	echo $content;
