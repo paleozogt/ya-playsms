@@ -8,7 +8,7 @@ function websend2pv($username,$sms_to,$message,$sms_type="text",$unicode="0")
     global $datetime_now, $gateway_module;
     $uid = username2uid($username);
     $mobile_sender = username2mobile($username);
-    $max_length = 160;
+    $max_length = $SMS_MAX;
     if ($sms_sender = username2sender($username))
     {
 	$max_length = $max_length - strlen($sms_sender) - 1;
@@ -18,9 +18,9 @@ function websend2pv($username,$sms_to,$message,$sms_type="text",$unicode="0")
         $message = substr ($message,0,$max_length-1);
     }
     $sms_msg = $message;
-    $sms_msg = str_replace("\r","",$sms_msg);
-    $sms_msg = str_replace("\n","",$sms_msg);
-    $sms_msg = str_replace("\""," ",$sms_msg);
+    $sms_msg = str_replace("\r\n","\n",$sms_msg);
+    $sms_msg = str_replace("\r","\n",$sms_msg);
+    //$sms_msg = str_replace("\""," ",$sms_msg);
     $mobile_sender = str_replace("\'","",$mobile_sender);
     $mobile_sender = str_replace("\"","",$mobile_sender);
     $sms_sender = str_replace("\'","",$sms_sender);
@@ -63,7 +63,7 @@ function websend2group($username,$gp_code,$message,$sms_type="text")
     global $datetime_now, $gateway_module;
     $uid = username2uid($username);
     $mobile_sender = username2mobile($username);
-    $max_length = 160;
+    $max_length = $SMS_MAX;
     if ($sms_sender = username2sender($username))
     {
 	$max_length = $max_length - strlen($sms_sender) - 1;
@@ -151,7 +151,7 @@ function send2group($mobile_sender,$gp_code,$message)
 	        {
 	    	    $p_num = $db_row[p_num];
 		    $sms_to = $p_num;
-		    $max_length = 160 - strlen($sms_sender) - 3;
+		    $max_length = $SMS_MAX - strlen($sms_sender) - 3;
 		    if (strlen($message)>$max_length)
 		    {
 			$message = substr ($message,0,$max_length-1);
