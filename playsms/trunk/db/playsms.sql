@@ -1,7 +1,7 @@
 -- MySQL dump 9.09
 --
 -- Host: localhost    Database: playsms
----------------------------------------------------------
+-- -------------------------------------------------------
 -- Server version	4.0.15-log
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE playsms_featAutoreply_scenario (
   autoreply_scenario_param5 varchar(20) NOT NULL default '',
   autoreply_scenario_param6 varchar(20) NOT NULL default '',
   autoreply_scenario_param7 varchar(20) NOT NULL default '',
-  autoreply_scenario_result varchar(130) NOT NULL default '',
+  autoreply_scenario_result text NOT NULL default '',
   PRIMARY KEY  (autoreply_scenario_id)
 ) TYPE=MyISAM;
 
@@ -400,7 +400,7 @@ CREATE TABLE playsms_tblSMSIncoming (
   in_sender varchar(20) NOT NULL default '',
   in_masked varchar(20) NOT NULL default '',
   in_code varchar(20) NOT NULL default '',
-  in_msg varchar(200) NOT NULL default '',
+  in_msg text NOT NULL default '',
   in_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (in_id)
 ) TYPE=MyISAM;
@@ -423,7 +423,7 @@ CREATE TABLE playsms_tblSMSOutgoing (
   p_src varchar(100) NOT NULL default '',
   p_dst varchar(100) NOT NULL default '',
   p_footer varchar(11) NOT NULL default '',
-  p_msg varchar(250) NOT NULL default '',
+  p_msg text NOT NULL default '',
   p_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   p_update varchar(20) NOT NULL default '0000-00-00 00:00:00',
   p_status tinyint(4) NOT NULL default '0',
@@ -451,7 +451,7 @@ CREATE TABLE playsms_tblSMSTemplate (
   tid int(11) NOT NULL auto_increment,
   uid int(11) NOT NULL default '0',
   t_title varchar(100) NOT NULL default '',
-  t_text varchar(130) NOT NULL default '',
+  t_text text NOT NULL default '',
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;
 
