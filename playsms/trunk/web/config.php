@@ -5,7 +5,7 @@
 $db_param[type]	= "mysql";			// database engine
 $db_param[host]	= "localhost";			// database host/server
 $db_param[port]	= "";				// database port
-$db_param[user]	= "root";			// database username
+$db_param[user]	= "playsms";			// database username
 $db_param[pass]	= "playsms";			// database password
 $db_param[name]	= "playsms";			// database name
 
@@ -17,8 +17,9 @@ define("_SMTP_HOST_","localhost");
 define("_SMTP_PORT_","25");
 
 // base application directory
-$apps_path[base]	= "/home/playsms/public_html";
+$apps_path[base]	= ".";
 
+$SMS_MAX= (153*3);     // three-part multi sms
 
 // Do not change anything below this line unless you know what to do
 // -----------------------------------------------------------------
