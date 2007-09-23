@@ -40,7 +40,7 @@ switch ($op)
 		$list_of_number .= "<option value=\"$db_row1[p_num]\" $selected>$db_row1[p_desc] $db_row1[p_num]</option>";
 	    }
 	}
-	$max_length = 160;
+	$max_length = $SMS_MAXCHARS;
 	if ($sms_sender = username2sender($username))
 	{
 	    $max_length = $max_length - strlen($sms_sender);
@@ -84,6 +84,7 @@ switch ($op)
 	}
 
 	// document.fm_sendsms.message.value = document.fm_smstemplate.content_num.value;
+	$nameForm= "fm_sendsms";
 	$content .= "
 	<!-- WWW -->
 	    <script language=\"javascript\">
@@ -107,7 +108,7 @@ switch ($op)
 
 	    <h2>Send text SMS</h2>
 	    <p>
-	    <form name=\"fm_sendsms\" id=\"fm_sendsms\" action=\"menu.php?inc=send_sms&op=sendsmstopv_yes\" method=\"POST\">
+	    <form name=\"$nameForm\" id=\"$nameForm\" action=\"menu.php?inc=send_sms&op=sendsmstopv_yes\" method=\"POST\">
 	    <p>From: $sms_from
 	    <p>
 	    <table cellpadding=1 cellspacing=0 border=0>
@@ -135,9 +136,11 @@ switch ($op)
 	    <!-- WWW -->
 	    <p>Message template: <select name=\"smstemplate\">$option_values</select>
 	    <p><input type=\"button\" onClick=\"javascript: setTemplate();\" name=\"nb\" value=\"Use Template\" class=\"button\">
-	    <p>Your message: 
-	    <br><textarea cols=\"39\" rows=\"5\" onKeyUp=\"javascript: SmsCountKeyUp($max_length);\" onKeyDown=\"javascript: SmsCountKeyDown($max_length);\" name=\"message\" id=\"ta_sms_content\">$message</textarea>
-	    <br>Character left: <input value=\"$max_length\" type=\"text\" onKeyPress=\"if (window.event.keyCode == 13){return false;}\" onFocus=\"this.blur();\" size=\"3\" name=\"charNumberLeftOutput\" id=\"charNumberLeftOutput\">
+	";
+
+	$content.= generateSmsInput($nameForm, "Your message: ", $message, "");
+	
+        $content.= "
 	    <p><input type=checkbox name=msg_flash> Send as flash message
 	    <p><input type=checkbox name=msg_unicode> Send as unicode message (http://www.unicode.org)
 	    <p><input type=submit class=button value=Send onClick=\"selectAllOptions(this.form['p_num[]'])\"> 
@@ -211,7 +214,7 @@ switch ($op)
 	{
 	    $list_of_group .= "<option value=\"$db_row[gp_code]\" $selected>$db_row[gp_name] ($db_row[gp_code])</option>";
 	}
-	$max_length = 160;
+	$max_length = $SMS_MAXCHARS;
 	if ($sms_sender = username2sender($username))
 	{
 	    $max_length = $max_length - strlen($sms_sender);
@@ -245,6 +248,7 @@ switch ($op)
 	}
 
 	// document.fm_sendsms.message.value = document.fm_smstemplate.content_num.value;
+	$nameForm= "fm_sendsms";
 	$content .= "
 	<!-- WWW -->
 	    <script language=\"javascript\">
@@ -268,7 +272,7 @@ switch ($op)
 
 	    <h2>Send broadcast SMS</h2>
 	    <p>
-	    <form name=fm_sendsms id=fm_sendsms action=menu.php?inc=send_sms&op=sendsmstogr_yes method=POST>
+	    <form name=$nameForm id=$nameForm action=menu.php?inc=send_sms&op=sendsmstogr_yes method=POST>
 	    <p>From: $sms_from
 	    <p>
 	    <p>Send to group: <select name=\"gp_code\">$list_of_group</select>
@@ -299,9 +303,11 @@ switch ($op)
 	    <!-- WWW -->
 	    <p>Message template: <select name=\"smstemplate\">$option_values</select>
 	    <p><input type=\"button\" onClick=\"javascript: setTemplate();\" name=\"nb\" value=\"Use Template\" class=\"button\">
-	    <p>Your message: 
-	    <br><textarea cols=\"39\" rows=\"5\" onKeyUp=\"javascript: SmsCountKeyUp($max_length);\" onKeyDown=\"javascript: SmsCountKeyDown($max_length);\" name=\"message\" id=\"ta_sms_content\">$message</textarea>
-	    <br>Character left: <input value=\"$max_length\" type=\"text\" onKeyPress=\"if (window.event.keyCode == 13){return false;}\" onFocus=\"this.blur();\" size=\"3\" name=\"charNumberLeftOutput\" id=\"charNumberLeftOutput\">
+        ";
+ 
+	$content.= generateSmsInput($nameForm, "Your message: ", $message, "");
+
+	$content.= "
 	    <p><input type=checkbox name=msg_flash> Send as flash message
 	    <p><input type=submit class=button value=Send onClick=\"selectAllOptions(this.form['gp_code[]'])\"> 
 	    </form>

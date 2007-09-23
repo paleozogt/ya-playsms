@@ -19,8 +19,6 @@ define("_SMTP_PORT_","25");
 // base application directory
 $apps_path[base]	= ".";
 
-$SMS_MAX= (153*3);     // three-part multi sms
-
 // Do not change anything below this line unless you know what to do
 // -----------------------------------------------------------------
 

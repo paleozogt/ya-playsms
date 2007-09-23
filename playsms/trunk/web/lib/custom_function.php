@@ -4,11 +4,11 @@ if(!defined("_SECURE_")){die("Intruder: IP ".$_SERVER['REMOTE_ADDR']);};
 
 function websend2pv($username,$sms_to,$message,$sms_type="text",$unicode="0")
 {
-    global $apps_path;
+    global $apps_path, $SMS_MAXCHARS;
     global $datetime_now, $gateway_module;
     $uid = username2uid($username);
     $mobile_sender = username2mobile($username);
-    $max_length = $SMS_MAX;
+    $max_length = $SMS_MAXCHARS;
     if ($sms_sender = username2sender($username))
     {
 	$max_length = $max_length - strlen($sms_sender) - 1;
@@ -59,11 +59,11 @@ function websend2pv($username,$sms_to,$message,$sms_type="text",$unicode="0")
 
 function websend2group($username,$gp_code,$message,$sms_type="text")
 {
-    global $apps_path;
+    global $apps_path, $SMS_MAXCHARS;
     global $datetime_now, $gateway_module;
     $uid = username2uid($username);
     $mobile_sender = username2mobile($username);
-    $max_length = $SMS_MAX;
+    $max_length = $SMS_MAXCHARS;
     if ($sms_sender = username2sender($username))
     {
 	$max_length = $max_length - strlen($sms_sender) - 1;
@@ -125,7 +125,7 @@ function websend2group($username,$gp_code,$message,$sms_type="text")
 
 function send2group($mobile_sender,$gp_code,$message)
 {
-    global $apps_path;
+    global $apps_path, $SMS_MAXCHARS;
     global $datetime_now;
     $ok = false;
     if ($mobile_sender && $gp_code && $message)
@@ -151,7 +151,7 @@ function send2group($mobile_sender,$gp_code,$message)
 	        {
 	    	    $p_num = $db_row[p_num];
 		    $sms_to = $p_num;
-		    $max_length = $SMS_MAX - strlen($sms_sender) - 3;
+		    $max_length = $SMS_MAXCHARS - strlen($sms_sender) - 3;
 		    if (strlen($message)>$max_length)
 		    {
 			$message = substr ($message,0,$max_length-1);
@@ -515,8 +515,11 @@ function processautoreply($sms_datetime,$sms_sender,$autoreply_code,$autoreply_p
 	$autoreply_scenario_param_list .= "autoreply_scenario_param$i='".$autoreply_part[$i]."' AND ";
     }
     $db_query = "
-	SELECT autoreply_scenario_result FROM playsms_featAutoreply_scenario 
-	WHERE $autoreply_scenario_param_list 1=1
+	SELECT autoreply_scenario_result FROM playsms_featAutoreply, playsms_featAutoreply_scenario 
+	WHERE 
+        playsms_featAutoreply.autoreply_id=playsms_featAutoreply_scenario.autoreply_id AND 
+        autoreply_code='$autoreply_code' AND 
+        $autoreply_scenario_param_list 1=1
     ";
     $db_result = dba_query($db_query);
     $db_row = dba_fetch_array($db_result);
@@ -533,6 +536,7 @@ function processautoreply($sms_datetime,$sms_sender,$autoreply_code,$autoreply_p
 	    $ok = true;
 	}
     }
+
     if ($ok)
     {
 	$ok = false;
@@ -675,6 +679,37 @@ function setsmsincomingaction($sms_datetime,$sms_sender,$target_code,$message)
 	}
     }
     return $ok;
+}
+
+function generateSmsInput($formName, $smsDisplayTitle, $smsContents, $smsFormName) {
+  if (!$smsFormName) {
+    $smsFormName= "message";
+  }
+  $nameCharCount= "sms_char_count";
+  $nameSmsCount = "sms_count";
+
+  $html .= "<br>
+	    <p>$smsDisplayTitle 
+	    <br>
+            <textarea cols=\"39\" rows=\"5\"
+                      onKeyUp=\"this.updateSmsCounts();\" onKeyDown=\"this.updateSmsCounts();\" 
+                      name=\"$smsFormName\" id=\"$smsFormName\">$smsContents</textarea>
+
+	    <br>Characters left:
+            <input value=\"0\" type=\"text\" 
+             onKeyPress=\"if (window.event.keyCode == 13){return false;}\" onFocus=\"this.blur();\" size=\"3\"
+             name=\"$nameCharCount\" id=\"$nameCharCount\">
+
+            SMSes:
+            <input type=\"text\" name=\"$nameSmsCount\" id=\"$nameSmsCount\" size= 3 value=\"1\"\>
+
+            <script language=\"JavaScript\"><!--
+                form= document.forms.$formName;
+                wireupSmsCountUpdate(form.$smsFormName, form.$nameCharCount, form.$nameSmsCount);
+                form.$smsFormName.updateSmsCounts();
+            --></script>
+    ";
+  return $html;
 }
 
 ?>

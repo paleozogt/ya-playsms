@@ -37,21 +37,24 @@ switch ($op)
 	{
 	    $content = "<p><font color=red>$err</font><p>";
 	}
+	$formName= "autoReplyScenario";
 	$content .= "
 	    <h2>Add SMS autoreply scenario</h2>
 	    <p>
 	    <p>SMS autoreply code: <b>$autoreply_code</b>
 	    <p>
-	    <form action=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_add_yes method=post>
+	    <form id= \"$formName\"
+                  action=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_add_yes 
+                  method=post>
 	    <input type=hidden name=autoreply_id value=\"$autoreply_id\">
 	";
 	for ($i=1;$i<=7;$i++)
 	{
 	    $content .= "<p>SMS autoreply scenario param $i: <input type=text size=20 maxlength=20 name=add_autoreply_scenario_param$i value=\"".${"add_autoreply_scenario_param".$i}."\">\n";
 	}
-	$content .= "
-    	    <p>SMS autoreply scenario return: <input type=text size=60 maxlength=130 name=add_autoreply_scenario_result value=\"$add_autoreply_scenario_result\">
-	    <p><input type=submit class=button value=Add>
+	$content.= generateSmsInput($formName, "SMS autoreply scenario result:", 
+                                    $add_autoreply_scenario_result, "add_autoreply_scenario_result");
+	$content.= "<p><input type=submit class=button value=Add>
 	    <p><li><a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
 	    </form>
 	";
@@ -103,12 +106,15 @@ switch ($op)
 	{
 	    $content = "<p><font color=red>$err</font><p>";
 	}
+	
+
+	$formName= "autoReplyScenario";
 	$content .= "
 	    <h2>Edit SMS autoreply scenario</h2>
 	    <p>
 	    <p>SMS autoreply code: <b>$autoreply_code</b>
 	    <p>
-	    <form action=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_edit_yes method=post>
+	    <form id=\"$formName\" action=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_edit_yes method=post>
 	    <input type=hidden name=autoreply_id value=\"$autoreply_id\">
 	    <input type=hidden name=autoreply_scenario_id value=\"$autoreply_scenario_id\">
 	";
@@ -121,16 +127,12 @@ switch ($op)
 	}
 	for ($i=1;$i<=7;$i++)
 	{
-	    $content .= "<p>SMS autoreply scenario param $i: <input type=text size=20 maxlength=20 name=edit_autoreply_scenario_param$i value=\"".${"edit_autoreply_scenario_param".$i}."\">\n";
+	    $content .= "<p>SMS autoreply scenario param $i:<input type=text size=20 maxlength=20 name=edit_autoreply_scenario_param$i value=\"".${"edit_autoreply_scenario_param".$i}."\">\n";
 	}
 	$edit_autoreply_scenario_result = $db_row[autoreply_scenario_result];
-	$content .= "
-    	    <p/>SMS autoreply scenario result:
-            <!--<p/><input type=text size=60 maxlength=130 name=edit_autoreply_scenario_result value=\"$edit_autoreply_scenario_result\">-->
-            
-            <p/><textarea name=\"edit_autoreply_scenario_result\"
-                 cols=\"60\" rows= \"10\" wrap=\"off\">$edit_autoreply_scenario_result</textarea>
-	    <p/><input type=submit class=button value=\"Save\">
+	$content.= generateSmsInput($formName, "SMS autoreply scenario result:", 
+                                    $edit_autoreply_scenario_result, "edit_autoreply_scenario_result");
+	$content.= "<p/><input type=submit class=button value=\"Save\">
 	    <p/><li><a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
 	    </form>
 	";

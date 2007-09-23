@@ -27,6 +27,13 @@ $reserved_codes		= array ("PV","BC","GET","PUT","INFO","SAVE","DEL","LIST","RETR
 sort ($reserved_codes);
 $nd 			= "<font color=red>(*)</font>";
 
+// sms constants
+//
+$SMS_SINGLE_MAXCHARS= 160;
+$SMS_SINGLEMULTIPART_MAXCHARS= ($SMS_SINGLE_MAXCHARS - 7);
+$SMS_MULTIPART_MAX= 3;
+$SMS_MAXCHARS= ($SMS_SINGLEMULTIPART_MAXCHARS*$SMS_MULTIPART_MAX);
+
 // very important, do not try to remove it or change it
 define ("_SECURE_","1");
 
