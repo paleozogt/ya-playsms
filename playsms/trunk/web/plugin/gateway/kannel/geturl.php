@@ -14,6 +14,11 @@ $t = $_GET['t'];
 $q = $_GET['q'];
 $a = $_GET['a'];
 
+// if there's no datetime param,
+// then use the current date
+if (empty($t))
+   $t= date("Y-m-d H:i");
+
 if ($t && $q && $a)
 {
     $sms_datetime = trim($t);
