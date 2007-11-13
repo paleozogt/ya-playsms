@@ -48,15 +48,4 @@ switch ($inc)
 
 include "html_footer.php";
 
-
-
-
-/*
-Sweety.. your smile is my private miracle
-Luv u much..
-*/
-
-
-
-
 ?>
