@@ -17,7 +17,7 @@ define("_SMTP_HOST_","localhost");
 define("_SMTP_PORT_","25");
 
 // base application directory
-$apps_path[base]	= ".";
+$apps_path[base]	= "/usr/share/playsms";
 
 // Do not change anything below this line unless you know what to do
 // -----------------------------------------------------------------
