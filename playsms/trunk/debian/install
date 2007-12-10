@@ -1,0 +1,7 @@
+bin	                                      usr/share/playsms
+db	                                      usr/share/playsms
+contrib                                       usr/share/playsms
+web	                                      usr/share/playsms
+debian/conf/*.conf                            usr/share/playsms/conf
+
+

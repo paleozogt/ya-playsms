@@ -1,0 +1,16 @@
+Template: playsms/mysql-username
+Type: string
+Default: root
+Description: User name for mysql:
+ playsms needs to configure the mysql database, but in order to do that
+ you must log in to your mysql.  If you don't know your username leave it blank
+ and we'll figure it out.
+
+Template: playsms/mysql-password
+Type: password
+Default:
+Description: Password for web-based setup system:
+ playsms needs to configure the mysql database, but in order to do that
+ you must log in to your mysql.  If you don't know your password leave it blank
+ and we'll figure it out.
+
