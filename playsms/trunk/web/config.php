@@ -17,7 +17,8 @@ define("_SMTP_HOST_","localhost");
 define("_SMTP_PORT_","25");
 
 // base application directory
-$apps_path[base]	= "/usr/share/playsms";
+$base= "/usr/share/playsms";
+
 
 // Do not change anything below this line unless you know what to do
 // -----------------------------------------------------------------
@@ -27,6 +28,10 @@ $apps_path[base]	= "/usr/share/playsms";
 // on production level you should turn off PHP error reporting
 //error_reporting(0);
 
+$apps_path[base]	= "$base/web";
+
+$apps_path[sql]     = "$base/db/playsms-makedb.sql";
+
 // libraries directory
 $apps_path[libs]	= "$apps_path[base]/lib";
 
@@ -35,6 +40,8 @@ $apps_path[plug]	= "$apps_path[base]/plugin";
 
 // includes directories
 $apps_path[incs]	= "$apps_path[base]/inc";
+
+$apps_path[bin]     = "$base/bin";
 
 // SMS command security parameter
 $feat_command_path[bin]	= $apps_path[base]."/bin";
