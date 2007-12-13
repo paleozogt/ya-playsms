@@ -392,7 +392,7 @@ CREATE TABLE playsms_tblConfig_main (
 -- Dumping data for table `playsms_tblConfig_main`
 --
 
-INSERT INTO playsms_tblConfig_main VALUES ('PlaySMS MPS (Mobile Portal System)','anton@ngoprek.org','PlaySMS MPS (Mobile Portal System)','gnokii','');
+INSERT INTO playsms_tblConfig_main VALUES ('PlaySMS MPS (Mobile Portal System)','anton@ngoprek.org','PlaySMS MPS (Mobile Portal System)','kannel','');
 
 --
 -- Table structure for table `playsms_tblSMSIncoming`
