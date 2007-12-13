@@ -48,10 +48,11 @@ if [ "$1" = "configure" ]; then
      db_fset  $dbcnf_mysqluser seen false || true
      db_fset  $dbcnf_mysqlpass seen false || true
 
-     # run the mysql install script using
+     # run the mysql install scripts using
      # the username and password
      #
      mysql --user=$mysqlusername --password=$mysqlpassword < $installpath/db/playsms-install.sql
+     mysql --user=$mysqlusername --password=$mysqlpassword < $installpath/db/playsms-makedb.sql
 
 
      # give apache user sudo rights for our scripts
@@ -68,14 +69,36 @@ if [ "$1" = "configure" ]; then
      fi
 
 
-     # reload webserver to reflect conf
-     # changes done in the automated install
+     # make a kannel conf file link to 
+     # our conf file; we can't do this
+     # through the normal debian/link file mechanism
+     # because kannel's install has kannel.conf
+     # listed in 'conffiles'; we have to force it
+     #
+     kannelconf=/etc/kannel/kannel.conf
+     if [ -e $kannelconf ]; then
+        mv $kannelconf /etc/kannel/kannel-orig.conf
+     fi
+     ln -s $installpath/conf/kannel/kannel.conf $kannelconf
+
+
+     # add the kannel user to group 'dialout'
+     # so that it can use bluetooth devices
+     # that have been bound to /dev/rfcomm*,
+     # which are usually root:dialout
+     #
+     adduser kannel dialout
+
+
+     # reload services whose confs we've modified
      #
      if [ -x /usr/sbin/invoke-rc.d ]; then
           invoke-rc.d $webserver reload || true
+          invoke-rc.d kannel restart || true
      else
           /etc/init.d/$webserver reload || true
-     fi
+          /etc/init.d/kannel restart || true
+     fi   
 
 
      # quit debconf

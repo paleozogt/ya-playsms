@@ -31,15 +31,26 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
      sedscript="s_$webuser.*$binpath.*__"
      sed -i -e $sedscript /etc/sudoers
 
-     # reload webserver to reflect conf
-     # changes done in the automated remove
+
+     # remove our kannel conf link and restore the
+     # original kannel conf
      #
-     echo "restarting $webserver..."
+     kannelconf=/etc/kannel/kannel.conf
+     if [ -h $kannelconf ]; then
+        rm $kannelconf
+     fi
+     mv /etc/kannel/kannel-orig.conf $kannelconf || true
+
+
+     # reload services whose confs have been modified
+     #
      if [ -x /usr/sbin/invoke-rc.d ]; then
           invoke-rc.d $webserver reload || true
+          invoke-rc.d kannel restart || true
      else
           /etc/init.d/$webserver reload || true
-     fi
+          /etc/init.d/kannel restart || true
+     fi   
 fi
 
 # dh_installdeb will replace this with shell code automatically

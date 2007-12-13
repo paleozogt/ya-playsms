@@ -1,2 +1,5 @@
 usr/share/playsms/conf/playsms-apache2.conf              /etc/apache2/conf.d/playsms.conf
+usr/share/playsms/conf/kannel/smsc.conf                  /etc/kannel/smsc.conf
+usr/share/playsms/conf/kannel/modems.conf                /etc/kannel/modems.conf
+
 
