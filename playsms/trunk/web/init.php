@@ -40,6 +40,14 @@ define ("_SECURE_","1");
 // connect to database
 include_once "$apps_path[libs]/dba.php";
 $dba_object = dba_connect($db_param[user],$db_param[pass],$db_param[name],$db_param[host],$db_param[port]);
+if (DB::isError($dba_object)) {
+    echo "Cannot connect to database '$db_param[name]' using user '$db_param[user]'. <br/>\n";
+    echo "$dba_object->getMessage() <br/>\n";
+    echo "<br/>\n";
+    echo "Something may have gone wrong during setup-- please reconfigure the package or use your admin mysql account to create user '$db_param[user]' with password '$db_param[pass]; <br/>\n";
+
+    die;
+}
 
 // get main config
 $db_query = "SELECT * FROM playsms_tblConfig_main";
