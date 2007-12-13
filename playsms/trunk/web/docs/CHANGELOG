@@ -4,7 +4,8 @@ playsms (0.8.2) unstable; urgency=high
   * changed default gateway to kannel
   * removed sms limits, can now send multi-part smses
   * removed unnecessary keywords
-  * various bug fixes
+  * fixed deleting autoreply_scenarios and auto_replies
+  * various other bug fixes
 
  -- Aaron Simmons <mithrandir@ic.org>  13 Dec 2007 10:00:00 +0800
 
