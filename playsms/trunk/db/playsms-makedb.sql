@@ -301,7 +301,7 @@ CREATE TABLE playsms_gwmodKannel_config (
 -- Dumping data for table `playsms_gwmodKannel_config`
 --
 
-INSERT INTO playsms_gwmodKannel_config VALUES ('kannel','/usr/local','playsms','pwd','92824','127.0.0.1','13131','http://localhost/~playsms');
+INSERT INTO playsms_gwmodKannel_config VALUES ('kannel','/usr/local','playsms','playsms','123','127.0.0.1','13131','http://localhost/playsms');
 
 --
 -- Table structure for table `playsms_gwmodKannel_dlr`
