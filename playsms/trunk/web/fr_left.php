@@ -20,14 +20,16 @@ if (isadmin())
     $admin_feat = "
 	<li><a href=menu_admin.php?inc=sms_command&op=sms_command_list target=fr_right>Manage SMS commands</a></li>
     ";
-    $admin_gwmod = "
+
+    $admin_gwmod = "";
+     /*"
 	<h2>Gateway Module:</h2>
 	<li><a href=menu_admin.php?inc=gwmod_clickatell&op=manage target=fr_right>Manage clickatell</a></li>
 	<li><a href=menu_admin.php?inc=gwmod_gnokii&op=manage target=fr_right>Manage gnokii</a></li>
 	<li><a href=menu_admin.php?inc=gwmod_kannel&op=manage target=fr_right>Manage kannel</a></li>
 	<li><a href=menu_admin.php?inc=gwmod_uplink&op=manage target=fr_right>Manage uplink</a></li>
 	<p>
-    ";
+    ";*/
 }
 
 $content = "

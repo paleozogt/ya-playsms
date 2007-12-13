@@ -11,6 +11,19 @@ switch ($op)
 	{
 	    $content = "<p><font color=red>$err</font><p>";
 	}
+
+     // generate the list of gateway plugins
+     // TODO: make this get listing of the gw plugin files
+     // rather than be hard-coded
+     $gw_mods= array("kannel", "gnokii", "uplink", "clickatell");
+     $gw_choice= "<select name=edit_gateway_module>\n";
+     foreach ($gw_mods as $gw) {
+          if ($gw == $gateway_module) $sel= "selected";
+          else $sel= "";
+          $gw_choice.= "\t<option value=$gw $sel>$gw</option>\n";
+     }
+     $gw_choice.= "</select>";
+
 	$content .= "
 	    <h2>Main configuration</h2>
 	    <p>
@@ -19,7 +32,8 @@ switch ($op)
 	    <p>Website's email: <input type=text size=30 name=edit_email_service value=\"$email_service\"> (Format: username@somedomain.com eg: anton@ngoprek.org)
 	    <p>Forwarded email footer: <input type=text size=50 name=edit_email_footer value=\"$email_footer\">
 	    <p>Gateway number: <input type=text size=20 name=edit_gateway_number value=\"$gateway_number\">
-	    <p>Activated gateway module: $gateway_module
+         <p/>Activated gateway module:\n$gw_choice\n
+         <a href=menu_admin.php?inc=gwmod_$gateway_module&op=manage target=fr_right>Manage Gateway</a> 
 	    <p><input type=submit class=button value=Save>
 	    </form>
 	";
@@ -29,6 +43,7 @@ switch ($op)
 	$edit_web_title = $_POST[edit_web_title];
 	$edit_email_service = $_POST[edit_email_service];
 	$edit_email_footer = $_POST[edit_email_footer];
+	$edit_gateway_module = $_POST[edit_gateway_module];
 	$edit_gateway_number = $_POST[edit_gateway_number];
 	$db_query = "
 	    UPDATE playsms_tblConfig_main 
@@ -36,6 +51,7 @@ switch ($op)
 		cfg_web_title='$edit_web_title',
 		cfg_email_service='$edit_email_service',
 		cfg_email_footer='$edit_email_footer',
+          cfg_gateway_module='$edit_gateway_module',
 		cfg_gateway_number='$edit_gateway_number'
 	";
 	$db_result = dba_query($db_query);
