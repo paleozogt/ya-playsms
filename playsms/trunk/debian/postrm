@@ -35,11 +35,11 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
      # remove our kannel conf link and restore the
      # original kannel conf
      #
-     kannelconf=/etc/kannel/kannel.conf
-     if [ -h $kannelconf ]; then
-        rm $kannelconf
-     fi
-     mv /etc/kannel/kannel-orig.conf $kannelconf || true
+#     kannelconf=/etc/kannel/kannel.conf
+#     if [ -h $kannelconf ]; then
+#        rm $kannelconf
+#     fi
+#     mv /etc/kannel/kannel-orig.conf $kannelconf || true
 
 
      # reload services whose confs have been modified

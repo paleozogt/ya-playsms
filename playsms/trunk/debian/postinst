@@ -75,11 +75,11 @@ if [ "$1" = "configure" ]; then
      # because kannel's install has kannel.conf
      # listed in 'conffiles'; we have to force it
      #
-     kannelconf=/etc/kannel/kannel.conf
-     if [ -e $kannelconf ]; then
-        mv $kannelconf /etc/kannel/kannel-orig.conf
-     fi
-     ln -s $installpath/conf/kannel/kannel.conf $kannelconf
+#     kannelconf=/etc/kannel/kannel.conf
+#     if [ -e $kannelconf ]; then
+#        mv $kannelconf /etc/kannel/kannel-orig.conf
+#     fi
+#     ln -s $installpath/conf/kannel/kannel.conf $kannelconf
 
 
      # add the kannel user to group 'dialout'
