@@ -5,9 +5,8 @@ include "html_header.php";
 
 $err = $_GET[err];
 
-if ($err)
-{
-    echo "<font color=red>$err</font><br><br>";
+if ($err) {
+	echo "<font color=red>$err</font><br><br>";
 }
 
 $content = "
@@ -39,5 +38,6 @@ echo $content;
 <br><br>
 
 <?
+
 include "html_footer.php";
 ?>

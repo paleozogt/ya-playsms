@@ -2,34 +2,36 @@
 include "init.php";
 include "$apps_path[libs]/function.php";
 
-if (!valid()) { forcelogout(); };
+if (!valid()) {
+	forcelogout();
+};
 
 $username = $_COOKIE[vc2];
 $uid = username2uid($username);
 $status = username2status($username);
 
-if (isadmin())
-{
-    $admin_menu = "
+if (isadmin()) {
+	$admin_menu = "
 	<h2>Administration:</h2>
 	<li><a href=menu_admin.php?inc=user_mgmnt&op=user_list target=fr_right>Manage user</a></li>
 	<li><a href=menu_admin.php?inc=main_config&op=main_config target=fr_right>Main configuration</a></li>
 	<li><a href=menu_admin.php?inc=daemon&op=daemon target=fr_right>Daemon manual refresh</a></li>
 	<p>
     ";
-    $admin_feat = "
-	<li><a href=menu_admin.php?inc=sms_command&op=sms_command_list target=fr_right>Manage SMS commands</a></li>
+	$admin_feat = "
+	<li><a href=\"menu_admin.php?inc=sms_command&op=sms_command_list\" target=fr_right>Manage SMS commands</a></li>
+	<li><a href=\"menu_admin.php?inc=sms_autosend&op=list\" target=fr_right>Manage SMS autosend</a></li>
     ";
 
-    $admin_gwmod = "";
-     /*"
+	$admin_gwmod = "";
+	/*"
 	<h2>Gateway Module:</h2>
 	<li><a href=menu_admin.php?inc=gwmod_clickatell&op=manage target=fr_right>Manage clickatell</a></li>
 	<li><a href=menu_admin.php?inc=gwmod_gnokii&op=manage target=fr_right>Manage gnokii</a></li>
 	<li><a href=menu_admin.php?inc=gwmod_kannel&op=manage target=fr_right>Manage kannel</a></li>
 	<li><a href=menu_admin.php?inc=gwmod_uplink&op=manage target=fr_right>Manage uplink</a></li>
 	<p>
-    ";*/
+	";*/
 }
 
 $content = "
@@ -69,5 +71,4 @@ include "html_header.php";
 echo $content;
 
 include "html_footer.php";
-
 ?>

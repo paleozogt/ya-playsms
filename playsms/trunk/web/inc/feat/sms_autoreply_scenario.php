@@ -150,7 +150,7 @@ switch ($op)
 	        ";
 	        if ($db_result = @dba_affected_rows($db_query))
 	        {
-		    $error_string = "SMS autoreply scenario has been edited";
+		        $error_string = "SMS autoreply scenario has been edited";
 	        }
 	        else
 	        {

@@ -178,7 +178,7 @@ function dba_affected_rows($mystring)
     {
         // ob_end_clean();
         // die ("<p align=left>".$myresult->getMessage()."<br>".$myresult->userinfo."<br>");
-	return 0;
+		return 0;
     }
     if ($result = $dba_object->affectedRows()) return $result;
     return 0;

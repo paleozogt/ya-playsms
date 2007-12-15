@@ -5,6 +5,7 @@ playsms (0.8.2) unstable; urgency=high
   * removed sms limits, can now send multi-part smses
   * removed unnecessary keywords
   * fixed deleting autoreply_scenarios and auto_replies
+  * added renaming of autoreply code
   * various other bug fixes
 
  -- Aaron Simmons <mithrandir@ic.org>  13 Dec 2007 10:00:00 +0800

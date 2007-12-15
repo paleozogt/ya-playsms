@@ -14,7 +14,7 @@
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
 // | Authors: Sterling Hughes <sterling@php.net>                          |
-// |          Antônio Carlos Venâncio Júnior <floripa@php.net>            |
+// |          Antonio Carlos Venincio Junior <floripa@php.net>            |
 // +----------------------------------------------------------------------+
 //
 // $Id: sybase.php,v 1.13 2003/09/07 10:55:51 cox Exp $

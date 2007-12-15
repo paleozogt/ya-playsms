@@ -10,6 +10,7 @@ include "html_header.php";
 <tr>
     <td width=100%>
 <?
+
 echo "<center><h1>Hello $username..</h1></center>";
 ?>
     </td>
@@ -17,5 +18,6 @@ echo "<center><h1>Hello $username..</h1></center>";
 <table>
 
 <?
+
 include "html_footer.php";
 ?>

@@ -4,13 +4,14 @@
 <meta name=\"author\" content=\"http://playsms.sourceforge.net\">
 
 <?
+
 // put php global settings into javascript
-$script= "" . 
+$script = "" .
 "<script type=\"text/javascript\"><!--\n" .
-"   var SMS_SINGLE_MAXCHARS= $SMS_SINGLE_MAXCHARS;\n" . 
-"   var SMS_SINGLE_MULTIPART_MAXCHARS= $SMS_SINGLEMULTIPART_MAXCHARS;\n" . 
+"   var SMS_SINGLE_MAXCHARS= $SMS_SINGLE_MAXCHARS;\n" .
+"   var SMS_SINGLE_MULTIPART_MAXCHARS= $SMS_SINGLEMULTIPART_MAXCHARS;\n" .
 "   var SMS_MULTIPART_MAX= $SMS_MULTIPART_MAX;\n" .
-"   var SMS_MAXCHARS= $SMS_MAXCHARS;\n" . 
+"   var SMS_MAXCHARS= $SMS_MAXCHARS;\n" .
 "--></script>";
 
 echo $script;

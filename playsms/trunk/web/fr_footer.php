@@ -1,5 +1,5 @@
-<? 
-include "init.php"; 
+<?
+include "init.php";
 include "html_header.php";
 ?>
 
@@ -12,5 +12,6 @@ include "html_header.php";
 <table>
 
 <?
+
 include "html_footer.php";
 ?>
