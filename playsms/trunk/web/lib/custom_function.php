@@ -528,9 +528,17 @@ function savepoll($sms_sender, $target_poll, $target_choice) {
 	return $ok;
 }
 
+// when we process a system message,
+// just forward it on to the admin group
+//
+function processSystemMessage($sms_sender, $message) {
+	websend2group("admin", "admin", $message);
+}
+
 // check incoming SMS for available codes
 // and sets the action
 function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message) {
+	global $balcheck_from;
 	$ok = false;
 	switch ($target_code) {
 		case "BC" :
@@ -589,6 +597,16 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 			if ($db_result = dba_num_rows($db_query)) {
 				if (insertsmstodb($sms_datetime, $sms_sender, $target_code, $message)) {
 					$ok = true;
+				}
+			}
+			
+			// if its from the known system balance sender,
+			// then process it as a system message
+			$syssenders= explode(',', $balcheck_from);
+			foreach ($syssenders as $syssender) {
+				if (0 == strcasecmp($sms_sender, $syssender)) {
+					processSystemMessage($sms_sender, "$target_code $message");
+					$ok= true;
 				}
 			}
 	}
