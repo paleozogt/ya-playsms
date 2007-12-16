@@ -532,13 +532,14 @@ function savepoll($sms_sender, $target_poll, $target_choice) {
 // just forward it on to the admin group
 //
 function processSystemMessage($sms_sender, $message) {
-	websend2group("admin", "admin", $message);
+	$fwd_msg= "$web_title sys msg: \"$message\"";
+	websend2group("admin", "admin", $fwd_msg);
 }
 
 // check incoming SMS for available codes
 // and sets the action
 function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message) {
-	global $balcheck_from;
+	global $system_from;
 	$ok = false;
 	switch ($target_code) {
 		case "BC" :

@@ -57,7 +57,7 @@ if ($db_row = dba_fetch_array($db_result)) {
 	$email_footer = $db_row[cfg_email_footer];
 	$gateway_module = $db_row[cfg_gateway_module];
 	$gateway_number = $db_row[cfg_gateway_number];
-	$balcheck_from = $db_row[cfg_balcheck_from];
+	$system_from = $db_row[cfg_system_from];
 }
 
 // protect from SQL injection when magic_quotes_gpc sets to "Off"

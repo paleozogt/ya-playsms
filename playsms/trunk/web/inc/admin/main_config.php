@@ -32,19 +32,20 @@ switch ($op) {
 		$gw_choice .= "</select>";
 
 		$content .= "
-					        <h2>Main configuration</h2>
-					        <p>
-					        <form action=menu_admin.php?inc=main_config&op=main_config_save method=post>
-					        <p>Website's title: <input type=text size=50 name=edit_web_title value=\"$web_title\">
-					        <p>Website's email: <input type=text size=30 name=edit_email_service value=\"$email_service\"> (Format: username@somedomain.com eg: anton@ngoprek.org)
-					        <p>Forwarded email footer: <input type=text size=50 name=edit_email_footer value=\"$email_footer\">
-					        <p>Gateway number: <input type=text size=20 name=edit_gateway_number value=\"$gateway_number\">
-				            <p/>Balance Update Texts are sent from <input type=\"text\" size=\"20\" name=\"edit_balcheck_from\" value=\"$balcheck_from\">
-				            <p/>Activated gateway module:\n$gw_choice\n
-				                <a href=menu_admin.php?inc=gwmod_$gateway_module&op=manage target=fr_right>Manage Gateway</a> 
-					        <p><input type=submit class=button value=Save>
-					        </form>
-					    ";
+	        <h2>Main configuration</h2>
+	        <p>
+	        <form action=menu_admin.php?inc=main_config&op=main_config_save method=post>
+	        <p>Website's title: <input type=text size=50 name=edit_web_title value=\"$web_title\">
+	        <p>Website's email: <input type=text size=30 name=edit_email_service value=\"$email_service\"> (Format: username@somedomain.com eg: anton@ngoprek.org)
+	        <p>Forwarded email footer: <input type=text size=50 name=edit_email_footer value=\"$email_footer\">
+	        <p>Gateway number: <input type=text size=20 name=edit_gateway_number value=\"$gateway_number\">
+	        <p/>System messages (e.g., balance updates) are sent from 
+	        		<input type=\"text\" size=\"20\" name=\"edit_system_from\" value=\"$system_from\">
+	        <p/>Activated gateway module:\n$gw_choice\n
+	            <a href=menu_admin.php?inc=gwmod_$gateway_module&op=manage target=fr_right>Manage Gateway</a> 
+	        <p><input type=submit class=button value=Save>
+	        </form>
+	    	";
 		echo $content;
 		break;
 	case "main_config_save" :
@@ -53,7 +54,7 @@ switch ($op) {
 		$edit_email_footer = $_POST[edit_email_footer];
 		$edit_gateway_module = $_POST[edit_gateway_module];
 		$edit_gateway_number = $_POST[edit_gateway_number];
-		$edit_balcheck_from = $_POST[edit_balcheck_from];
+		$edit_system_from = $_POST[edit_system_from];
 		$db_query = "
 					        UPDATE playsms_tblConfig_main 
 					        SET 
@@ -62,7 +63,7 @@ switch ($op) {
 						    cfg_email_footer='$edit_email_footer',
 				            cfg_gateway_module='$edit_gateway_module',
 						    cfg_gateway_number='$edit_gateway_number',
-				            cfg_balcheck_from='$edit_balcheck_from'
+				            cfg_system_from='$edit_system_from'
 					    ";
 		$db_result = dba_query($db_query);
 		$error_string = "Main configuration has been saved";

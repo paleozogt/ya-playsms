@@ -397,14 +397,15 @@ CREATE TABLE playsms_tblConfig_main (
   cfg_email_service varchar(250) default NULL,
   cfg_email_footer varchar(250) default NULL,
   cfg_gateway_module varchar(20) default NULL,
-  cfg_gateway_number varchar(100) default NULL
+  cfg_gateway_number varchar(100) default NULL,
+  cfg_system_from varchar(100) default NULL COMMENT 'comma-delimited'
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_tblConfig_main`
 --
 
-INSERT INTO playsms_tblConfig_main VALUES ('PlaySMS MPS (Mobile Portal System)','anton@ngoprek.org','PlaySMS MPS (Mobile Portal System)','kannel','');
+INSERT INTO playsms_tblConfig_main VALUES ('PlaySMS MPS (Mobile Portal System)','','PlaySMS MPS (Mobile Portal System)','kannel','', '');
 
 --
 -- Table structure for table `playsms_tblSMSIncoming`
