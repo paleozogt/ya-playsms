@@ -1,14 +1,25 @@
 <?
-if (!defined("_SECURE_")) {
-
-	die("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
-};
-
 $op = $_GET[op];
 $selfurl = "menu_admin.php?inc=sms_autosend";
 
-error_log("op= $op");
+// cron will call us directly to do autosending,
+// so skip the security check in that case
+// but only if its a local connection
+//
+if ($op == "autosend" && $_SERVER['REMOTE_ADDR'] == "127.0.0.1") {
+	include "../../init.php";
+	include "$apps_path[libs]/function.php";
+}
 
+// security check
+//
+if (!defined("_SECURE_")) {
+	die("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
+};
+
+// print any errors from a 
+// previous load of this page
+//
 if ($err) {
 	echo "<p><font color=red>$err</font><p>\n";
 }
@@ -51,16 +62,16 @@ function makeList($selfurl) {
 	$db_result = dba_query($db_query);
 	while ($db_row = dba_fetch_array($db_result)) {
 		$html .= "
-			    	<a href=\"$selfurl&op=edit&id=$db_row[id]\">[e]</a>
-		
-			    	<a href=\"javascript: ConfirmURL(
-			    			'Are you sure you want to delete this autosend?',
-							'$selfurl&op=del&id=$db_row[id]'
-							)\">[x]</a>
-		 
-			    	$db_row[when] $db_row[number] \"$db_row[msg]\"
-			    	<br/>
-			    	";
+			<a href=\"$selfurl&op=edit&id=$db_row[id]\">[e]</a>
+
+	    	<a href=\"javascript: ConfirmURL(
+	    			'Are you sure you want to delete this autosend?',
+					'$selfurl&op=del&id=$db_row[id]'
+					)\">[x]</a>
+ 
+	    	$db_row[when] $db_row[number] \"$db_row[msg]\"
+	    	<br/>
+	    	";
 	}
 	return $html;
 }
@@ -157,6 +168,9 @@ function doDelete($id, $selfurl) {
 	header("Location: $selfurl&op=list&err=" . urlencode($error_string));
 }
 
+// TODO: have this return an http header
+// for success or failure
+//
 function doAutosend($when) {
 	error_log("autosending for '$when'");
 	$db_query = "SELECT * FROM playsms_featAutoSend WHERE `when`='$when'";
@@ -167,4 +181,5 @@ function doAutosend($when) {
 		error_log("sending $db_row[id], $db_row[number], '$db_row[msg]'...");
 		websend2pv("admin", $db_row[number], $db_row[msg]);
 	}
+	
 }

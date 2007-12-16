@@ -73,6 +73,18 @@ INSERT INTO playsms_featAutoreply_scenario VALUES (1,1,'INTERNET','DOWN','','','
 INSERT INTO playsms_featAutoreply_scenario VALUES (2,1,'WEBMAIL','PASSWORD','ERROR','','','','','Please use forgot password link, and follow given instructions');
 
 --
+-- Table structure for table `playsms_featAutoSend`
+-- 
+
+CREATE TABLE IF NOT EXISTS `playsms_featAutoSend` (
+  `id` int(11) NOT NULL auto_increment,
+  `when` enum('hourly','daily','weekly','monthly') NOT NULL default 'daily',
+  `number` varchar(100) NOT NULL,
+  `msg` text NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;
+
+--
 -- Table structure for table `playsms_featBoard`
 --
 
