@@ -42,8 +42,7 @@ switch ($op) {
 		break;
 
 	case "del" :
-		// TODO: this should be POST
-		doDelete($_GET[id], $selfurl);
+		doDelete($_POST[id], $selfurl);
 		break;
 
 	case "autosend" :
@@ -58,20 +57,37 @@ function makeList($selfurl) {
 			<a href=\"$selfurl&op=add\">[ Add ]</a>
 			<p/>";
 
+	// create hidden form with the 
+	// id to delete, this way it will
+	// get POSTed
+	//
+	$formName = "delForm";
+	$html .= "
+			<form name=\"$formName\" method=\"post\" action=\"$selfurl&op=del\">
+				<input type=\"hidden\" name=\"id\" value=\"\"/>
+				<script language=\"JavaScript\"><!--
+   					function del(id, msg) {
+						if (confirm(msg)) {
+							document.forms.$formName.id.value=id;
+							document.forms.$formName.submit();
+						}
+				   }
+				--></script>
+			 </form>";
+
 	$db_query = "SELECT * FROM playsms_featAutoSend";
 	$db_result = dba_query($db_query);
 	while ($db_row = dba_fetch_array($db_result)) {
 		$html .= "
 			<a href=\"$selfurl&op=edit&id=$db_row[id]\">[e]</a>
 
-	    	<a href=\"javascript: ConfirmURL(
-	    			'Are you sure you want to delete this autosend?',
-					'$selfurl&op=del&id=$db_row[id]'
-					)\">[x]</a>
+			<a href=\"javascript: 
+					del($db_row[id], 'Are you sure you want to delete this autosend?');
+					\">[x]</a>
  
-	    	$db_row[when] $db_row[number] \"$db_row[msg]\"
-	    	<br/>
-	    	";
+			$db_row[when] $db_row[number] \"$db_row[msg]\"
+			<br/>
+			";
 	}
 	return $html;
 }
@@ -109,19 +125,19 @@ function makeEditForm($selfurl, $vals = array ()) {
 	$smsinput = generateSmsInput($formName, "Message:", $vals[msg], "msg");
 
 	$html = "
-	    	<h2>$usertext SMS Autosend</h2>
-	    	<p/>
-	    	<form name=\"$formName\" action=\"$selfurl&op=save\" method=\"post\">
-	    	<input type=\"hidden\" name=\"id\" value=\"$vals[id]\"/>
+			<h2>$usertext SMS Autosend</h2>
+			<p/>
+			<form name=\"$formName\" action=\"$selfurl&op=save\" method=\"post\">
+			<input type=\"hidden\" name=\"id\" value=\"$vals[id]\"/>
 			<p/>Number: 
-	        <input type=\"text\" size=\"10\" maxlength=\"10\" name=\"number\" value=\"$vals[number]\">
-	    	<p/>When: $whenselect
+			<input type=\"text\" size=\"10\" maxlength=\"10\" name=\"number\" value=\"$vals[number]\">
+			<p/>When: $whenselect
 			<p/>$smsinput
 			<p/><input type=submit class=button value=\"Save\">
-	        </form>
-	        <p/><p/>
-	       	<a href=\"$selfurl&op=list\">Back</a>
-	        ";
+			</form>
+			<p/><p/>
+			<a href=\"$selfurl&op=list\">Back</a>
+			";
 	return $html;
 }
 
@@ -181,5 +197,5 @@ function doAutosend($when) {
 		error_log("sending $db_row[id], $db_row[number], '$db_row[msg]'...");
 		websend2pv("admin", $db_row[number], $db_row[msg]);
 	}
-	
+
 }
