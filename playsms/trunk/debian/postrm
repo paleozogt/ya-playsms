@@ -32,14 +32,17 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
      sed -i -e $sedscript /etc/sudoers
 
 
-     # remove our kannel conf link and restore the
-     # original kannel conf
+     # restore the original kannel confs
      #
-#     kannelconf=/etc/kannel/kannel.conf
-#     if [ -h $kannelconf ]; then
-#        rm $kannelconf
-#     fi
-#     mv /etc/kannel/kannel-orig.conf $kannelconf || true
+
+     kannelconf=/etc/kannel/kannel.conf
+     if [ -e $kannelconf.1 ]; then
+        mv $kannelconf.1 $kannelconf || true
+     fi
+     kanneldefaults=/etc/default/kannel
+     if [ -e $kanneldefaults.1 ]; then
+        mv $kanneldefaults.1 $kanneldefaults || true
+     fi
 
 
      # reload services whose confs have been modified

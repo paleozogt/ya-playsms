@@ -2,6 +2,4 @@ bin	                                      usr/share/playsms
 db	                                      usr/share/playsms
 contrib                                   usr/share/playsms
 web	                                      usr/share/playsms
-conf/kannel                                    etc/playsms
-conf/apache2                                   etc/playsms
-conf/cron                                      etc/playsms
+conf/*                                    etc/playsms

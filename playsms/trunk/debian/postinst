@@ -69,19 +69,6 @@ if [ "$1" = "configure" ]; then
      fi
 
 
-     # make a kannel conf file link to 
-     # our conf file; we can't do this
-     # through the normal debian/link file mechanism
-     # because kannel's install has kannel.conf
-     # listed in 'conffiles'; we have to force it
-     #
-#     kannelconf=/etc/kannel/kannel.conf
-#     if [ -e $kannelconf ]; then
-#        mv $kannelconf /etc/kannel/kannel-orig.conf
-#     fi
-#     ln -s $installpath/conf/kannel/kannel.conf $kannelconf
-
-
      # add the kannel user to group 'dialout'
      # so that it can use bluetooth devices
      # that have been bound to /dev/rfcomm*,
