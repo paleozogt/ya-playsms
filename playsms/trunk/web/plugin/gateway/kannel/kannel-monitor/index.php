@@ -17,7 +17,7 @@ include("xmlfunc.php");
 /* config section: define which Kannel status URLs to monitor */
 
 $configs = array(
-            array( "base_url" => "http://kannel.yourdomain.com:13000",
+            array( "base_url" => "http://localhost:13000",
                    "status_passwd" => "pwd",
                    "admin_passwd" => "pwd",
                    "name" => "PlaySms"
