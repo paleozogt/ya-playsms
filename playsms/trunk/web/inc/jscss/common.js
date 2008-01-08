@@ -4,10 +4,10 @@ function CheckUncheckAll(the_form)
 {
     for (var i=0; i < the_form.elements.length; i++) 
     {
-	if (the_form.elements[i].type=="checkbox") 
-	{
-	    the_form.elements[i].checked = !(the_form.elements[i].checked);
-	}
+	    if (the_form.elements[i].type=="checkbox") 
+	    {
+	        the_form.elements[i].checked = !(the_form.elements[i].checked);
+	    }
     }
 }
 
@@ -17,11 +17,11 @@ function PopupSendSms(ta, tg)
     var pv = "PV";
     if (ta == pv)
     {
-	var url = "menu.php?inc=send_sms&op=sendsmstopv&dst_p_num="+tg;
+	    var url = "menu.php?inc=send_sms&op=sendsmstopv&dst_p_num="+tg;
     }
     else
     {
-	var url = "menu.php?inc=send_sms&op=sendsmstogr&dst_gp_code="+tg;
+	    var url = "menu.php?inc=send_sms&op=sendsmstogr&dst_gp_code="+tg;
     }
     newwin=window.open("","WinSendSms","scrollbars","resizable=yes")
     newwin.moveTo(20,100)
@@ -50,10 +50,10 @@ function updateSmsCounts()
     //
     var smsLenLeft = SMS_MAXCHARS  - len;
     if (smsLenLeft >= 0) {
-	this.inputCharsLeft.value = smsLenLeft;
+	    this.inputCharsLeft.value = smsLenLeft;
     } else {
-	this.inputCharsLeft.value = 0;
-	this.value = msg.value.substring(0, SMS_MAXCHARS);
+	    this.inputCharsLeft.value = 0;
+	    this.value = msg.value.substring(0, SMS_MAXCHARS);
     }
 
     // the max len of a single sms is different
@@ -64,9 +64,9 @@ function updateSmsCounts()
     // (a multi-part message)
     //
     if (len <= SMS_SINGLE_MAXCHARS) {
-      this.inputSmsCount.value= 1;
+        this.inputSmsCount.value= 1;
     } else {
-      this.inputSmsCount.value = Math.ceil(len / SMS_SINGLE_MULTIPART_MAXCHARS);
+        this.inputSmsCount.value = Math.ceil(len / SMS_SINGLE_MULTIPART_MAXCHARS);
     }
 }
 
