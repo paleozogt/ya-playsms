@@ -2,7 +2,7 @@
 
 if(!defined("_SECURE_")){die("Intruder: IP ".$_SERVER['REMOTE_ADDR']);};
 
-include_once "$apps_path[libs]/gpl/PEAR/DB.php";
+include_once "DB.php";
 
 // --------------------------------------------------------------------------//
 
