@@ -3,10 +3,18 @@ playsms (0.8.2) unstable; urgency=high
   * created debian package for ubuntu installation
   * changed default gateway to kannel
   * removed sms limits, can now send multi-part smses
+  * remove restriction on not being able to send quotes
   * removed unnecessary keywords
+  * changed sms message entry to keep count of chars left and multi-part smses
+    left, just like writing an sms on a phone does
   * fixed deleting autoreply_scenarios and auto_replies
   * added renaming of autoreply code
-  * various other bug fixes
+  * added autosend feature (uses cron on linux systems)
+  * added "system from" feature, so that texts from the system (like balance updates)
+    can be forwarded to the 'admin' group
+  * added kannel-bug workaround (kannel doesn't work after reboot on ubuntu)
+  * started using pear's db_dataobject and db_dataobject_formbuilder stuff
+    and cleaning up some of the code
 
  -- Aaron Simmons <mithrandir@ic.org>  13 Dec 2007 10:00:00 +0800
 
