@@ -1,0 +1,24 @@
+TODO:
+
+- on ubuntu php include path broken for pear? (/usr/share/pear/ vs /usr/share/php/PEAR/)
+
+- move svn over to ubuntu side
+- sync svn with google code
+- handle incoming balance check (broadcast to admin group)
+- display better logs
+- fix kannel's geturl to not hit the database on load (possible?)
+
+- automated suoders (visudo)
+- adduser (remove user from groups?)
+- POST with javascript?
+- get referrer info for easy "go back"
+
+DONE:
+
+- download pear database / quickform packages
+- fix deleting autoreplies and autoreply_scenarios
+- change package to be able to overwrite kannel's conf (using Replaces?)
+- allow for renaming autoreply codes
+- add cron feature
+- how to determine platform from php
+
