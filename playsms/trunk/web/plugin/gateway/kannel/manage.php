@@ -25,9 +25,11 @@ switch ($op) {
 		$content .= "
 	            <h2>Manage Gateway Module</h2>
 	            <p>
+	            
 	            <form action=menu_admin.php?inc=gwmod_kannel&op=manage_save method=post>
 	            <p>Gateway Name: <b>$kannel_param[name]</b> $status_active
-	             <p/>SMSC: <a href=\"menu_admin.php?inc=gwmod_kannel&op=manage_smsc\">bind</a>
+	             <p/><a href=\"plugin/gateway/kannel/kannel-monitor/\">[ Monitor Status ]</a>
+	             <p/><a href=\"menu_admin.php?inc=gwmod_kannel&op=manage_smsc\">[ Bind SMSC ]</a>
 	
 	            <p>Username: 
 	             <input type=text size=30 maxlength=30 name=up_username value=\"$kannel_param[username]\">
