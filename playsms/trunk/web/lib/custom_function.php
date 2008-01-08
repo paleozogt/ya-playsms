@@ -620,34 +620,55 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 	return $ok;
 }
 
-function generateSmsInput($formName, $smsDisplayTitle, $smsContents, $smsFormName) {
-	if (!$smsFormName) {
-		$smsFormName = "message";
+function generateSmsInput($nameForm, $smsDisplayTitle, $smsContents, $nameSmsTextBox) {
+	if (!$nameSmsTextBox) {
+		$nameSmsTextBox = "message";
 	}
-	$nameCharCount = "sms_char_count";
-	$nameSmsCount = "sms_count";
 
 	$html .= "<br>
 		    <p>$smsDisplayTitle 
 		    <br>
 	            <textarea cols=\"39\" rows=\"5\"
 	                      onKeyUp=\"this.updateSmsCounts();\" onKeyDown=\"this.updateSmsCounts();\" 
-	                      name=\"$smsFormName\" id=\"$smsFormName\">$smsContents</textarea>
+	                      name=\"$nameSmsTextBox\" id=\"$nameSmsTextBox\">$smsContents</textarea>
 	
-		    <br>Characters left:
-	            <input value=\"0\" type=\"text\" 
-	             onKeyPress=\"if (window.event.keyCode == 13){return false;}\" onFocus=\"this.blur();\" size=\"3\"
-	             name=\"$nameCharCount\" id=\"$nameCharCount\">
+		    <br>" . generateSmsCounters($nameForm, $nameSmsTextBox);
+	return $html;
+}
+
+function generateSmsCounters($nameForm, $nameSmsTextBox) {
+	$nameCharCount = "smsCharCount";
+	$nameSmsCount = "smsCount";
+
+	$attribsForNoEdits="onKeyPress=\"if (window.event.keyCode == 13){return false;}\" onFocus=\"this.blur();\"";
+
+	$html= "
+	    Characters left:
+	    <input type=\"text\" name=\"$nameCharCount\" id=\"$nameCharCount\"
+	     size=\"3\" value=\"0\" $attribsForNoEdits>
 	
-	            SMSes:
-	            <input type=\"text\" name=\"$nameSmsCount\" id=\"$nameSmsCount\" size= 3 value=\"1\"\>
+	    SMSes:
+	    <input type=\"text\" name=\"$nameSmsCount\" id=\"$nameSmsCount\" 
+		 size= 3 value=\"1\"\ $attribsForNoEdits>
 	
-	            <script language=\"JavaScript\"><!--
-	                form= document.forms.$formName;
-	                wireupSmsCountUpdate(form.$smsFormName, form.$nameCharCount, form.$nameSmsCount);
-	                form.$smsFormName.updateSmsCounts();
-	            --></script>
+	    <script language=\"JavaScript\"><!--
+	        form= document.forms.$nameForm;
+	        wireupSmsCountUpdate(form.$nameSmsTextBox, form.$nameCharCount, form.$nameSmsCount);
+	        form.$nameSmsTextBox.updateSmsCounts();
+	    --></script>
 	    ";
 	return $html;
 }
-?>
+
+function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore) {	
+	$form->updateElementAttr(msg, 
+				array("onKeyUp"   => 'this.updateSmsCounts();',
+					  "onKeyDown" => 'this.updateSmsCounts();',
+					  "cols" => "39", "rows" => "5"));
+
+	$elem=& HTML_QuickForm::createElement('static', "counters", null, 
+				   	            generateSmsCounters($form->getAttribute(name), $nameSmsTextBox));
+	$form->insertElementBefore($elem, $nameInsertBefore);
+}
+
+
