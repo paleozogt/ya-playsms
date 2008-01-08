@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: playsms
 Architecture: all
-Depends: apache2, php5, mysql-server (>= 5), kannel, php5-mysql, libapache2-mod-php5, php-pear, php-db, php-config, php-xml-parser, php-xml-util, curl
+Depends: apache2, php5, mysql-server (>= 5), kannel, php5-mysql, libapache2-mod-php5, curl, php-pear, php-db, php-config, php-xml-parser, php-xml-util
 Replaces: kannel
 Description: PlaySMS is a flexible Web-based Mobile Portal System that it can be made to fit to various services such as an SMS gateway, personal messaging systems, corporate and group communication tools.
