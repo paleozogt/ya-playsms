@@ -1,6 +1,6 @@
 <?
 $op = $_GET[op];
-$selfurl = "menu_admin.php?inc=sms_autosend";
+$selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autosend";
 
 // cron will call us directly to do autosending,
 // so skip the security check in that case
@@ -24,7 +24,17 @@ if ($err) {
 	echo "<p><font color=red>$err</font><p>\n";
 }
 
+require_once 'DB/DataObject.php';
+require_once 'DB/DataObject/FormBuilder.php';
+
+error_log(print_r($_GET, true));
+error_log(print_r($_POST, true));
+
 switch ($op) {
+	case "autosend" :
+		doAutoSend($_GET[frequency]);
+		break;
+		
 	case "list" :
 		echo makeList($selfurl);
 		break;
@@ -34,20 +44,13 @@ switch ($op) {
 		break;
 
 	case "edit" :
-		echo makeEditForm($selfurl, getRecord($_GET[id]));
-		break;
-
-	case "save" :
-		doSave($selfurl, $_POST);
+		echo makeEditForm($selfurl, $_GET[id]);
 		break;
 
 	case "del" :
-		doDelete($_POST[id], $selfurl);
+		doDelete($selfurl, $_POST[id]);
 		break;
 
-	case "autosend" :
-		doAutoSend($_GET[when]);
-		break;
 }
 
 function makeList($selfurl) {
@@ -75,107 +78,51 @@ function makeList($selfurl) {
 				--></script>
 			 </form>";
 
-	$db_query = "SELECT * FROM playsms_featAutoSend";
-	$db_result = dba_query($db_query);
-	while ($db_row = dba_fetch_array($db_result)) {
+	// iterate through each item in the db
+	// and create a line for it
+	$item = DB_DataObject::factory('playsms_featAutoSend');
+	$item->find();
+	while ($item->fetch()) {
 		$html .= "
-			<a href=\"$selfurl&op=edit&id=$db_row[id]\">[e]</a>
+			<a href=\"$selfurl&op=edit&id=$item->id\">[e]</a>
 
 			<a href=\"javascript: 
-					del($db_row[id], 'Are you sure you want to delete this autosend?');
+					del($item->id, 'Are you sure you want to delete this autosend?');
 					\">[x]</a>
  
-			$db_row[when] $db_row[number] \"$db_row[msg]\"
+			$item->frequency $item->number \"$item->msg\"
 			<br/>
 			";
 	}
 	return $html;
 }
 
-function getRecord($id) {
-	$db_query = "SELECT * FROM playsms_featAutoSend WHERE id='$id'";
-	$db_result = dba_query($db_query);
-	if ($db_row = dba_fetch_array($db_result)) {
-		return $db_row;
-	} else {
-		return array ();
+function makeEditForm($selfurl, $id= null) {
+	$do = DB_DataObject::factory('playsms_featAutoSend');
+	if ($id) $do->get($id);
+	$fb = DB_DataObject_FormBuilder::create($do);
+	
+	$fb->enumFields= array('frequency');
+	$form = $fb->getForm("{$selfurl}&op=edit");
+
+	setupSmsCounting($form, msg, __submit__);
+
+	if ($form->validate()) {
+    	$form->process(array(&$fb,'processForm'), false);    	
 	}
+	$form->display();
+
+    ?>    
+    <a href="<?echo $selfurl?>&op=list"><br><br>[back]</a>
+    <?	
 }
 
-function makeEditForm($selfurl, $vals = array ()) {
-	$formName = "edit";
-
-	// create choices for the when to run autosend
-	$whenchoices = array (
-		"daily",
-		"hourly",
-		"weekly",
-		"monthly"
-	);
-	$whenselect = "<select name=\"when\">\n";
-	foreach ($whenchoices as $whenchoice) {
-		if ($vals[when] == $whenchoice)
-			$sel = "selected";
-		else
-			$sel = "";
-		$whenselect .= "\t<option value=\"$whenchoice\" $sel>$whenchoice</option>\n";
-	}
-	$whenselect .= "</select>";
-
-	$smsinput = generateSmsInput($formName, "Message:", $vals[msg], "msg");
-
-	$html = "
-			<h2>$usertext SMS Autosend</h2>
-			<p/>
-			<form name=\"$formName\" action=\"$selfurl&op=save\" method=\"post\">
-			<input type=\"hidden\" name=\"id\" value=\"$vals[id]\"/>
-			<p/>Number: 
-			<input type=\"text\" size=\"10\" maxlength=\"10\" name=\"number\" value=\"$vals[number]\">
-			<p/>When: $whenselect
-			<p/>$smsinput
-			<p/><input type=submit class=button value=\"Save\">
-			</form>
-			<p/><p/>
-			<a href=\"$selfurl&op=list\">Back</a>
-			";
-	return $html;
-}
-
-function doSave($selfurl, $vals) {
-	$table = "playsms_featAutoSend";
-
-	// if there's no id that means
-	// its a new record
-	//
-	if ($vals[id] == "") {
-		$db_query = "INSERT INTO $table (`when`,`number`,`msg`) " .
-		"VALUES ('$vals[when]','$vals[number]','$vals[msg]')";
-		error_log($db_query, 0);
-		$ok = ($autoreply_id = @ dba_insert_id($db_query));
-	} else {
-		$db_query = "UPDATE $table SET " .
-		"`when`='$vals[when]', " .
-		"`number`='$vals[number]', " .
-		"`msg`='$vals[msg]' " .
-		"WHERE `id`='$vals[id]'";
-		error_log($db_query, 0);
-		$ok = ($db_result = @ dba_affected_rows($db_query));
-	}
+function doDelete($selfurl, $id) {
+	$do = DB_DataObject::factory('playsms_featAutoSend');
+	$do->get($id);	
+	$ok= $do->delete();
 
 	if ($ok) {
-		$error_string = "SMS AutoSend has been saved";
-		$gotourl = "$selfurl&op=list";
-	} else {
-		$error_string = "Failed to save SMS AutoSend!";
-		$gotourl = "$selfurl&op=edit&id=$vals[id]";
-	}
-
-	header("Location: $gotourl&err=" . urlencode($error_string));
-}
-
-function doDelete($id, $selfurl) {
-	$db_query = "DELETE FROM playsms_featAutoSend WHERE `id`=$id";
-	if (@ dba_affected_rows($db_query)) {
 		$error_string = "SMS autosend has been deleted!";
 	} else {
 		$error_string = "Failed to delete SMS autosend";
@@ -187,15 +134,15 @@ function doDelete($id, $selfurl) {
 // TODO: have this return an http header
 // for success or failure
 //
-function doAutosend($when) {
-	error_log("autosending for '$when'");
-	$db_query = "SELECT * FROM playsms_featAutoSend WHERE `when`='$when'";
-	error_log($db_query);
+function doAutosend($frequency) {
+	echo("autosending for '$frequency' <br/>\n");
+	$do = DB_DataObject::factory('playsms_featAutoSend');
+	$do->frequency= $frequency;
+	$do->find();
 
-	$db_result = dba_query($db_query);
-	while ($db_row = dba_fetch_array($db_result)) {
-		error_log("sending $db_row[id], $db_row[number], '$db_row[msg]'...");
-		websend2pv("admin", $db_row[number], $db_row[msg]);
+	while ($do->fetch()) {
+		echo("sending $do->id, $do->frequency, $do->number, \"$do->msg\"... <br/>\n");
+		websend2pv("admin", $do->number, $do->msg);
 	}
 
 }
