@@ -1,0 +1,35 @@
+#!/usr/bin/php -q
+<?
+
+// The path to directory of installed playsms
+$PLAYSMS_PATH = "/home/playsms/public_html";
+
+// DO NOT CHANGE ANYTHING BELOW THE LINE
+// ------------------------------------------------------
+
+$DAEMON_PROCESS = true;
+chdir($PLAYSMS_PATH);
+if (!function_exists("validatelogin"))
+{
+    include "init.php";
+    include "$apps_path[libs]/function.php";
+}
+$DAEMON_COUNTER = 0;
+while(true)
+{
+    if (file_exists($PLAYSMS_PATH))
+    {
+	$DAEMON_COUNTER++;
+	getsmsinbox();
+	getsmsstatus();
+	execgwcustomcmd();
+	execcommoncustomcmd();
+	sleep(20);
+    }
+    else
+    {
+	die("EXIT");
+    }
+}
+
+?>

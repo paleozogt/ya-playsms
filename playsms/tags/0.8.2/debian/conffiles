@@ -1,0 +1,9 @@
+etc/playsms/apache2/apache2.conf
+etc/playsms/kannel/kannel.conf
+etc/playsms/kannel/smsc.conf
+etc/playsms/kannel/modems.conf
+etc/playsms/kannel/startbox-defaults.conf
+etc/playsms/cron/cron-hourly.sh
+etc/playsms/cron/cron-daily.sh
+etc/playsms/cron/cron-weekly.sh
+etc/playsms/cron/cron-monthly.sh
