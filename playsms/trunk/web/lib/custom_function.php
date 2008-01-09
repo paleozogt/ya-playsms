@@ -532,13 +532,16 @@ function savepoll($sms_sender, $target_poll, $target_choice) {
 // just forward it on to the admin group
 //
 function processSystemMessage($sms_sender, $message) {
-	$fwd_msg= "$web_title sys msg: \"$message\"";
+	global $web_title;
+	$fwd_msg= "$web_title sys msg: \n'$message'";
 	websend2group("admin", "admin", $fwd_msg);
 }
 
 // check incoming SMS for available codes
 // and sets the action
 function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message) {
+	//error_log("setsmsincomingaction: $sms_datetime, $sms_sender, \"$target_code\", \"$message\" \n");
+
 	global $system_from;
 	$ok = false;
 	switch ($target_code) {
@@ -603,7 +606,7 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 			
 			// if its from the known system balance sender,
 			// then process it as a system message
-			$syssenders= explode(',', $balcheck_from);
+			$syssenders= explode(',', $system_from);
 			foreach ($syssenders as $syssender) {
 				if (0 == strcasecmp($sms_sender, $syssender)) {
 					processSystemMessage($sms_sender, "$target_code $message");

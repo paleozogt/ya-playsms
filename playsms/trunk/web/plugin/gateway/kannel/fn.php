@@ -11,6 +11,7 @@ function gw_customcmd() {
 }
 
 function gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $gp_code = "", $uid = "", $smslog_id = "", $flash = false) {
+	//error_log("gw_send_sms: $mobile_sender, $sms_sender, $sms_to, $sms_msg \n");
 	global $kannel_param;
 	global $gateway_number;
 	$ok = false;
@@ -33,6 +34,7 @@ function gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $gp_code = 
 	$URL .= "&from=" . urlencode($sms_from) . "&to=" . urlencode($sms_to) . "&text=" . urlencode($sms_msg);
 	$URL .= "&dlr-mask=31&dlr-url=" . urlencode($kannel_param['playsms_web'] . "/plugin/gateway/kannel/dlr.php?type=%d&slid=$smslog_id&uid=$uid");
 	$URL .= "&mclass=$sms_type";
+    //error_log("url: $URL \n");
 	$connection = fsockopen($kannel_param['bearerbox_host'], $kannel_param['sendsms_port'], & $error_number, & $error_description, 60);
 	if ($connection) {
 		socket_set_blocking($connection, false);
