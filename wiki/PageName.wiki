@@ -1,0 +1,38 @@
+#summary TODO
+
+= Introduction =
+
+To-do list for playsms development.
+
+
+= Details =
+
+Setup:
+  * Need to have playsms go into a setup mode first-time user logs in
+    * ask for gateway
+    * detection/setup of modems
+
+Auto-replies
+   * Import/export auto replies to xml file so they can be shared
+   * include pre-fab example auto reply xml files with distro
+
+Kannel:
+  * Have kannel "configurations" using pre-made conf files
+    * simple single modem
+    * multi modems
+    * common routing configs
+  * Need to have user be able to edit kannel conf files via playsms
+    * using slightly modified Pear Config almost works...
+  * Need to be able to look at kannel logs via playsms
+  * Modem trouble-shooting (e.g., what if init string doesn't work)
+
+Mac
+  * Need a darwinports or fink package
+
+Windows:
+  * Need to have an installer
+    * how to handle pre-requisites??
+
+Cleaup
+  * Need to replace all forms code with pear's FormBulder
+  * Need to replace all db code with pear DB's DataObject
