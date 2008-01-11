@@ -2,7 +2,7 @@
 
 if(!defined("_SECURE_")){die("Intruder: IP ".$_SERVER['REMOTE_ADDR']);};
 
-include_once "DB.php";
+include_once "$apps_path[libs]/gpl/PEAR/DB.php";
 
 // --------------------------------------------------------------------------//
 
@@ -22,12 +22,12 @@ function dba_connect($username,$password,$dbname,$hostname,$port="",$persistant=
     $dsn = $db_param["type"]."://$access@$host/$dbname";
     $dba_object = DB::connect("$dsn","$persistant");
 
-    //if (DB::isError($dba_object))
-      //{
-      //$error_msg = "DB Name: $dbname<br>DB Host: $host";
-      //ob_end_clean();
-      //die ("<p align=left>".$dba_object->getMessage()."<br>".$error_msg."<br>");
-    //}
+    if (DB::isError($dba_object))
+    {
+        // $error_msg = "DB Name: $dbname<br>DB Host: $host";
+        ob_end_clean();
+        die ("<p align=left>".$dba_object->getMessage()."<br>".$error_msg."<br>");
+    }
     return $dba_object;
 }
 
@@ -178,7 +178,7 @@ function dba_affected_rows($mystring)
     {
         // ob_end_clean();
         // die ("<p align=left>".$myresult->getMessage()."<br>".$myresult->userinfo."<br>");
-		return 0;
+	return 0;
     }
     if ($result = $dba_object->affectedRows()) return $result;
     return 0;

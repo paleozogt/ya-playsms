@@ -1,9 +1,7 @@
-<?
-include "init.php";
+<? 
+include "init.php"; 
 include "$apps_path[libs]/function.php";
-if (!valid()) {
-	forcelogout();
-};
+if (!valid()) { forcelogout(); };
 ?>
 
 <html>
