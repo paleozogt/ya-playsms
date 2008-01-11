@@ -1,0 +1,16 @@
+Template: playsms/mysql-username
+Type: string
+Default: root
+Description: Admin user name for mysql:
+ playsms needs to configure the mysql database, but in order to do that
+ you must log in to your mysql as an admin user.  If you don't know your username leave it "root"
+ and we'll figure it out.
+
+Template: playsms/mysql-password
+Type: password
+Default:
+Description: Admin password for mysql:
+ playsms needs to configure the mysql database, but in order to do that
+ you must log in to your mysql as an admin user.  If you don't know your password leave it blank
+ and we'll figure it out.
+

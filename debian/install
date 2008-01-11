@@ -1,0 +1,5 @@
+bin	                                      usr/share/playsms
+db	                                      usr/share/playsms
+contrib                                   usr/share/playsms
+web	                                      usr/share/playsms
+conf/*                                    etc/playsms

@@ -1,0 +1,242 @@
+playsms (0.8.2) unstable; urgency=high
+
+  * created debian package for ubuntu installation so that it
+    will work out of the box with little to no configuring
+  * changed default gateway to kannel
+  * removed sms limits, can now send multi-part smses
+  * remove restriction on not being able to send quotes
+  * removed unnecessary keywords
+  * changed sms message entry to keep count of chars left and 
+    multi-part smses left, just like writing an sms on a phone does
+  * fixed deleting autoreply_scenarios and auto_replies
+  * added renaming of autoreply code
+  * added autosend feature (uses cron on linux systems)
+  * added "system from" feature, so that texts from the system 
+    (like balance updates) can be forwarded to the 'admin' group
+  * added kannel-bug workaround in deb package 
+    (kannel doesn't work after reboot on ubuntu)
+  * started using pear's db_dataobject and 
+    db_dataobject_formbuilder stuff and cleaning up some of the code
+
+ -- Aaron Simmons <mithrandir@ic.org>  09 Jan 2008 10:00:00 +0800
+
+playsms (0.8.1) unstable; urgency=high
+
+  * Add all incoming sms without known keyword/code inserted to user 'admin' inbox
+  * Add new feature multi-session login
+  * Fix age calculation procedure, move it to $apps_path[incs]/admin/commoncustomcmd.php
+  * Fix clickatell gateway module on callback.php (tested on two-way sms)
+  * Fix when logged in as normal user cant see created autoreply scenario
+  * Fix autoreply unable to reply requests
+  * Change playsmsd from bash shell script to php script
+
+ -- Anton Raharja <anton@ngoprek.org>  06 May, 2006 10:00:00 +0800
+
+playsms (0.8) unstable; urgency=high
+
+  * Add new function, public phonebook for sharing phonebooks number
+  * Add new function, unicode message support for gateway module Clickatell
+  * Add new function, flash message support for gateway module Clickatell
+  * Add new function, message template for fast message compose
+  * Add new feature, SMS autoreply
+  * Add container file, where you can add custom command to run along with daemon.php
+  $apps_path[incs]/admin/commoncustomcmd.php
+  * Add protection to geturl.php in gateway module Kannel
+  * Add geturl.php for gateway module Kannel, used for separating kannel box and playsms
+  * Add urldecode to fix urlencoded form of message received by gateway module Kannel
+  * Add function to send email using SMTP server, SMTP options in $apps_path/config.php
+  * Add callback.php for gateway module clickatell, callback.php used to receive sms
+  * Add prefix "playsms_" in every database tables (aimed for shared database)
+  * Add Sender ID to replace SMS message footer (tblUser, tblSMSOutgoing altered)
+  * Add delete link for SMSes in User Inbox
+  * Fix missing datetime in custom log date and command log date
+  * Fix dlrmask and dlrurl in gateway module Kannel fn.php, should be dlr-mask and dlr-url
+  * Fix dlr.php in gateway module Kannel, error setting status
+  * Fix contrib/kannel/kannel-geturl.conf, typos get-rul should be get-url in sms-service
+  * Fix error in bin/kannel_incoming and contrib/kannel/kannel.conf
+  * Fix bug config.php in gateway modules always check if you're an admin or not
+  Gateway module uplink and template
+  * Fix howto include init.php by adding chdir in gateway module Kannel
+  * Fix playsmsd, add returns "REFRESHED" for better control
+  * Fix delivery status mixed-up in gateway module Uplink
+  * Fix SMS poll, same voter on a poll but different choice, function savepoll()
+  * Update "Mobile phone list" menu to "Phonebook", with enhanced phonebook features
+  * Enhance phonebooks, add ability to export and import phonebook's entries
+  * Enhance send text SMS interface, now using selectbox.js
+  * Enhance gateway module kannel, modify dlr.php
+  * Enhance gateway module Clickatell, add and modify callback.php
+  * Move common.css and common.js to inc/jscss/
+  * Move activation for gateway module menu to each gwmod manage page
+  * Remove function loginbox(), move all the code directly to index.php
+  * Remove transparent query string option in ws.php due to added Sender ID
+  * Rename error.php to goodbye.php
+  * User Inbox tweaked, match sender number with records in phonebook
+  * Configurations for gateway modules moved to database (table gwmod[Module]_config)
+  * Default font changed to Verdana (hehehe, just curious :p)
+  * Done changes on file FAQ and INSTALL
+
+ -- Anton Raharja <anton@ngoprek.org>  12 Apr, 2004 10:00:00 +0800
+
+playsms (0.7.1) unstable; urgency=high
+
+  * Fix starter daemon in directory bin
+  * Includes security patch against SQL injection when magic_quotes_gpc set to "Off"
+  (Thanks to Noam Rathaus, Beyond Security)
+
+ -- Anton Raharja <anton@ngoprek.org>  22 Jul, 2004 10:00:00 +0800
+
+playsms (0.7) unstable; urgency=high
+
+  * Major changes (again :p), they are:
+  1. Some field names in some tables changed (eg: featBoard, 'tag' replaced by 'code')
+  2. Field command_tag removed (from featCommand*)
+  3. SMS Poll and SMS Command dont need any tag, use only code (eg: no 'POLL')
+     WARNING: field command_tag on table featCommand removed!
+  4. Normal user can manage their own SMS Board, SMS Custom and SMS Poll
+     (can be use for SMS Board/Poll hosting and/or custom SMS applications)
+  * Remove config_playsms.php, move main configuration into database (tblConfig_main)
+  * Rename gateway module 'hybrid' to 'clickatell'
+  * Modify table tblSMSOutgoing, add field flag_deleted, from now on delivery status
+  can be deleted (actualy hidden from delivery report page)
+  * Introduce new term on delivery status:
+  "Failed" for fail to sent sms, "Pending" for sms in queue (in server or SMSC),
+  "Sent" for sms delivered to SMSC and "Delivered" for sms delivered to phone,
+  status Delivered only possible if you use gateway module Kannel or any gateway
+  which can retrieve full delivery report
+  * Introduce new daemon shell script replacing crond (dont need cron anymore)
+  * Introduce new convention on tables name:
+  gwmodModule[_subfunction] eg: gwmodUplink, gwmodUplink_log
+  * Add new gateway module 'uplink' for sending sms via another PlaySMS
+  * Add support for dlr-url in gateway module kannel
+  * Add new feature, SMS custom (read FAQ for detail information)
+  * Add $feat_command_path['bin'] in config.php, only script files located under 
+  defined directory will be available for execution by SMS command (security)
+  * Add security enhencements (protection from remote file include and some SQL injections)
+  * Add new field in tblSMSIncoming and tblSMSOutgoing to save used gateway module
+  (will be used in the next release for statistical purposes)
+  * Add javascript send sms windows popup (includes in $apps_path[base]/common.js)
+  * Add many improvement on $apps_path[base]/ws.php especially on delivery status retrieval part
+  * Fix error when deleting choices and modify poll in feature SMS poll
+  * Fix error recording $command_exec to command_log_exec on table featCommand_log
+  * Fix language (misstyped in Indonesian) on $apps_path[base]/inc/user/user_pref.php
+  * Done many changes on INSTALL (less requirements, and hopefully more informative)
+
+ -- Anton Raharja <anton@ngoprek.org>  16 Jul, 2004 10:00:00 +0800
+
+playsms (0.6) unstable; urgency=high
+
+  * Introduce new convention on tables name:
+  featXxxxx[_yyyyy] eg: featCommand, featCommand_log
+  * Major changes on tables name, sql file for database upgrade available
+  * Major changes on coding style and some structures (config.php, menu.php, menu_admin.php)
+  * Include's are stored on $apps_path[incs]
+  * Add paramater 'last' for specifying Last SMS log ID on ws.php (delivery status)
+  * Add javascript character counter on send sms form (based on Yoan Talagrand works)
+  * Add new gateway module for Kannel (based on Eugene Trotsan works, modified by Anton)
+  * Fix delete poll's, mixed up between $poll, $poll_name and $poll_title
+  * Fix typos, "your usernama" should be "your username" and some other
+  * Fix $sms_sender and $mobile mixed up in lib/custom_function.php causing sender number empty
+  * Fix error on hybrid gateway module, extra $ found at query string password 
+  on gw_send_sms() causing authentication failed (thx to frankster on the forum)
+  * Done changes on file README, INSTALL and FAQ
+
+ -- Anton Raharja <anton@ngoprek.org>  26 Jun, 2004 10:00:00 +0800
+
+playsms (0.5.1) unstable; urgency=high
+
+  * Some tables name changed, tblConfig removed
+  * Some variables name changed
+  * Fix error calculating message length causing $sms_msg > 160 char
+  * Fix some register globals compatibility issue
+  * Add gateway module template
+  * Add stripslashes on some output variables
+  * Add and change some note on file INSTALL and FAQ
+
+ -- Anton Raharja <anton@ngoprek.org>  16 Jun, 2004 10:00:00 +0800
+
+playsms (0.5) unstable; urgency=high
+
+  * Major changes on INSTALL and FAQ
+  * Major changes on library structures and codes
+  * Add gateway module plugin system, possibility to use any gateway other than 
+  gnokii, such as SMS Server Tools, internet SMS gateway http://www.clickatell.com
+  * Add hybrid gateway module, incoming use gnokii and outgoing use clickatell.com
+  * Add init.php, simplify content of config.php
+  * Fix delivery status, written $datetime_stamp, should be $p_datetime_stamp
+  * Remove NOW() from SQL query, increase database compatibility
+  * Remove $apps_path[smsd] due to use of gateway module
+
+ -- Anton Raharja <anton@ngoprek.org>  16 Feb, 2004 10:00:00 +0800
+
+playsms (0.4.1) unstable; urgency=high
+
+  * Add more FAQs about SMS command
+  * Add notes to ws.php
+  * Add background operator (&) to smsd command in smsd_start shell script
+  * Fix some unsuitable datetiming for incoming SMS
+  * Minor enhancements
+
+ -- Anton Raharja <anton@ngoprek.org>  11 Feb, 2004 10:00:00 +0800
+
+playsms (0.4) unstable; urgency=high
+
+  * INSTALL and FAQ changed
+  * Starting from this release there will be no raw directory
+  * Used of 2 frames instead of 4
+  * Major changes on output.php and custom_function.php about how to treat
+  output to webpage for SMS boards and SMS polls
+  * line, bodybgcolor, oddbgcolor, evenbgcolor can be set via query string
+  for output.php
+  * The term SMS board is introduced, replacing SMS tags
+  * PEAR DB reconfigured for PlaySMS (fix bugs related to database access)
+  * Add more reserved tags (maybe used on next release)
+  * Add SMS command
+
+ -- Anton Raharja <anton@ngoprek.org>  02 Feb, 2004 10:00:00 +0800
+
+playsms (0.3) unstable; urgency=high
+
+  * Add delivery status (DS) retrieval in ws.php, output in CSV form
+  * Add pending status time limit in getsmsstatus() at custom_function.php
+  * Add SMS poll system
+
+ -- Anton Raharja <anton@ngoprek.org>  11 Jan, 2004 10:00:00 +0800
+
+playsms (0.2.1) unstable; urgency=high
+
+  * Fatal error on how to use dba_insert_id() in custom_function.php
+  * Path and database access parameter now in array $apps_path and $db_param
+
+ -- Anton Raharja <anton@ngoprek.org>  06 Jan, 2004 10:00:00 +0800
+
+playsms (0.2) unstable; urgency=high
+
+  * Libraries placed on different directory defined by $libs_path in config.php
+  * Multiple database engine supported (anything compatible to PEAR DB)
+  * Add very early stage of webservices function (not SOAP, please see ws.php)
+  * Clean some codes on custom_function.php
+
+ -- Anton Raharja <anton@ngoprek.org>  04 Jan, 2004 10:00:00 +0800
+
+playsms (0.1.2) unstable; urgency=high
+
+  * Some important changes on INSTALL, add FAQ
+  * Add more reserved tags (maybe used on next release)
+  * Minor interface enhancements
+
+ -- Anton Raharja <anton@ngoprek.org>  31 Dec, 2003 10:00:00 +0800
+
+playsms (0.1.1) unstable; urgency=high
+
+  * Natural language changed to English
+  * Add some reserved SMS tags on config.php
+  * Minor enhancements
+
+ -- Anton Raharja <anton@ngoprek.org>  17 Dec, 2003 10:00:00 +0800
+
+playsms (0.1) unstable; urgency=high
+
+  * Change Log started
+
+ -- Anton Raharja <anton@ngoprek.org>  12 Dec, 2003 10:00:00 +0800
+
