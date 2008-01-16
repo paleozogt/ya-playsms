@@ -20,8 +20,8 @@ $date_now = date($date_format, time());
 $time_now = date($time_format, time());
 $datetime_now = date($datetime_format, time());
 $reserved_codes = array (
-	"PV",
-	"BC"
+	PV,
+	BC
 ); //,"GET","PUT","INFO","SAVE","DEL","LIST","RETR","POP3","SMTP","BROWSE","NEW","SET","POLL","VOTE","REGISTER","REG","DO","USE","EXECUTE","EXEC","RUN","ACK");
 sort($reserved_codes);
 $nd = "<font color=red>(*)</font>";

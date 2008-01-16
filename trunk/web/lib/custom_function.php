@@ -480,6 +480,11 @@ function processautoreply($sms_datetime, $sms_sender, $autoreply_code, $autorepl
 			$ok = true;
 		}
 	}
+	// if we don't understand the params, then process
+	// the message as a special _UNKNOWN_ message
+	else if (0 != strcasecmp($autoreply_param, _UNKNOWN_)) {
+		$ok= processautoreply($sms_datetime, $sms_sender, $autoreply_code, _UNKNOWN_);
+	}
 
 	if ($ok) {
 		$ok = false;
@@ -494,6 +499,12 @@ function processautoreply($sms_datetime, $sms_sender, $autoreply_code, $autorepl
 		}
 	}
 	return $ok;
+}
+
+function processUnknown($sms_datetime, $sms_sender, $target_code, $message) {
+	// when we don't understand what the user texted us, 
+	// reply with the special unknown autoreply
+	processautoreply($sms_datetime, $sms_sender, _UNKNOWN_, "");
 }
 
 // part of SMS poll
@@ -535,6 +546,7 @@ function processSystemMessage($sms_sender, $message) {
 	global $web_title;
 	$fwd_msg= "$web_title sys msg: \n'$message'";
 	websend2group("admin", "admin", $fwd_msg);
+	return true;
 }
 
 // check incoming SMS for available codes
@@ -545,7 +557,7 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 	global $system_from;
 	$ok = false;
 	switch ($target_code) {
-		case "BC" :
+		case BC :
 			$array_target_group = explode(" ", $message);
 			$target_group = strtoupper(trim($array_target_group[0]));
 			$message = $array_target_group[1];
@@ -556,7 +568,7 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 				$ok = true;
 			}
 			break;
-		case "PV" :
+		case PV :
 			$array_target_user = explode(" ", $message);
 			$target_user = strtoupper(trim($array_target_user[0]));
 			$message = $array_target_user[1];
@@ -569,48 +581,51 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 			break;
 		default :
 			// maybe its for sms autoreply
-			$db_query = "SELECT autoreply_id FROM playsms_featAutoreply WHERE autoreply_code='$target_code'";
-			if ($db_result = dba_num_rows($db_query)) {
-				if (processautoreply($sms_datetime, $sms_sender, $target_code, $message)) {
-					$ok = true;
-				}
-			}
-			// maybe its for sms poll
-			$db_query = "SELECT poll_id FROM playsms_featPoll WHERE poll_code='$target_code'";
-			if ($db_result = dba_num_rows($db_query)) {
-				if (savepoll($sms_sender, $target_code, $message)) {
-					$ok = true;
-				}
-			}
-			// or maybe its for sms command
-			$db_query = "SELECT command_id FROM playsms_featCommand WHERE command_code='$target_code'";
-			if ($db_result = dba_num_rows($db_query)) {
-				if (execcommand($sms_datetime, $sms_sender, $target_code, $message)) {
-					$ok = true;
-				}
-			}
-			// or maybe its for sms custom
-			$db_query = "SELECT custom_id FROM playsms_featCustom WHERE custom_code='$target_code'";
-			if ($db_result = dba_num_rows($db_query)) {
-				if (processcustom($sms_datetime, $sms_sender, $target_code, $message)) {
-					$ok = true;
-				}
-			}
-			// its for sms board
-			$db_query = "SELECT board_id FROM playsms_featBoard WHERE board_code='$target_code'";
-			if ($db_result = dba_num_rows($db_query)) {
-				if (insertsmstodb($sms_datetime, $sms_sender, $target_code, $message)) {
-					$ok = true;
+			if (!$ok) {
+				$db_query = "SELECT autoreply_id FROM playsms_featAutoreply WHERE autoreply_code='$target_code'";
+				if ($db_result = dba_num_rows($db_query)) {
+					$ok= processautoreply($sms_datetime, $sms_sender, $target_code, $message);
 				}
 			}
 			
-			// if its from the known system balance sender,
+			// maybe its for sms poll
+			if (!$ok) {
+				$db_query = "SELECT poll_id FROM playsms_featPoll WHERE poll_code='$target_code'";
+				if ($db_result = dba_num_rows($db_query)) {
+					$ok= savepoll($sms_sender, $target_code, $message);
+				}
+			}
+			
+			// or maybe its for sms command
+			if (!$ok) {
+				$db_query = "SELECT command_id FROM playsms_featCommand WHERE command_code='$target_code'";
+				if ($db_result = dba_num_rows($db_query)) {
+					$ok= execcommand($sms_datetime, $sms_sender, $target_code, $message);
+				}
+			}
+			
+			// or maybe its for sms custom
+			if (!$ok) {
+				$db_query = "SELECT custom_id FROM playsms_featCustom WHERE custom_code='$target_code'";
+				if ($db_result = dba_num_rows($db_query)) {
+					$ok= processcustom($sms_datetime, $sms_sender, $target_code, $message);
+				}
+			}
+			
+			// its for sms board
+			if (!$ok) {
+				$db_query = "SELECT board_id FROM playsms_featBoard WHERE board_code='$target_code'";
+				if ($db_result = dba_num_rows($db_query)) {
+					$ok= insertsmstodb($sms_datetime, $sms_sender, $target_code, $message);
+				}
+			}
+
+			// if its from the known system messsage sender,
 			// then process it as a system message
 			$syssenders= explode(',', $system_from);
 			foreach ($syssenders as $syssender) {
 				if (0 == strcasecmp($sms_sender, $syssender)) {
-					processSystemMessage($sms_sender, "$target_code $message");
-					$ok= true;
+					$ok= processSystemMessage($sms_sender, "$target_code $message");
 				}
 			}
 	}
@@ -619,6 +634,8 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 		if (insertsmstoinbox($sms_datetime, $sms_sender, "admin", $message)) {
 			$ok = true;
 		}
+		
+		processUnknown($sms_datetime, $sms_sender, $target_code, $message);
 	}
 	return $ok;
 }
