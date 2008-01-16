@@ -19,7 +19,7 @@ class DataObjects_Playsms_featAutoreply_scenario extends DB_DataObject
     public $autoreply_scenario_param5;       // string(20)  not_null
     public $autoreply_scenario_param6;       // string(20)  not_null
     public $autoreply_scenario_param7;       // string(20)  not_null
-    public $autoreply_scenario_result;       // blob(65535)  not_null blob
+    public $autoreply_scenario_result;       // string(150)  not_null
 
     /* Static get */
     function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('DataObjects_Playsms_featAutoreply_scenario',$k,$v); }
