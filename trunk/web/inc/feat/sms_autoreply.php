@@ -5,6 +5,7 @@ if (!defined("_SECURE_")) {
 };
 
 $op = $_GET[op];
+$selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autoreply";
 error_log("op=$op");
 
 switch ($op) {
@@ -25,9 +26,9 @@ switch ($op) {
 		$db_result = dba_query($db_query);
 		while ($db_row = dba_fetch_array($db_result)) {
 			$owner = uid2username($db_row[uid]);
-			$content .= "[<a href=menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$db_row[autoreply_id]>m</a>] " .
+			$content .= "[<a href=$selfurl&op=sms_autoreply_manage&autoreply_id=$db_row[autoreply_id]>m</a>] " .
 			"[<a href=\"javascript: ConfirmURL('Are you sure you want to delete SMS autoreply code `$db_row[autoreply_code]` ?'," .
-			"'menu.php?inc=sms_autoreply&op=sms_autoreply_del&autoreply_id=$db_row[autoreply_id]')\">x</a>]" .
+			"'$selfurl&op=sms_autoreply_del&autoreply_id=$db_row[autoreply_id]')\">x</a>]" .
 			"<b>Code:</b> $db_row[autoreply_code] &nbsp;&nbsp;<b>User:</b> $owner<br><br>";
 		}
 		echo $content;
@@ -55,9 +56,11 @@ switch ($op) {
 		        <p>SMS autoreply code: <b>$manage_autoreply_code</b>
 	            <p/>
 		        <p>
-		        <a href=\"menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_add&autoreply_id=$autoreply_id\">[ Add SMS autoreply scenario ]</a>
+		        <a href=\"menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_add&autoreply_id=$autoreply_id\">
+		        	[ Add SMS autoreply scenario ]</a>
 	            &nbsp
-	            <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_edit&autoreply_code=$manage_autoreply_code&autoreply_id=$autoreply_id\">[ Rename ]</a>
+	            <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_edit&autoreply_code=$manage_autoreply_code&autoreply_id=$autoreply_id\">
+	            	[ Rename ]</a>
 		        <p>
 		    ";
 		$db_query = "SELECT * FROM playsms_featAutoreply_scenario WHERE autoreply_id='$autoreply_id' ORDER BY autoreply_scenario_param1";
@@ -68,11 +71,17 @@ switch ($op) {
 			for ($i = 1; $i <= 7; $i++) {
 				$list_of_param .= $db_row["autoreply_scenario_param$i"] . "&nbsp";
 			}
+
+			$result_len= strlen($db_row[autoreply_scenario_result]);
+			$result_num_smses= getNumSmsMultipart($db_row[autoreply_scenario_result]);
+
 			$content .= "[<a href=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_edit&autoreply_id=$autoreply_id&autoreply_scenario_id=$db_row[autoreply_scenario_id]>e</a>] " .
 			"[<a href=\"javascript: ConfirmURL('Are you sure you want to delete this SMS autoreply scenario ?'," .
 			"'menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_del&autoreply_scenario_id=$db_row[autoreply_scenario_id]&autoreply_id=$autoreply_id')\">x</a>] " .
-			"<b>Param:</b> $list_of_param&nbsp;<br>" .
-			"<b>Return:</b> $db_row[autoreply_scenario_result]&nbsp;&nbsp;<b>User:</b> $owner<br><br>";
+			"<b>Param:</b> $list_of_param&nbsp;<br/>" .
+			"<b>Return:</b> $db_row[autoreply_scenario_result]&nbsp;&nbsp;<b>User:</b> $owner<br/>" .
+			"<b>Length:</b> $result_len chars ; $result_num_smses SMSes<br/>" .
+			"<br/>";
 		}
 		$content .= "
 		        <p>
