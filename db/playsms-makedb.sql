@@ -61,7 +61,7 @@ CREATE TABLE playsms_featAutoreply_scenario (
   autoreply_scenario_param5 varchar(20) NOT NULL default '',
   autoreply_scenario_param6 varchar(20) NOT NULL default '',
   autoreply_scenario_param7 varchar(20) NOT NULL default '',
-  autoreply_scenario_result varchar(130) NOT NULL default '',
+  autoreply_scenario_result text NOT NULL default '',
   PRIMARY KEY  (autoreply_scenario_id)
 ) TYPE=MyISAM;
 
