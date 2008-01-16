@@ -456,10 +456,6 @@ CREATE TABLE playsms_tblSMSOutgoing (
 -- Dumping data for table `playsms_tblSMSOutgoing`
 --
 
-INSERT INTO playsms_tblSMSOutgoing VALUES (1,0,1,'gnokii','+628568809027','+628562283138',' - anton','Hi u there, good morning!!','2004-12-12 2:39:13','0000-00-00 00:00:00',0,0,0,'text',0);
-INSERT INTO playsms_tblSMSOutgoing VALUES (2,0,1,'gnokii','+628568809027','+628562205510',' - anton','Hi u there, good morning!!','2004-12-12 2:39:13','0000-00-00 00:00:00',0,0,0,'text',0);
-INSERT INTO playsms_tblSMSOutgoing VALUES (3,0,1,'uplink','+628568809027','+628568809027','- anton','Hello my dear me, testing testing the message','2004-12-12 2:54:12','2004-12-12 2:55:11',1,0,0,'text',0);
-
 --
 -- Table structure for table `playsms_tblSMSTemplate`
 --
@@ -476,9 +472,6 @@ CREATE TABLE playsms_tblSMSTemplate (
 --
 -- Dumping data for table `playsms_tblSMSTemplate`
 --
-
-INSERT INTO playsms_tblSMSTemplate VALUES (1,1,'Good morning','Hi u there, good morning!!');
-INSERT INTO playsms_tblSMSTemplate VALUES (2,1,'Good night have a sweet dream','Hi sweetheart, good night and have a sweet dream :*');
 
 --
 -- Table structure for table `playsms_tblUser`
@@ -514,7 +507,7 @@ CREATE TABLE playsms_tblUser (
 -- Dumping data for table `playsms_tblUser`
 --
 
-INSERT INTO playsms_tblUser VALUES (1,2,'d0b3239a5da9504a1a38f7745790c3c4','admin','admin','Administrator','+628568809027','anton@ngoprek.org','- anton',0,1,0,'Jl. Pangkalan Jati II no. 19 Kalimalang','Jakarta Timur','DKI Jakarta',132,'1979-02-14',1,1,'13620','1102793982');
+INSERT INTO playsms_tblUser VALUES (1,2,'d0b3239a5da9504a1a38f7745790c3c4','admin','admin','Administrator','+628568809027','','',0,1,0,'','','',334,'',1,1,'0','');
 
 --
 -- Table structure for table `playsms_tblUserGroupPhonebook`
@@ -590,12 +583,6 @@ CREATE TABLE playsms_tblUserPhonebook (
 --
 -- Dumping data for table `playsms_tblUserPhonebook`
 --
-
-INSERT INTO playsms_tblUserPhonebook VALUES (1,1,1,'+628562283138','Nero','nero@playsms.bogus');
-INSERT INTO playsms_tblUserPhonebook VALUES (2,1,1,'+628562205510','Sleepless','sleepless@somedomain.bogus');
-INSERT INTO playsms_tblUserPhonebook VALUES (3,1,1,'+39933993399339','Crafted Chees','');
-INSERT INTO playsms_tblUserPhonebook VALUES (4,1,1,'+122334455','Morfren','morfren@nidyumac.doe');
-INSERT INTO playsms_tblUserPhonebook VALUES (5,1,1,'+628568809027','My Self','anton@ngoprek.org');
 
 --
 -- Table structure for table `playsms_tblUser_country`
