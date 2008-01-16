@@ -8,6 +8,8 @@ $op = $_GET[op];
 $selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autoreply";
 error_log("op=$op");
 
+$special_codes_notice= "Note: you may use the special code \"_UNKNOWN_\" to have an autoreply message when the system gets a text that has no matches.";
+
 switch ($op) {
 	case "sms_autoreply_list" :
 		if ($err) {
@@ -36,6 +38,9 @@ switch ($op) {
 		        <p>
 		        <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_add\">[ Add SMS autoreply ]</a>
 		    ";
+		    
+		echo "<p/>$special_codes_notice";    
+		    
 		break;
 	case "sms_autoreply_manage" :
 		$autoreply_id = $_GET[autoreply_id];
@@ -86,7 +91,7 @@ switch ($op) {
 		$content .= "
 		        <p>
 		        </form>
-		    ";
+		    <p/>$special_codes_notice";
 		echo $content;
 		break;
 	case "sms_autoreply_del" :
