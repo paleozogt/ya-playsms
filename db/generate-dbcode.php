@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
+	require_once '../web/config.php';
 	require_once 'DB.php';
 	require_once 'DB/DataObject/Generator.php';
-	require_once '../web/config.php';
 
 	if (!@$_SERVER['argv'][1]) {
 		print "usage      : generate-dbcode.php <path-to-generate-code-into> \n";
