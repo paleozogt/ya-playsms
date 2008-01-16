@@ -674,4 +674,20 @@ function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore) {
 	$form->insertElementBefore($elem, $nameInsertBefore);
 }
 
+function getNumSmsMultipart($msg) {
+	global $SMS_SINGLE_MAXCHARS, $SMS_SINGLE_MULTIPART_MAXCHARS;
+	$len= strlen($msg);
 
+    // the max len of a single sms is different
+    // than the max for a single sms that is part
+    // of a multipart message, so we calculate
+    // the numbe of smses being sent differently
+    // if the number of smses is greater than 1
+    // (a multi-part message)
+    //
+    if ($len <= $SMS_SINGLE_MAXCHARS) {
+        return 1;
+    } else {
+        return ceil($len / $SMS_SINGLE_MULTIPART_MAXCHARS);
+    }	
+}

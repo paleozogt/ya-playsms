@@ -43,7 +43,7 @@ switch ($op)
 	        $content .= "<p>SMS autoreply scenario param $i: <input type=text size=20 maxlength=20 name=add_autoreply_scenario_param$i value=\"".${"add_autoreply_scenario_param".$i}."\">\n";
 	    }
 	    $content.= generateSmsInput($formName, "SMS autoreply scenario result:", 
-                                        $add_autoreply_scenario_result, "add_autoreply_scenario_result");
+                                    $add_autoreply_scenario_result, "add_autoreply_scenario_result");
 	    $content.= "<p><input type=submit class=button value=Add>" .
 	        "<p><li>" . 
             "<a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
