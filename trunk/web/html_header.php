@@ -1,9 +1,9 @@
 <html>
 <head>
-<title><?=$web_title?></title>
+<title><?php$web_title?></title>
 <meta name=\"author\" content=\"http://playsms.sourceforge.net\">
 
-<?
+<?php
 
 // put php global settings into javascript
 $script = "" .

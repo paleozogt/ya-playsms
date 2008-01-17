@@ -1,4 +1,4 @@
-<?
+<?php
 include "init.php";
 include "$apps_path[libs]/function.php";
 include "html_header.php";
@@ -37,7 +37,7 @@ echo $content;
 <li><a href=http://sleepless.ngoprek.org target=_blank>http://sleepless.ngoprek.org</a></li>
 <br><br>
 
-<?
+<?php
 
 include "html_footer.php";
 ?>

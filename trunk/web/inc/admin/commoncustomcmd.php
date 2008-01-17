@@ -1,4 +1,4 @@
-<?
+<?php
 
 
 // update user's age

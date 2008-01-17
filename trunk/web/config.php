@@ -1,4 +1,4 @@
-<?
+<?php
 
 // PEAR DB compatible database engine: 
 // dbase, fbsql, interbase, informix, msql, mssql, mysql, oci8, odbc, pgsql, sqlite, sybase 

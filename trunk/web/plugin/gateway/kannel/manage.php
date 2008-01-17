@@ -1,4 +1,4 @@
-<?
+<?php
 if (!defined("_SECURE_")) {
 
 	die("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
@@ -105,7 +105,7 @@ switch ($op) {
             <p/><?echo $smsc_sel?>
             <p/><input type="submit" class="button" value="Bind"/>
         </form>
-        <?
+        <?php
 
 
 		break;

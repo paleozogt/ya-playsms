@@ -1,4 +1,4 @@
-<?
+<?php
 if (!defined("_SECURE_")) {
 
 	die("Intruder: IP [" . $_SERVER['REMOTE_ADDR'] . "] logged");

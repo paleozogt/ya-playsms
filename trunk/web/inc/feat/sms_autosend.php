@@ -1,4 +1,4 @@
-<?
+<?php
 $op = $_GET[op];
 $selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autosend";
 
