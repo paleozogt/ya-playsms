@@ -8,7 +8,7 @@ if (!valid()) {
 
 <html>
 <head>
-<title><?php$web_title?></title>
+<title><?php echo $web_title; ?></title>
 <frameset cols="24%,76%" framespacing=0>
     <frame name=fr_left src=fr_left.php>
     <frame name=fr_right src=fr_right.php>
