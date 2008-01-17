@@ -1,4 +1,4 @@
-<?
+<?php
 if (!function_exists("validatelogin")) {
 	include "init.php";
 	include "$apps_path[libs]/function.php";

@@ -1,4 +1,4 @@
-<?
+<?php
 
 chdir("../../../");
 include "init.php";
