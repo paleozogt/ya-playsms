@@ -1,6 +1,6 @@
 <html>
 <head>
-<title><?php$web_title?></title>
+<title><?php echo $web_title; ?></title>
 <meta name=\"author\" content=\"http://playsms.sourceforge.net\">
 
 <?php

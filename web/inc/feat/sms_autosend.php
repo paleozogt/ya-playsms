@@ -113,8 +113,8 @@ function makeEditForm($selfurl, $id= null) {
 	$form->display();
 
     ?>    
-    <a href="<?echo $selfurl?>&op=list"><br><br>[back]</a>
-    <?	
+    <a href="<?php echo $selfurl; ?>&op=list"><br><br>[back]</a>
+    <?php	
 }
 
 function doDelete($selfurl, $id) {
@@ -146,3 +146,5 @@ function doAutosend($frequency) {
 	}
 
 }
+
+?>
