@@ -76,9 +76,14 @@ switch ($op) {
 			for ($i = 1; $i <= 7; $i++) {
 				$list_of_param .= $db_row["autoreply_scenario_param$i"] . "&nbsp";
 			}
-
-			$result_len= strlen($db_row[autoreply_scenario_result]);
-			$result_num_smses= getNumSmsMultipart($db_row[autoreply_scenario_result]);
+			
+			// make sure to normalize line endings
+			// before doing a char-count
+			$msg= $db_row[autoreply_scenario_result];
+			$msg = str_replace("\r\n", "\n", $msg);
+			$msg = str_replace("\r", "\n", $msg);
+			$result_len= strlen($msg);
+			$result_num_smses= getNumSmsMultipart($msg);
 
 			$content .= "[<a href=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_edit&autoreply_id=$autoreply_id&autoreply_scenario_id=$db_row[autoreply_scenario_id]>e</a>] " .
 			"[<a href=\"javascript: ConfirmURL('Are you sure you want to delete this SMS autoreply scenario ?'," .
