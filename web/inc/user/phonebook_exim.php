@@ -18,7 +18,7 @@ switch ($op) {
 		}
 		$db_result = dba_query($db_query);
 		while ($db_row = dba_fetch_array($db_result)) {
-			$content .= "\"$db_row[p_desc]\",\"$db_row[p_num]\",\"$db_row[p_email]\"\r\n";
+			$content .= "\"$db_row[p_desc]\",\"$db_row[p_num]\",\"$db_row[p_email]\"\n";
 		}
 		ob_end_clean();
 		header("Content-Type: application/octet-stream");
