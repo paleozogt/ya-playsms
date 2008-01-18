@@ -635,7 +635,14 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 			$ok = true;
 		}
 		
-		processUnknown($sms_datetime, $sms_sender, $target_code, $message);
+		// only do unknown processing if its a regular number,
+		// not a shortcode or some special cell provider number
+		// (if we don't check we can get into an infinite loop, us
+		// sending an error message to another autmoated system, which
+		// sends us an error message...)
+		if (strlen($sms_sender) > 4 && ereg('^\+?[0-9]+$', $sms_sender)) {
+			processUnknown($sms_datetime, $sms_sender, $target_code, $message);
+		}
 	}
 	return $ok;
 }
