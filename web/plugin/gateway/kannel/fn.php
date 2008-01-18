@@ -41,7 +41,7 @@ function gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $gp_code = 
 		fputs($connection, "GET $URL HTTP/1.0\r\n\r\n");
 		while (!feof($connection)) {
 			$myline = fgets($connection, 128);
-			if ($myline == "Sent.") {
+			if ($myline == "0: Accepted for delivery") {
 				$ok = true;
 				// set pending
 				$p_status = 0;
