@@ -5,11 +5,20 @@ if (!defined("_SECURE_")) {
 };
 
 $op = $_GET[op];
+$showall= $_GET[showall];
 
 switch ($op) {
 	case "user_inbox" :
+		$pagetitle= "Inbox";
+		if (isadmin() && $showall) {
+			$pagetitle.= " (All)";
+		} else {
+			$where= "in_uid='$uid' AND ";
+		}
+		$where.= "in_hidden='0'";	
+	
 		$content = "
-		    <h2>Inbox</h2>
+		    <h2>$pagetitle</h2>
 		    <p>
 		    <table width=100% cellpadding=1 cellspacing=1 border=1>
 		    <tr>
@@ -20,7 +29,7 @@ switch ($op) {
 		      <td align=center class=box_title>Action</td>
 		    </tr>
 		";
-		$db_query = "SELECT * FROM playsms_tblUserInbox WHERE in_uid='$uid' AND in_hidden='0' ORDER BY in_id DESC LIMIT 0,50";
+		$db_query = "SELECT * FROM playsms_tblUserInbox WHERE $where ORDER BY in_id DESC LIMIT 0,50";
 		$db_result = dba_query($db_query);
 		$i = dba_num_rows($db_query) + 1;
 		while ($db_row = dba_fetch_array($db_result)) {

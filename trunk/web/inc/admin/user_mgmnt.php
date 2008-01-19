@@ -176,8 +176,8 @@ switch ($op) {
 				$error_string = "User with username `$db_row[username]` already exists!";
 			} else {
 				$db_query = "
-										    INSERT INTO playsms_tblUser (status,username,password,name,mobile,email,sender)
-										    VALUES ('$add_status','$add_username','$add_password','$add_name','$add_mobile','$add_email','$add_sender')
+				    INSERT INTO playsms_tblUser (status,username,password,name,mobile,email,sender)
+				    VALUES ('$add_status','$add_username','$add_password','$add_name','$add_mobile','$add_email','$add_sender')
 										";
 				if ($new_uid = @ dba_insert_id($db_query)) {
 					$error_string = "User with username `$add_username` has been added";
