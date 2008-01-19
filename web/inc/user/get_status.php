@@ -7,11 +7,20 @@ if (!defined("_SECURE_")) {
 $op = $_GET[op];
 $slid = $_GET[slid];
 $err = $_GET[err];
+$showall= $_GET[showall];
 
 switch ($op) {
 	case "get_status" :
+		$pagetitle= "Delivery report";
+		if (isadmin() && $showall) {
+			$pagetitle.= " (All)";
+		} else {
+			$where= "uid='$uid' AND ";
+		}
+		$where.= "flag_deleted='0'";
+	
 		$content = "
-		    <h2>Delivery report</h2>
+		    <h2>$pagetitle</h2>
 		    <p>
 		    <table width=100% cellpadding=1 cellspacing=1 border=1>
 		    <tr>
@@ -24,7 +33,10 @@ switch ($op) {
 		      <td align=center class=box_title width=4>Action</td>
 		    </tr>
 		";
-		$db_query = "SELECT * FROM playsms_tblSMSOutgoing WHERE uid='$uid' AND flag_deleted='0' ORDER BY smslog_id DESC LIMIT 0,50";
+		
+
+	
+		$db_query = "SELECT * FROM playsms_tblSMSOutgoing WHERE $where ORDER BY smslog_id DESC LIMIT 0,50";
 		$db_result = dba_query($db_query);
 		$i = dba_num_rows($db_query) + 1;
 		while ($db_row = dba_fetch_array($db_result)) {

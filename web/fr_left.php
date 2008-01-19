@@ -13,7 +13,9 @@ $status = username2status($username);
 if (isadmin()) {
 	$admin_menu = "
 	<h2>Administration:</h2>
-	<li><a href=menu_admin.php?inc=user_mgmnt&op=user_list target=fr_right>Manage user</a></li>
+    <li><a href=\"menu.php?inc=user_inbox&op=user_inbox&showall=1\" target=fr_right>Inbox (All Unrouted)</a></li>
+    <li><a href=\"menu.php?inc=get_status&op=get_status&showall=1\" target=fr_right>Outbox (All Sent)</a></li>
+    <li><a href=menu_admin.php?inc=user_mgmnt&op=user_list target=fr_right>Manage Users</a></li>
 	<li><a href=menu_admin.php?inc=main_config&op=main_config target=fr_right>Main configuration</a></li>
 	<li><a href=menu_admin.php?inc=daemon&op=daemon target=fr_right>Daemon manual refresh</a></li>
 	<p>
@@ -45,6 +47,7 @@ $content = "
     <li><a href=menu.php?inc=send_sms&op=sendsmstogr target=fr_right>Send broadcast SMS</a></li>
     <li><a href=menu.php?inc=user_inbox&op=user_inbox target=fr_right>Inbox</a></li>
     <li><a href=menu.php?inc=get_status&op=get_status target=fr_right>Outbox</a></li>
+ 
     <li><a href=menu.php?inc=user_pref&op=user_pref target=fr_right>Preferences</a></li>
     <p>
     <h2>Features:</h2>
