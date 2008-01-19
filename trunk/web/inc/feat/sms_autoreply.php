@@ -157,6 +157,7 @@ function makeAddEditForm($add, $err, $autoreply_code = "", $autoreply_id = "") {
 }
 
 function doAddEdit($add, $autoreply_code, $autoreply_id = "") {
+	global $uid;
 	if ($add) {
 		$actionparam = "add";
 		$usertext = "add";
