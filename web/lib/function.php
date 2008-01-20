@@ -248,6 +248,16 @@ function cleanSmsMessage($message) {
 	return $message;    
 }
 
+// hit a webpage in the background
+// (this can be used to hit one of our own
+// webpages asyncronously)
+//
+function asyncCall($url) {
+    global $apps_path;
+	$cmd= $apps_path[bin] . "/async-call.php '$url' > /dev/null 2>&1 &";
+	exec($cmd);
+}
+
 function sendmail($mail_from, $mail_to, $mail_subject = "", $mail_body = "") {
 	global $apps_path;
 	if (!class_exists(email_message_class)) {
