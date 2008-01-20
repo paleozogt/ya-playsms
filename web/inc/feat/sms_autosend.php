@@ -80,7 +80,7 @@ function makeList($selfurl) {
 
 	// iterate through each item in the db
 	// and create a line for it
-	$item = DB_DataObject::factory('playsms_featAutoSend');
+	$item = DB_DataObject::factory(playsms_featAutoSend);
 	$item->find();
 	while ($item->fetch()) {
 		$html .= "
@@ -98,7 +98,7 @@ function makeList($selfurl) {
 }
 
 function makeEditForm($selfurl, $id= null) {
-	$do = DB_DataObject::factory('playsms_featAutoSend');
+	$do = DB_DataObject::factory(playsms_featAutoSend);
 	if ($id) $do->get($id);
 	$fb = DB_DataObject_FormBuilder::create($do);
 	
@@ -118,7 +118,7 @@ function makeEditForm($selfurl, $id= null) {
 }
 
 function doDelete($selfurl, $id) {
-	$do = DB_DataObject::factory('playsms_featAutoSend');
+	$do = DB_DataObject::factory(playsms_featAutoSend);
 	$do->get($id);	
 	$ok= $do->delete();
 
@@ -136,7 +136,7 @@ function doDelete($selfurl, $id) {
 //
 function doAutosend($frequency) {
 	echo("autosending for '$frequency' <br/>\n");
-	$do = DB_DataObject::factory('playsms_featAutoSend');
+	$do = DB_DataObject::factory(playsms_featAutoSend);
 	$do->frequency= $frequency;
 	$do->find();
 
