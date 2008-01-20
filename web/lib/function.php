@@ -156,7 +156,7 @@ function username2mobile($username) {
 	return $mobile;
 }
 
-function username2sender($username) {
+function username2footer($username) {
 	if ($username) {
 		$db_query = "SELECT sender FROM playsms_tblUser WHERE username='$username'";
 		$db_result = dba_query($db_query);
@@ -269,18 +269,18 @@ function sendmail($mail_from, $mail_to, $mail_subject = "", $mail_body = "") {
 		include_once $apps_path[libs] . "/gpl/mimemessage/smtp/smtp.php";
 	}
 
-	$from_name = $mail_from_name;
+	$from_name = "";
 	$from_address = $mail_from;
 	$reply_name = $from_name;
 	$reply_address = $from_address;
 	$error_delivery_name = $from_name;
 	$error_delivery_address = $from_address;
-	$to_name = $mail_to_name;
+	$to_name = "";
 	$to_address = $mail_to;
-	$cc_name = $mail_cc_name;
-	$cc_address = $mail_cc;
-	$bcc_name = $mail_bcc_name;
-	$bcc_address = $mail_bcc;
+	$cc_name = "";
+	$cc_address = "";
+	$bcc_name = "";
+	$bcc_address = "";
 	$subject = $mail_subject;
 	$text_message = $mail_body;
 
@@ -311,7 +311,7 @@ function sendmail($mail_from, $mail_to, $mail_subject = "", $mail_body = "") {
 		$email_message->SetHeader("Return-Path", $error_delivery_address);
 	$email_message->SetEncodedHeader("Subject", $subject);
 
-	if ($attachment && $filename && $contenttype) {
+	if (isset($attachment, $filename, $contenttype)) {
 		$file_attachment = array (
 			"Data" => "$attachment",
 			"Name" => "$filename",

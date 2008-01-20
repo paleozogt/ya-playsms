@@ -39,10 +39,10 @@ switch ($op) {
 			}
 		}
 		$max_length = $SMS_MAXCHARS;
-		if ($sms_sender = username2sender($username)) {
-			$max_length = $max_length -strlen($sms_sender);
+		if ($sms_footer = username2footer($username)) {
+			$max_length = $max_length -strlen($sms_footer);
 		} else {
-			$sms_sender = "<i>not set</i>";
+			$sms_footer = "<i>not set</i>";
 		}
 		if ($err) {
 			$content = "<p><font color=red>$err</font><p>";
@@ -120,7 +120,7 @@ switch ($op) {
 					    </tr>
 					    </table>
 					    <p>Or: <input type=text size=20 maxlength=20 name=p_num_text value=\"$dst_p_num\"> (International format)
-					    <p>SMS Footer (SMS Sender ID): $sms_sender
+					    <p>SMS Footer (SMS Sender ID): $sms_footer
 					    <!-- WWW -->
 					    <p>Message template: <select name=\"smstemplate\">$option_values</select>
 					    <p><input type=\"button\" onClick=\"javascript: setTemplate();\" name=\"nb\" value=\"Use Template\" class=\"button\">
@@ -191,10 +191,10 @@ switch ($op) {
 			$list_of_group .= "<option value=\"$db_row[gp_code]\" $selected>$db_row[gp_name] ($db_row[gp_code])</option>";
 		}
 		$max_length = $SMS_MAXCHARS;
-		if ($sms_sender = username2sender($username)) {
-			$max_length = $max_length -strlen($sms_sender);
+		if ($sms_footer = username2footer($username)) {
+			$max_length = $max_length -strlen($sms_footer);
 		} else {
-			$sms_sender = "<i>not set</i>";
+			$sms_footer = "<i>not set</i>";
 		}
 		if ($err) {
 			$content = "<p><font color=red>$err</font><p>";
@@ -267,7 +267,7 @@ switch ($op) {
 					    </table>
 					    -->
 					    <p>Or: <input type=text size=20 maxlength=20 name=gp_code_text value=\"$dst_gp_code\"> (Group name)
-					    <p>SMS Footer (SMS Sender ID): $sms_sender 
+					    <p>SMS Footer (SMS Sender ID): $sms_footer 
 					    <!-- WWW -->
 					    <p>Message template: <select name=\"smstemplate\">$option_values</select>
 					    <p><input type=\"button\" onClick=\"javascript: setTemplate();\" name=\"nb\" value=\"Use Template\" class=\"button\">
