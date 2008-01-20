@@ -16,14 +16,13 @@ function gw_customcmd() {
 // called by main sms sender
 // return true for success delivery
 // $mobile_sender	: sender's mobile number
-// $sms_footer		: sender's sms footer
 // $sms_to		: destination sms number
 // $sms_msg		: sms message tobe delivered
 // $gp_code		: group phonebook code (optional)
 // $uid			: sender's User ID
 // $smslog_id		: sms ID
 // $flash		: send flash message when the value is "true"
-function gw_send_sms($mobile_sender, $sms_footer, $sms_to, $sms_msg, $gp_code = "", $uid = "", $smslog_id = "", $flash = false) {
+function gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code = "", $uid = "", $smslog_id = "", $flash = false) {
 	// global $tmpl_param;   // global all variables needed, eg: varibles from config.php
 	// ...
 	// ...

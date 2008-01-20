@@ -161,9 +161,9 @@ function username2footer($username) {
 		$db_query = "SELECT sender FROM playsms_tblUser WHERE username='$username'";
 		$db_result = dba_query($db_query);
 		$db_row = dba_fetch_array($db_result);
-		$sender = $db_row[sender];
+		$footer = $db_row[sender];
 	}
-	return $sender;
+	return $footer;
 }
 
 function username2email($username) {
@@ -232,31 +232,22 @@ function pnum2pemail($p_num) {
 	return $p_email;
 }
 
-/*
-function sendmail($mail_from,$mail_to,$mail_subject="",$mail_body="")
-{
-    global $apps_path;
-    if (!class_exists(mime_mail)) 
-    { 
-	include_once "$apps_path[libs]/gpl/mime_mail.inc.php"; 
-    }
-    $mail 		= new mime_mail;
-    $mail->from		= $mail_from;
-    $mail->to           = $mail_to;
-    $mail->subject      = $mail_subject;
-    $mail->body         = $mail_body;
-    if ($mail->send()) 
-    { 
-	$err = true; 
-    } 
-    else 
-    { 
-	$err = false; 
-    }
-    unset ($mail);
-    return $err;
+function appendFooter($message, $footer) {
+    global $SMS_MAXCHARS;
+	$max_length = $SMS_MAXCHARS;
+	$max_length-= strlen($footer);
+	if (strlen($message) > $max_length) {
+		$message = substr($message, 0, $max_length);
+	}
+	return $message . $footer;
 }
-*/
+
+function cleanSmsMessage($message) {
+	$message = str_replace("\r\n", "\n", $message);
+	$message = str_replace("\r", "\n", $message);
+	return $message;    
+}
+
 function sendmail($mail_from, $mail_to, $mail_subject = "", $mail_body = "") {
 	global $apps_path;
 	if (!class_exists(email_message_class)) {

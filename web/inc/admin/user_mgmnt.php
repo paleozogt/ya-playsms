@@ -69,6 +69,7 @@ switch ($op) {
 		$email = username2email($uname);
 		$name = username2name($uname);
 		$status = username2status($uname);
+		$footer = username2footer($uname);
 		if ($err) {
 			$content = "<p><font color=red>$err</font><p>";
 		}
@@ -95,7 +96,7 @@ switch ($op) {
 					    <p>Email: <input type=text size=30 maxlength=30 name=up_email value=\"$email\">
 					    <p>Full name: <input type=text size=30 maxlength=30 name=up_name value=\"$name\">
 					    <p>Mobile number: <input type=text size=16 maxlength=16 name=up_mobile value=\"$mobile\"> (Max. 16 numeric or 11 alphanumeric char.)
-					    <p>SMS footer (SMS sender ID): <input type=text size=35 maxlength=30 name=up_sender value=\"$sender\"> (Max. 30 Alphanumeric char.)
+					    <p>SMS footer (SMS sender ID): <input type=text size=35 maxlength=30 name=up_sender value=\"$footer\"> (Max. 30 Alphanumeric char.)
 					    <p>Password: <input type=text size=30 maxlength=30 name=up_password> (Fill to change password for username `$uname`)
 					    <p>User level: <select name=up_status>$option_status</select>
 					    <p><input type=submit class=button value=save>
