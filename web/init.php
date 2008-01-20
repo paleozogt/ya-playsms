@@ -39,6 +39,9 @@ define(DLR_SENT     , 1);
 define(DLR_FAILED   , 2);
 define(DLR_DELIVERED, 3);
 
+// time to pause between resend tries
+define(RESEND_SLEEP, 60);
+
 // very important, do not try to remove it or change it
 define("_SECURE_", "1");
 
@@ -59,6 +62,7 @@ $db_query = "SELECT * FROM playsms_tblConfig_main";
 $db_result = dba_query($db_query);
 if ($db_row = dba_fetch_array($db_result)) {
 	$web_title = $db_row[cfg_web_title];
+	$web_url = $db_row[cfg_web_url];
 	$email_service = $db_row[cfg_email_service];
 	$email_footer = $db_row[cfg_email_footer];
 	$gateway_module = $db_row[cfg_gateway_module];

@@ -10,7 +10,9 @@ class DataObjects_Playsms_tblConfig_main extends DB_DataObject
     /* the code below is auto generated do not remove the above tag */
 
     public $__table = 'playsms_tblConfig_main';          // table name
+    public $id;                              // int(11)  not_null primary_key auto_increment
     public $cfg_web_title;                   // string(250)  
+    public $cfg_web_url;                     // string(250)  not_null
     public $cfg_email_service;               // string(250)  
     public $cfg_email_footer;                // string(250)  
     public $cfg_gateway_module;              // string(20)  

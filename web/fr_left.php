@@ -17,6 +17,7 @@ if (isadmin()) {
     <li><a href=\"menu.php?inc=get_status&op=get_status&showall=1\" target=fr_right>Outbox (All Sent)</a></li>
     <li><a href=menu_admin.php?inc=user_mgmnt&op=user_list target=fr_right>Manage Users</a></li>
 	<li><a href=menu_admin.php?inc=main_config&op=main_config target=fr_right>Main configuration</a></li>
+	<li><a href=menu_admin.php?inc=gwmod_$gateway_module&op=manage target=fr_right>Manage Gateway</a></li>
 	<li><a href=menu_admin.php?inc=daemon&op=daemon target=fr_right>Daemon manual refresh</a></li>
 	<p>
     ";

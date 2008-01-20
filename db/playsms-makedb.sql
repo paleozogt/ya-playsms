@@ -393,19 +393,22 @@ INSERT INTO playsms_gwmodUplink_config VALUES ('uplink','http://cpanel.smsrakyat
 
 DROP TABLE IF EXISTS playsms_tblConfig_main;
 CREATE TABLE playsms_tblConfig_main (
+  id int(11) NOT NULL auto_increment,
   cfg_web_title varchar(250) default NULL,
+  cfg_web_url varchar(250) default NULL, 
   cfg_email_service varchar(250) default NULL,
   cfg_email_footer varchar(250) default NULL,
   cfg_gateway_module varchar(20) default NULL,
   cfg_gateway_number varchar(100) default NULL,
-  cfg_system_from varchar(100) default NULL COMMENT 'comma-delimited'
+  cfg_system_from varchar(100) default NULL COMMENT 'comma-delimited',
+  PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_tblConfig_main`
 --
 
-INSERT INTO playsms_tblConfig_main VALUES ('PlaySMS MPS (Mobile Portal System)','','PlaySMS MPS (Mobile Portal System)','kannel','', '');
+INSERT INTO playsms_tblConfig_main VALUES ('1', 'PlaySMS MPS (Mobile Portal System)', 'http://localhost/playsms', '','PlaySMS MPS (Mobile Portal System)','kannel','', '');
 
 --
 -- Table structure for table `playsms_tblSMSIncoming`
@@ -418,7 +421,7 @@ CREATE TABLE playsms_tblSMSIncoming (
   in_sender varchar(20) NOT NULL default '',
   in_masked varchar(20) NOT NULL default '',
   in_code varchar(20) NOT NULL default '',
-  in_msg varchar(200) NOT NULL default '',
+  in_msg text NOT NULL default '',
   in_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (in_id)
 ) TYPE=MyISAM;
@@ -441,7 +444,7 @@ CREATE TABLE playsms_tblSMSOutgoing (
   p_src varchar(100) NOT NULL default '',
   p_dst varchar(100) NOT NULL default '',
   p_footer varchar(11) NOT NULL default '',
-  p_msg varchar(250) NOT NULL default '',
+  p_msg text NOT NULL default '',
   p_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   p_update varchar(20) NOT NULL default '0000-00-00 00:00:00',
   p_status tinyint(4) NOT NULL default '0',
@@ -465,7 +468,7 @@ CREATE TABLE playsms_tblSMSTemplate (
   tid int(11) NOT NULL auto_increment,
   uid int(11) NOT NULL default '0',
   t_title varchar(100) NOT NULL default '',
-  t_text varchar(130) NOT NULL default '',
+  t_text text NOT NULL default '',
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;
 

@@ -17,7 +17,7 @@ class DataObjects_Playsms_tblSMSOutgoing extends DB_DataObject
     public $p_src;                           // string(100)  not_null
     public $p_dst;                           // string(100)  not_null
     public $p_footer;                        // string(11)  not_null
-    public $p_msg;                           // string(250)  not_null
+    public $p_msg;                           // blob(65535)  not_null blob
     public $p_datetime;                      // string(20)  not_null
     public $p_update;                        // string(20)  not_null
     public $p_status;                        // int(4)  not_null
