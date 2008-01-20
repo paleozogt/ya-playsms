@@ -38,10 +38,8 @@ switch ($op) {
 				$list_of_number .= "<option value=\"$db_row1[p_num]\" $selected>$db_row1[p_desc] $db_row1[p_num]</option>";
 			}
 		}
-		$max_length = $SMS_MAXCHARS;
-		if ($sms_footer = username2footer($username)) {
-			$max_length = $max_length -strlen($sms_footer);
-		} else {
+		$sms_footer = username2footer($username);
+		if (!isset($sms_footer)) {
 			$sms_footer = "<i>not set</i>";
 		}
 		if ($err) {
@@ -190,10 +188,8 @@ switch ($op) {
 		while ($db_row = dba_fetch_array($db_result)) {
 			$list_of_group .= "<option value=\"$db_row[gp_code]\" $selected>$db_row[gp_name] ($db_row[gp_code])</option>";
 		}
-		$max_length = $SMS_MAXCHARS;
-		if ($sms_footer = username2footer($username)) {
-			$max_length = $max_length -strlen($sms_footer);
-		} else {
+		$sms_footer = username2footer($username);
+		if (!isset($sms_foter)) {
 			$sms_footer = "<i>not set</i>";
 		}
 		if ($err) {

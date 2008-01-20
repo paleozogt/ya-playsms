@@ -6,7 +6,6 @@ $inc = $_GET[inc];
 $err = $_GET[err];
 $username = $_COOKIE[vc2];
 $uid = username2uid($username);
-$footer = username2footer($username);
 $mobile = username2mobile($username);
 $email = username2email($username);
 $name = username2name($username);
