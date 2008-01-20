@@ -16,7 +16,7 @@ function clktl_getsmsstatus($smslog_id) {
     if ($apimsgid = $db_row[apimsgid]) {
         $query_string = "getmsgcharge?api_id=" . $clktl_param[api_id] . "&user=" . $clktl_param[username] . "&password=" . $clktl_param[password] . "&apimsgid=$apimsgid";
         $url = $clktl_param[send_url] . "/" . $query_string;
-        $fd = @ implode('', file($url));
+        $fd = file_get_contents($url);
         if ($fd) {
             $response = split(" ", $fd);
             $err_code = trim($response[1]);
@@ -139,11 +139,10 @@ function gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code = "", $uid = ""
         $query_string = "sendmsg?api_id=" . $clktl_param[api_id] . "&user=" . $clktl_param[username] . "&password=" . $clktl_param[password] . "&to=$sms_to&msg_type=$sms_type&text=" . rawurlencode($sms_msg) . "&deliv_ack=1&callback=3&unicode=$unicode&from=" . rawurlencode($sms_from);
     }
     $url = $clktl_param[send_url] . "/" . $query_string;
-    $fd = @ implode('', file($url));
+    $fd = file($url);
     $ok = false;
-    // failed
-    $p_status = 2;
-    setsmsdeliverystatus($smslog_id, $uid, $p_status);
+
+    $p_status = DLR_FAILED;
     if ($fd) {
         $response = split(":", $fd);
         $err_code = trim($response[1]);
@@ -151,19 +150,19 @@ function gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code = "", $uid = ""
             if ($apimsgid = trim($response[1])) {
                 clktl_setsmsapimsgid($smslog_id, $apimsgid);
                 list ($c_sms_credit, $c_sms_status) = clktl_getsmsstatus($smslog_id);
-                // pending
-                $p_status = 0;
                 if ($c_sms_status) {
                     $p_status = $c_sms_status;
+                } else {
+                    $p_status= DLR_PENDING;
                 }
             } else {
-                // sent
-                $p_status = 1;
+                $p_status = DLR_SENT;
             }
-            setsmsdeliverystatus($smslog_id, $uid, $p_status);
         }
         $ok = true;
     }
+
+    setsmsdeliverystatus($smslog_id, $uid, $p_status);
     return $ok;
 }
 

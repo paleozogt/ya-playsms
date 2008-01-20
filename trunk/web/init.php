@@ -33,6 +33,12 @@ $SMS_SINGLE_MULTIPART_MAXCHARS = ($SMS_SINGLE_MAXCHARS -7);
 $SMS_MULTIPART_MAX = 3;
 $SMS_MAXCHARS = ($SMS_SINGLE_MULTIPART_MAXCHARS * $SMS_MULTIPART_MAX);
 
+// dlr constants
+define(DLR_PENDING  , 0);
+define(DLR_SENT     , 1);
+define(DLR_FAILED   , 2);
+define(DLR_DELIVERED, 3);
+
 // very important, do not try to remove it or change it
 define("_SECURE_", "1");
 
