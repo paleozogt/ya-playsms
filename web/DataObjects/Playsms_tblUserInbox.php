@@ -13,7 +13,7 @@ class DataObjects_Playsms_tblUserInbox extends DB_DataObject
     public $in_id;                           // int(11)  not_null primary_key auto_increment
     public $in_sender;                       // string(20)  not_null
     public $in_uid;                          // int(11)  not_null
-    public $in_msg;                          // string(200)  not_null
+    public $in_msg;                          // blob(65535)  not_null blob
     public $in_datetime;                     // string(20)  not_null
     public $in_hidden;                       // int(4)  not_null
 
