@@ -4,12 +4,16 @@ if (!defined("_SECURE_")) {
 	die("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
 };
 
+require_once 'DB/DataObject.php';
+require_once 'DB/DataObject/FormBuilder.php';
+
 function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode = "0") {
 	global $apps_path;
 	global $datetime_now, $gateway_module;
 	$uid = username2uid($username);
 	$mobile_sender = username2mobile($username);
-	$sms_msg= cleanSmsMessage(appendFooter($message, username2footer($username)));
+	$sms_footer= username2footer($username);
+	$sms_msg= cleanSmsMessage(appendFooter($message, $sms_footer));
 	if (is_array($sms_to)) {
 		$array_sms_to = $sms_to;
 	} else {
@@ -17,18 +21,24 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 	}
 	for ($i = 0; $i < count($array_sms_to); $i++) {
 		$c_sms_to = $array_sms_to[$i];
-		$db_query = "
-			    INSERT INTO playsms_tblSMSOutgoing 
-			    (uid,p_gateway,p_src,p_dst,p_footer,p_msg,p_datetime,p_sms_type,unicode) 
-			    VALUES ('$uid','$gateway_module','$mobile_sender','$c_sms_to','$sms_footer','$sms_msg','$datetime_now','$sms_type','$unicode')
-			";
-		$smslog_id = @ dba_insert_id($db_query);
 		$gp_code = "PV";
 		$to[$i] = $c_sms_to;
 		$ok[$i] = 0;
-		if ($smslog_id) {
-			if (gw_send_sms($mobile_sender, $c_sms_to, $sms_msg, $gp_code, $uid, $smslog_id, $sms_type, $unicode)) {
-				$ok[$i] = $smslog_id;
+		
+		$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
+		$db->uid= $uid;
+		$db->p_gateway= $gateway_module;
+		$db->p_src= $mobile_sender;
+		$db->p_dst= $c_sms_to;
+		$db->p_footer= $sms_footer;
+		$db->p_msg= $sms_msg;
+		$db->p_datetime= $datetime_now;
+		$db->p_sms_type= $sms_type;
+		$db->unicode= $unicode;
+		$db->p_status= DLR_FAILED;	// default to failure
+		if ($db->insert()) {
+			if (gw_send_sms($mobile_sender, $c_sms_to, $sms_msg, $gp_code, $uid, $db->smslog_id, $sms_type, $unicode)) {
+				$ok[$i] = $db->smslog_id;
 			}
 		}
 	}
@@ -43,7 +53,8 @@ function websend2group($username, $gp_code, $message, $sms_type = "text", $unico
 	global $datetime_now, $gateway_module;
 	$uid = username2uid($username);
 	$mobile_sender = username2mobile($username);
-	$sms_msg= cleanSmsMessage(appendFooter($message, username2footer($username)));
+	$sms_footer= username2footer($username);
+	$sms_msg= cleanSmsMessage(appendFooter($message, $sms_footer));
 	
 	if (is_array($gp_code)) {
 		$array_gp_code = $gp_code;
@@ -54,20 +65,28 @@ function websend2group($username, $gp_code, $message, $sms_type = "text", $unico
 	for ($i = 0; $i < count($array_gp_code); $i++) {
 		$c_gp_code = strtoupper($array_gp_code[$i]);
 		$gpid = gpcode2gpid($uid, $c_gp_code);
-		$db_query = "SELECT * FROM playsms_tblUserPhonebook WHERE gpid='$gpid'";
-		$db_result = dba_query($db_query);
-		while ($db_row = dba_fetch_array($db_result)) {
-			$sms_to = $db_row[p_num];
-			$db_query1 = "
-					INSERT INTO playsms_tblSMSOutgoing 
-					(uid,p_gateway,p_src,p_dst,p_footer,p_msg,p_datetime,p_gpid,p_sms_type) 
-					VALUES ('$uid','$gateway_module','$mobile_sender','$sms_to','$sms_footer','$message','$datetime_now','$gpid','$sms_type')
-				    ";
-			$smslog_id = @ dba_insert_id($db_query1);
+		$dbPhonebook= DB_DataObject::factory(playsms_tblUserPhonebook);
+		$dbPhonebook->gpid= $gpid;
+		$dbPhonebook->find();
+		
+		while ($dbPhonebook->fetch()) {
+			$sms_to = $dbPhonebook->p_num;
 			$to[$j] = $sms_to;
 			$ok[$j] = 0;
-			if ($smslog_id) {
-				if (gw_send_sms($mobile_sender, $sms_to, $sms_msg, $c_gp_code, $uid, $smslog_id, $sms_type, $unicode)) {
+	
+			$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
+			$db->uid= $uid;
+			$db->p_gateway= $gateway_module;
+			$db->p_src= $mobile_sender;
+			$db->p_dst= $sms_to;
+			$db->p_footer= $sms_footer;
+			$db->p_msg= $sms_msg;
+			$db->p_datetime= $datetime_now;
+			$db->p_sms_type= $sms_type;
+			$db->unicode= $unicode;
+			$db->p_status= DLR_FAILED;	// default to failure
+			if ($db->insert()) {
+				if (gw_send_sms($mobile_sender, $sms_to, $sms_msg, $c_gp_code, $uid, $db->smslog_id, $sms_type, $unicode)) {
 					$ok[$j] = $sms_to;
 				}
 			}
@@ -80,9 +99,9 @@ function websend2group($username, $gp_code, $message, $sms_type = "text", $unico
 	);
 }
 
-function send2group($mobile_sender, $gp_code, $message) {
+function send2group($mobile_sender, $gp_code, $message, $sms_type = "text", $unicode = "0") {
 	global $apps_path;
-	global $datetime_now;
+	global $datetime_now, $gateway_module;
 	$ok = false;
 	if ($mobile_sender && $gp_code && $message) {
 		$db_query = "SELECT uid,username,sender FROM playsms_tblUser WHERE mobile='$mobile_sender'";
@@ -90,7 +109,8 @@ function send2group($mobile_sender, $gp_code, $message) {
 		$db_row = dba_fetch_array($db_result);
 		$uid = $db_row[uid];
 		$username = $db_row[username];
-		$sms_msg = cleanSmsMessage(appendFooter($message, $db_row[sender]));
+		$sms_footer= $db_row[sender];
+		$sms_msg = cleanSmsMessage(appendFooter($message, $sms_footer));
 		if ($uid && $username) {
 			$gp_code = strtoupper($gp_code);
 			$db_query = "SELECT * FROM playsms_tblUserGroupPhonebook WHERE uid='$uid' AND gp_code='$gp_code'";
@@ -103,21 +123,40 @@ function send2group($mobile_sender, $gp_code, $message) {
 				while ($db_row = dba_fetch_array($db_result)) {
 					$sms_to = $db_row[p_num];
 					$send_code = md5(mktime() . $sms_to);
-					$db_query1 = "
-								INSERT INTO playsms_tblSMSOutgoing (uid,p_src,p_dst,p_footer,p_msg,p_datetime,p_gpid) 
-								VALUES ('$uid','$mobile_sender','$sms_to','$sms_footer','$message','$datetime_now','$gpid')";
-					$smslog_id = @ dba_insert_id($db_query1);
-					$sms_id = "$gp_code.$uid.$smslog_id";
-					if ($smslog_id) {
-						if (gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code, $uid, $smslog_id)) {
-							$ok = true;
-						}
+					
+					$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
+					$db->uid= $uid;
+					$db->p_gateway= $gateway_module;
+					$db->p_src= $mobile_sender;
+					$db->p_dst= $sms_to;
+					$db->p_footer= $sms_footer;
+					$db->p_msg= $sms_msg;
+					$db->p_datetime= $datetime_now;
+					$db->p_sms_type= $sms_type;
+					$db->unicode= $unicode;
+					$db->p_status= DLR_FAILED;	// default to failure
+					if ($db->insert()) {
+						$ok= gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code, $uid, $db->smslog_id);
 					}
 				}
 			}
 		}
 	}
 	return $ok;
+}
+
+// resend
+// 
+// Load the sms from the db and resend it.  Since
+// we give the smslog_id to the gateway, it will
+// update the smslog with the new status.
+// 
+function resend($smslog_id) {
+	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
+	if ($db->get($smslog_id)) {    
+	    gw_send_sms($db->p_src, $db->p_dst, $db->p_msg, PV, $db->uid, 
+	    			$db->smslog_id, $db->p_sms_type, $db->unicode);
+	}
 }
 
 function insertsmstodb($sms_datetime, $sms_sender, $target_code, $message) {
@@ -219,11 +258,22 @@ function execcommoncustomcmd() {
 
 function setsmsdeliverystatus($smslog_id, $uid, $p_status) {
 	global $datetime_now;
-	$ok = false;
-	$db_query = "UPDATE playsms_tblSMSOutgoing SET p_update='$datetime_now',p_status='$p_status' WHERE smslog_id='$smslog_id' AND uid='$uid'";
-	if ($aff_id = @ dba_affected_rows($db_query)) {
-		$ok = true;
+	
+	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
+	$db->get($smslog_id);
+	$db->p_update=$datetime_now;
+	$db->p_status=$p_status;
+	$ok= $db->update();
+
+	// TODO: call resend asyncronously
+	//
+	if ($p_status == DLR_FAILED) {
+	    error_log("should be resending...");
+		
+	    //$url= "/resend.php?smslog_id=$smslog_id";
+		//exec(CURL_PATH . " $url > /dev/null");
 	}
+
 	return $ok;
 }
 
@@ -381,7 +431,7 @@ function processcustom($sms_datetime, $sms_sender, $custom_code, $custom_param) 
 	if (!$url['port']) {
 		$url['port'] = 80;
 	}
-	$connection = fsockopen($url['host'], $url['port'], & $error_number, & $error_description, 60);
+	$connection = fsockopen($url['host'], $url['port'], $error_number, $error_description, 60);
 	if ($connection) {
 		socket_set_blocking($connection, false);
 		fputs($connection, "GET $custom_url HTTP/1.0\r\n\r\n");

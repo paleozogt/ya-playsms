@@ -58,10 +58,13 @@ function gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code = "", $uid = ""
             }
         }
     }
-    if (!$ok) {
-        $p_status = 2;
-        setsmsdeliverystatus($smslog_id, $uid, $p_status);
+
+    if ($ok) {
+        $p_status= DLR_SENT;
+    } else {
+        $p_status= DLR_FAILED;
     }
+    setsmsdeliverystatus($smslog_id, $uid, $p_status);
     return $ok;
 }
 
@@ -88,15 +91,13 @@ function gw_set_delivery_status($gp_code = "", $uid = "", $smslog_id = "", $p_da
         $response = @ implode('', file($url));
         switch ($response) {
             case "1" :
-                $p_status = 1;
-                setsmsdeliverystatus($local_slid, $uid, $p_status);
+                setsmsdeliverystatus($local_slid, $uid, DLR_SENT);
                 $db_query1 = "UPDATE playsms_gwmodUplink SET up_status='1' WHERE up_remote_slid='$remote_slid'";
                 $db_result1 = dba_query($db_query1);
                 break;
             case "2" :
             case "ERR 400" :
-                $p_status = 2;
-                setsmsdeliverystatus($local_slid, $uid, $p_status);
+                setsmsdeliverystatus($local_slid, $uid, DLR_FAILED);
                 $db_query1 = "UPDATE playsms_gwmodUplink SET up_status='2' WHERE up_remote_slid='$remote_slid'";
                 $db_result1 = dba_query($db_query1);
                 break;

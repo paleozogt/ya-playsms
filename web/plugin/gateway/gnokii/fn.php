@@ -32,10 +32,6 @@ function gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code = "", $uid = ""
 
 function gw_set_delivery_status($gp_code = "", $uid = "", $smslog_id = "", $p_datetime = "", $p_update = "") {
     global $gnokii_param;
-    // p_status :
-    // 0 = pending
-    // 1 = delivered
-    // 2 = failed
     if ($gp_code) {
         $fn = "$gnokii_param[path]/cache/smsd/out.$gp_code.$uid.$smslog_id";
         $efn = "$gnokii_param[path]/cache/smsd/ERR.out.$gp_code.$uid.$smslog_id";
@@ -43,30 +39,30 @@ function gw_set_delivery_status($gp_code = "", $uid = "", $smslog_id = "", $p_da
         $fn = "$gnokii_param[path]/cache/smsd/out.PV.$uid.$smslog_id";
         $efn = "$gnokii_param[path]/cache/smsd/ERR.out.PV.$uid.$smslog_id";
     }
+
     // set delivered first
-    $p_status = 1;
-    setsmsdeliverystatus($smslog_id, $uid, $p_status);
+    setsmsdeliverystatus($smslog_id, $uid, DLR_SENT);
+
     // and then check if its not delivered
     if (file_exists($fn)) {
         $p_datetime_stamp = strtotime($p_datetime);
         $p_update_stamp = strtotime($p_update);
         $p_delay = floor(($p_update_stamp - $p_datetime_stamp) / 86400);
+
         // set pending if its under 2 days
         if ($p_delay <= 2) {
-            $p_status = 0;
-            setsmsdeliverystatus($smslog_id, $uid, $p_status);
+            setsmsdeliverystatus($smslog_id, $uid, DLR_PENDING);
         } else {
-            $p_status = 2;
-            setsmsdeliverystatus($smslog_id, $uid, $p_status);
+            setsmsdeliverystatus($smslog_id, $uid, DLR_FAILED);
             @ unlink($fn);
             @ unlink($efn);
         }
         return;
     }
+
     // set if its failed
     if (file_exists($efn)) {
-        $p_status = 2;
-        setsmsdeliverystatus($smslog_id, $uid, $p_status);
+        setsmsdeliverystatus($smslog_id, $uid, DLR_FAILED);
         @ unlink($fn);
         @ unlink($efn);
         return;
