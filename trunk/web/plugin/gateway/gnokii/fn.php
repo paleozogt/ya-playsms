@@ -9,7 +9,7 @@ function gw_customcmd()
     // nothing
 }
 
-function gw_send_sms($mobile_sender,$sms_sender,$sms_to,$sms_msg,$gp_code="",$uid="",$smslog_id="",$flash=false)
+function gw_send_sms($mobile_sender,$sms_footer,$sms_to,$sms_msg,$gp_code="",$uid="",$smslog_id="",$flash=false)
 {
     global $gnokii_param;
     global $gateway_number;
@@ -18,9 +18,9 @@ function gw_send_sms($mobile_sender,$sms_sender,$sms_to,$sms_msg,$gp_code="",$ui
     {
 	$sms_id = mktime();
     }
-    if ($sms_sender)
+    if ($sms_footer)
     {
-	$sms_msg = $sms_msg.$sms_sender;
+	$sms_msg = $sms_msg.$sms_footer;
     }
     $the_msg = "$sms_to\n$sms_msg";
     $fn = "$gnokii_param[path]/cache/smsd/out.$sms_id";

@@ -10,8 +10,8 @@ function gw_customcmd() {
 	// nothing
 }
 
-function gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $gp_code = "", $uid = "", $smslog_id = "", $flash = false) {
-	//error_log("gw_send_sms: $mobile_sender, $sms_sender, $sms_to, $sms_msg \n");
+function gw_send_sms($mobile_sender, $sms_footer, $sms_to, $sms_msg, $gp_code = "", $uid = "", $smslog_id = "", $flash = false) {
+	//error_log("gw_send_sms: $mobile_sender, $sms_footer, $sms_to, $sms_msg \n");
 	global $kannel_param;
 	global $gateway_number;
 	$ok = false;
@@ -20,8 +20,8 @@ function gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $gp_code = 
 	} else {
 		$sms_from = $mobile_sender;
 	}
-	if ($sms_sender) {
-		$sms_msg = $sms_msg . $sms_sender;
+	if ($sms_footer) {
+		$sms_msg = $sms_msg . $sms_footer;
 	}
 	// set failed first
 	$p_status = 2;

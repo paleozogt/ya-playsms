@@ -104,7 +104,7 @@ function gw_customcmd()
     }
 }
 
-function gw_send_sms($mobile_sender,$sms_sender,$sms_to,$sms_msg,$gp_code="",$uid="",$smslog_id="",$msg_type="text",$unicode="0")
+function gw_send_sms($mobile_sender,$sms_footer,$sms_to,$sms_msg,$gp_code="",$uid="",$smslog_id="",$msg_type="text",$unicode="0")
 {
     global $clktl_param;
     global $gateway_number;
@@ -116,9 +116,9 @@ function gw_send_sms($mobile_sender,$sms_sender,$sms_to,$sms_msg,$gp_code="",$ui
     {
 	$sms_from = $mobile_sender;
     }
-    if ($sms_sender)
+    if ($sms_footer)
     {
-	$sms_msg = $sms_msg.$sms_sender;
+	$sms_msg = $sms_msg.$sms_footer;
     }
     switch ($msg_type)
     {

@@ -10,8 +10,8 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 	$uid = username2uid($username);
 	$mobile_sender = username2mobile($username);
 	$max_length = $SMS_MAXCHARS;
-	if ($sms_sender = username2sender($username)) {
-		$max_length = $max_length -strlen($sms_sender) - 1;
+	if ($sms_footer = username2footer($username)) {
+		$max_length = $max_length -strlen($sms_footer) - 1;
 	}
 	if (strlen($message) > $max_length) {
 		$message = substr($message, 0, $max_length -1);
@@ -22,8 +22,8 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 	//$sms_msg = str_replace("\""," ",$sms_msg);
 	$mobile_sender = str_replace("\'", "", $mobile_sender);
 	$mobile_sender = str_replace("\"", "", $mobile_sender);
-	$sms_sender = str_replace("\'", "", $sms_sender);
-	$sms_sender = str_replace("\"", "", $sms_sender);
+	$sms_footer = str_replace("\'", "", $sms_footer);
+	$sms_footer = str_replace("\"", "", $sms_footer);
 	if (is_array($sms_to)) {
 		$array_sms_to = $sms_to;
 	} else {
@@ -35,14 +35,14 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 		$db_query = "
 			    INSERT INTO playsms_tblSMSOutgoing 
 			    (uid,p_gateway,p_src,p_dst,p_footer,p_msg,p_datetime,p_sms_type,unicode) 
-			    VALUES ('$uid','$gateway_module','$mobile_sender','$c_sms_to','$sms_sender','$message','$datetime_now','$sms_type','$unicode')
+			    VALUES ('$uid','$gateway_module','$mobile_sender','$c_sms_to','$sms_footer','$message','$datetime_now','$sms_type','$unicode')
 			";
 		$smslog_id = @ dba_insert_id($db_query);
 		$gp_code = "PV";
 		$to[$i] = $c_sms_to;
 		$ok[$i] = 0;
 		if ($smslog_id) {
-			if (gw_send_sms($mobile_sender, $sms_sender, $c_sms_to, $sms_msg, $gp_code, $uid, $smslog_id, $sms_type, $unicode)) {
+			if (gw_send_sms($mobile_sender, $sms_footer, $c_sms_to, $sms_msg, $gp_code, $uid, $smslog_id, $sms_type, $unicode)) {
 				$ok[$i] = $smslog_id;
 			}
 		}
@@ -53,14 +53,14 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 	);
 }
 
-function websend2group($username, $gp_code, $message, $sms_type = "text") {
+function websend2group($username, $gp_code, $message, $sms_type = "text", $unicode = "0") {
 	global $apps_path, $SMS_MAXCHARS;
 	global $datetime_now, $gateway_module;
 	$uid = username2uid($username);
 	$mobile_sender = username2mobile($username);
 	$max_length = $SMS_MAXCHARS;
-	if ($sms_sender = username2sender($username)) {
-		$max_length = $max_length -strlen($sms_sender) - 1;
+	if ($sms_footer = username2footer($username)) {
+		$max_length = $max_length -strlen($sms_footer) - 1;
 	}
 	if (strlen($message) > $max_length) {
 		$message = substr($message, 0, $max_length -1);
@@ -85,21 +85,21 @@ function websend2group($username, $gp_code, $message, $sms_type = "text") {
 			$sms_msg = str_replace("\"", " ", $sms_msg);
 			$mobile_sender = str_replace("\'", "", $mobile_sender);
 			$mobile_sender = str_replace("\"", "", $mobile_sender);
-			$sms_sender = str_replace("\'", "", $sms_sender);
-			$sms_sender = str_replace("\"", "", $sms_sender);
+			$sms_footer = str_replace("\'", "", $sms_footer);
+			$sms_footer = str_replace("\"", "", $sms_footer);
 			$sms_to = str_replace("\'", "", $sms_to);
 			$sms_to = str_replace("\"", "", $sms_to);
 			$the_msg = "$sms_to\n$sms_msg";
 			$db_query1 = "
 					INSERT INTO playsms_tblSMSOutgoing 
 					(uid,p_gateway,p_src,p_dst,p_footer,p_msg,p_datetime,p_gpid,p_sms_type) 
-					VALUES ('$uid','$gateway_module','$mobile_sender','$sms_to','$sms_sender','$message','$datetime_now','$gpid','$sms_type')
+					VALUES ('$uid','$gateway_module','$mobile_sender','$sms_to','$sms_footer','$message','$datetime_now','$gpid','$sms_type')
 				    ";
 			$smslog_id = @ dba_insert_id($db_query1);
 			$to[$j] = $sms_to;
 			$ok[$j] = 0;
 			if ($smslog_id) {
-				if (gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $c_gp_code, $uid, $smslog_id, $sms_type, $unicode)) {
+				if (gw_send_sms($mobile_sender, $sms_footer, $sms_to, $sms_msg, $c_gp_code, $uid, $smslog_id, $sms_type, $unicode)) {
 					$ok[$j] = $sms_to;
 				}
 			}
@@ -122,7 +122,7 @@ function send2group($mobile_sender, $gp_code, $message) {
 		$db_row = dba_fetch_array($db_result);
 		$uid = $db_row[uid];
 		$username = $db_row[username];
-		$sms_sender = $db_row[sender];
+		$sms_footer = $db_row[sender];
 		if ($uid && $username) {
 			$gp_code = strtoupper($gp_code);
 			$db_query = "SELECT * FROM playsms_tblUserGroupPhonebook WHERE uid='$uid' AND gp_code='$gp_code'";
@@ -135,7 +135,7 @@ function send2group($mobile_sender, $gp_code, $message) {
 				while ($db_row = dba_fetch_array($db_result)) {
 					$p_num = $db_row[p_num];
 					$sms_to = $p_num;
-					$max_length = $SMS_MAXCHARS -strlen($sms_sender) - 3;
+					$max_length = $SMS_MAXCHARS -strlen($sms_footer) - 3;
 					if (strlen($message) > $max_length) {
 						$message = substr($message, 0, $max_length -1);
 					}
@@ -146,18 +146,18 @@ function send2group($mobile_sender, $gp_code, $message) {
 					$the_msg = "$sms_to\n$sms_msg";
 					$mobile_sender = str_replace("\'", "", $mobile_sender);
 					$mobile_sender = str_replace("\"", "", $mobile_sender);
-					$sms_sender = str_replace("\'", "", $sms_sender);
-					$sms_sender = str_replace("\"", "", $sms_sender);
+					$sms_footer = str_replace("\'", "", $sms_footer);
+					$sms_footer = str_replace("\"", "", $sms_footer);
 					$sms_to = str_replace("\'", "", $sms_to);
 					$sms_to = str_replace("\"", "", $sms_to);
 					$send_code = md5(mktime() . $sms_to);
 					$db_query1 = "
 								INSERT INTO playsms_tblSMSOutgoing (uid,p_src,p_dst,p_footer,p_msg,p_datetime,p_gpid) 
-								VALUES ('$uid','$mobile_sender','$sms_to','$sms_sender','$message','$datetime_now','$gpid')";
+								VALUES ('$uid','$mobile_sender','$sms_to','$sms_footer','$message','$datetime_now','$gpid')";
 					$smslog_id = @ dba_insert_id($db_query1);
 					$sms_id = "$gp_code.$uid.$smslog_id";
 					if ($smslog_id) {
-						if (gw_send_sms($mobile_sender, $sms_sender, $sms_to, $sms_msg, $gp_code, $uid, $smslog_id)) {
+						if (gw_send_sms($mobile_sender, $sms_footer, $sms_to, $sms_msg, $gp_code, $uid, $smslog_id)) {
 							$ok = true;
 						}
 					}
