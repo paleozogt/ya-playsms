@@ -152,6 +152,11 @@ function send2group($mobile_sender, $gp_code, $message, $sms_type = "text", $uni
 // update the smslog with the new status.
 // 
 function resend($smslog_id) {
+    // pause for a bit to allow
+    // whatever's wrong with the gateway
+    // to clear itself out
+    sleep(RESEND_SLEEP);
+    
 	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
 	if ($db->get($smslog_id)) {    
 	    gw_send_sms($db->p_src, $db->p_dst, $db->p_msg, PV, $db->uid, 
@@ -257,7 +262,7 @@ function execcommoncustomcmd() {
 }
 
 function setsmsdeliverystatus($smslog_id, $uid, $p_status) {
-	global $datetime_now;
+	global $datetime_now, $web_url;
 	
 	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
 	$db->get($smslog_id);
@@ -265,13 +270,10 @@ function setsmsdeliverystatus($smslog_id, $uid, $p_status) {
 	$db->p_status=$p_status;
 	$ok= $db->update();
 
-	// TODO: call resend asyncronously
-	//
 	if ($p_status == DLR_FAILED) {
-	    error_log("should be resending...");
-		
-	    //$url= "/resend.php?smslog_id=$smslog_id";
-		//exec(CURL_PATH . " $url > /dev/null");
+	    error_log("invoking resend");
+	    $url= "$web_url/resend.php?smslog_id=$smslog_id";
+	    asyncCall($url);
 	}
 
 	return $ok;
@@ -554,8 +556,6 @@ function processSystemMessage($sms_sender, $message) {
 // check incoming SMS for available codes
 // and sets the action
 function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message) {
-	//error_log("setsmsincomingaction: $sms_datetime, $sms_sender, \"$target_code\", \"$message\" \n");
-
 	global $system_from;
 	$ok = false;
 	switch ($target_code) {
