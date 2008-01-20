@@ -395,7 +395,7 @@ DROP TABLE IF EXISTS playsms_tblConfig_main;
 CREATE TABLE playsms_tblConfig_main (
   id int(11) NOT NULL auto_increment,
   cfg_web_title varchar(250) default NULL,
-  cfg_web_url varchar(250) default NULL, 
+  cfg_web_url varchar(250) NOT NULL, 
   cfg_email_service varchar(250) default NULL,
   cfg_email_footer varchar(250) default NULL,
   cfg_gateway_module varchar(20) default NULL,
@@ -557,7 +557,7 @@ CREATE TABLE playsms_tblUserInbox (
   in_id int(11) NOT NULL auto_increment,
   in_sender varchar(20) NOT NULL default '',
   in_uid int(11) NOT NULL default '0',
-  in_msg varchar(200) NOT NULL default '',
+  in_msg text NOT NULL default '',
   in_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   in_hidden tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (in_id)
