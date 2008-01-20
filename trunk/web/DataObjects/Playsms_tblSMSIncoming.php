@@ -15,7 +15,7 @@ class DataObjects_Playsms_tblSMSIncoming extends DB_DataObject
     public $in_sender;                       // string(20)  not_null
     public $in_masked;                       // string(20)  not_null
     public $in_code;                         // string(20)  not_null
-    public $in_msg;                          // string(200)  not_null
+    public $in_msg;                          // blob(65535)  not_null blob
     public $in_datetime;                     // string(20)  not_null
 
     /* Static get */
