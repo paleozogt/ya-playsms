@@ -107,11 +107,8 @@ function gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code = "", $uid = ""
     return $ok;
 }
 
-function kannel_gw_set_delivery_status($smslog_id, $uid, $kannel_dlr) {
-    
-$kannel_dlr= KANNEL_DLR_SMSC_REJECT;
+function kannel_gw_set_delivery_status($smslog_id, $uid, $kannel_dlr) {   
 	$playsms_dlr= convertKannelDlrToPlaysmsDlr($kannel_dlr);
-error_log("dlr: $smslog_id $kannel_dlr ($playsms_dlr)");
     setsmsdeliverystatus($smslog_id, $uid, $playsms_dlr);
 
     // log dlr
