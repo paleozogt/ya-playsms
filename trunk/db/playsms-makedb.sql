@@ -452,6 +452,7 @@ CREATE TABLE playsms_tblSMSOutgoing (
   p_credit tinyint(4) NOT NULL default '0',
   p_sms_type varchar(100) NOT NULL default '',
   unicode tinyint(4) NOT NULL default '0',
+  send_tries tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (smslog_id)
 ) TYPE=MyISAM;
 
