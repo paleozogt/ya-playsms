@@ -65,13 +65,15 @@ switch ($op) {
 		echo $content;
 		break;
 	case "add_template" :
+		$formName= "editTemplate";
+		$smsinput .= generateSmsInput($formName, "Message template content: ", $db_row[t_text], "t_text");	
 		$content = "
 			    <h2>Add message template</h2>
 			    <p>
-			    <form action=\"menu.php?inc=sms_template&op=add_yes\" method=\"post\">
-			    <p>Message template name: <input type=\"text\" maxlength=\"100\" name=\"t_title\">
-			    <p>Message template content: <input type=text name=t_text size=60 maxlength=130>
-			    <br>(Max 130 character)
+			    <form name= \"$formName\" id= \"$formName\" action=\"menu.php?inc=sms_template&op=add_yes\" method=\"post\">
+			    <p>Message template name:
+			    <br/><input type=\"text\" size= \"50\" maxlength=\"100\" name=\"t_title\">
+			    $smsinput
 			    <p><input type=\"submit\" class=\"button\" value=\"Save Template\">
 			    </form>
 			    <p><li><a href=\"menu.php?inc=sms_template&op=list\">Back</a>
