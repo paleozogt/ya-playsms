@@ -35,6 +35,7 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 		$db->p_datetime= $datetime_now;
 		$db->p_sms_type= $sms_type;
 		$db->unicode= $unicode;
+		$db->send_tries= 1;
 		$db->p_status= DLR_FAILED;	// default to failure
 		if ($db->insert()) {
 			if (gw_send_sms($mobile_sender, $c_sms_to, $sms_msg, $gp_code, $uid, $db->smslog_id, $sms_type, $unicode)) {
@@ -84,6 +85,7 @@ function websend2group($username, $gp_code, $message, $sms_type = "text", $unico
 			$db->p_datetime= $datetime_now;
 			$db->p_sms_type= $sms_type;
 			$db->unicode= $unicode;
+			$db->send_tries= 1;
 			$db->p_status= DLR_FAILED;	// default to failure
 			if ($db->insert()) {
 				if (gw_send_sms($mobile_sender, $sms_to, $sms_msg, $c_gp_code, $uid, $db->smslog_id, $sms_type, $unicode)) {
@@ -134,6 +136,7 @@ function send2group($mobile_sender, $gp_code, $message, $sms_type = "text", $uni
 					$db->p_datetime= $datetime_now;
 					$db->p_sms_type= $sms_type;
 					$db->unicode= $unicode;
+					$db->send_tries= 1;
 					$db->p_status= DLR_FAILED;	// default to failure
 					if ($db->insert()) {
 						$ok= gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code, $uid, $db->smslog_id);
@@ -158,9 +161,17 @@ function resend($smslog_id) {
     sleep(RESEND_SLEEP);
     
 	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
-	if ($db->get($smslog_id)) {    
-	    gw_send_sms($db->p_src, $db->p_dst, $db->p_msg, PV, $db->uid, 
-	    			$db->smslog_id, $db->p_sms_type, $db->unicode);
+	if ($db->get($smslog_id)) {
+	    
+		// increment the attempts count
+	    $db->send_tries++;
+	    $db->update();
+	    if ($db->send_tries <= RESEND_TRY_MAX) {
+	    	error_log("resending (attempt $db->send_tries)");    
+
+		    gw_send_sms($db->p_src, $db->p_dst, $db->p_msg, PV, $db->uid, 
+		    			$db->smslog_id, $db->p_sms_type, $db->unicode);
+	    }
 	}
 }
 
@@ -271,7 +282,7 @@ function setsmsdeliverystatus($smslog_id, $uid, $p_status) {
 	$ok= $db->update();
 
 	if ($p_status == DLR_FAILED) {
-	    error_log("invoking resend");
+	    error_log("sms send failure; invoking resend");
 	    $url= "$web_url/resend.php?smslog_id=$smslog_id";
 	    asyncCall($url);
 	}

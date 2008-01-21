@@ -40,7 +40,10 @@ define(DLR_FAILED   , 2);
 define(DLR_DELIVERED, 3);
 
 // time to pause between resend tries
-define(RESEND_SLEEP, 60);
+define(RESEND_SLEEP, 90);
+
+// max number of attempts to resend a failing sms
+define(RESEND_TRY_MAX, 3);
 
 // very important, do not try to remove it or change it
 define("_SECURE_", "1");

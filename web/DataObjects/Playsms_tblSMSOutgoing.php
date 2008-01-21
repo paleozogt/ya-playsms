@@ -25,6 +25,7 @@ class DataObjects_Playsms_tblSMSOutgoing extends DB_DataObject
     public $p_credit;                        // int(4)  not_null
     public $p_sms_type;                      // string(100)  not_null
     public $unicode;                         // int(4)  not_null
+    public $send_tries;                      // int(4)  not_null
 
     /* Static get */
     function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('DataObjects_Playsms_tblSMSOutgoing',$k,$v); }
