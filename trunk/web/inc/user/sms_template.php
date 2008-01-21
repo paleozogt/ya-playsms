@@ -47,7 +47,7 @@ switch ($op) {
 				</tr>
 			    ";
 		}
-		// FIXME: EDIT TEMPLATES SHOULD BE LIKE DELETE OPTIONS TOO!
+		// TODO: EDIT TEMPLATES SHOULD BE LIKE DELETE OPTIONS TOO!
 		$content .= "
 			    </table>
 			    <table width=\"100%\"><tr><td align=\"right\">
@@ -95,13 +95,17 @@ switch ($op) {
 		$db_query = "SELECT * FROM playsms_tblSMSTemplate WHERE tid='$tid'";
 		$db_result = dba_query($db_query);
 		$db_row = dba_fetch_array($db_result);
+		$formName= "editTemplate";
+
+		$smsinput .= generateSmsInput($formName, "Message template content: ", $db_row[t_text], "t_text");
+
 		$content = "
 			    <h2>Edit message template</h2>
 			    <p>
-			    <form action=\"menu.php?inc=sms_template&op=edit_yes&tid=$tid\" method=\"post\">
-			    <p>Message template name: <input type=\"text\" maxlength=\"100\" name=\"t_title\" value=\"" . $db_row[t_title] . "\">
-			    <p>Message template content: <input type=text name=t_text size=60 maxlength=130 values=\"" . $db_row[t_text] . "\">
-			    <br>(Max 130 character)
+			    <form name= \"$formName\" id= \"$formName\" action=\"menu.php?inc=sms_template&op=edit_yes&tid=$tid\" method=\"post\">
+			    <p/>Message template name:
+			    <br/><input type=\"text\" size= \"50\" maxlength=\"100\" name=\"t_title\" value=\"" . $db_row[t_title] . "\">
+			    $smsinput
 			    <p><input type=\"submit\" class=\"button\" value=\"Save Template\">
 			    <input type=\"hidden\" name=\"item_count\" value=\"$i\">
 			    </form>
