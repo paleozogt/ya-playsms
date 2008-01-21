@@ -59,12 +59,13 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
 	
 	$newOffset= $offset+$numShow;
 	$nextUrl= "$selfurl&offset=$newOffset";
+	$linksPrevNext= "<a href='$prevUrl'>[ Prev] </a>
+    		   		 <a href='$nextUrl'>[ Next ]</a>";
 
     $content = "
     		    <h2>$pagetitle</h2>
     		    <p/>
-    		    <a href='$prevUrl'>[ Prev] </a>
-    		   	<a href='$nextUrl'>[ Next ]</>
+				$linksPrevNext
     		    <p/>
     		    <table width=100% cellpadding=1 cellspacing=1 border=1>
     		    <tr>
@@ -83,7 +84,7 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
         $p_desc = pnum2pdesc($db->p_dst);
         $current_p_dst = $db->p_dst;
         if ($p_desc) {
-            $current_p_dst = "$db->p_dst<br>($p_desc)";
+            $current_p_dst = "$db->p_dst<br/>($p_desc)";
         }
         $hide_p_dst = $db->p_dst;
         if ($p_desc) {
@@ -136,7 +137,9 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
         
     }
     
-    $content .= "</form></table>";
+    $content .= "</form></table>
+    			<p/>
+    		    $linksPrevNext";
     return $content;
 }
 
