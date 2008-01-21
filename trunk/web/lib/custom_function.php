@@ -166,7 +166,7 @@ function resend($smslog_id) {
 		// increment the attempts count
 	    $db->send_tries++;
 	    $db->update();
-	    if ($db->send_tries <= RESEND_TRY_MAX) {
+	    if ($db->send_tries <= SEND_TRY_MAX) {
 	    	error_log("resending (attempt $db->send_tries)");    
 
 		    gw_send_sms($db->p_src, $db->p_dst, $db->p_msg, PV, $db->uid, 
