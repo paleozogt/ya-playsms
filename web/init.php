@@ -74,12 +74,21 @@ if ($db_row = dba_fetch_array($db_result)) {
 }
 
 // protect from SQL injection when magic_quotes_gpc sets to "Off"
+// by rolling our own magic quotes
+
 function pl_addslashes($data) {
 	global $db_param;
-	if ($db_param[type] == "mssql") {
-		$data = str_replace("'", "''", $data);
+	
+	if (is_array($data)) {
+		foreach ($data as &$datum) {
+		    $datum= pl_addslashes($datum);
+		}
 	} else {
-		$data = addslashes($data);
+		if ($db_param[type] == "mssql") {
+			$data = str_replace("'", "''", $data);
+		} else {
+			$data = addslashes($data);
+		}
 	}
 	return $data;
 }
