@@ -38,6 +38,7 @@ return;
 
 function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
     $db = DB_DataObject :: factory(playsms_tblSMSOutgoing);
+    if (!$offset) $offset= 0;
     $db->limit($offset, $numShow);
     $db->orderBy("smslog_id DESC");
 
