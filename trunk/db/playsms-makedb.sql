@@ -61,7 +61,7 @@ CREATE TABLE playsms_featAutoreply_scenario (
   autoreply_scenario_param5 varchar(20) NOT NULL default '',
   autoreply_scenario_param6 varchar(20) NOT NULL default '',
   autoreply_scenario_param7 varchar(20) NOT NULL default '',
-  autoreply_scenario_result text NOT NULL default '',
+  autoreply_scenario_result text NOT NULL,
   PRIMARY KEY  (autoreply_scenario_id)
 ) TYPE=MyISAM;
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `playsms_featAutoSend` (
   `id` int(11) NOT NULL auto_increment,
   `frequency` enum('hourly','daily','weekly','monthly') NOT NULL default 'daily',
   `number` varchar(100) NOT NULL,
-  `msg` text NOT NULL default '',
+  `msg` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
@@ -421,7 +421,7 @@ CREATE TABLE playsms_tblSMSIncoming (
   in_sender varchar(20) NOT NULL default '',
   in_masked varchar(20) NOT NULL default '',
   in_code varchar(20) NOT NULL default '',
-  in_msg text NOT NULL default '',
+  in_msg text NOT NULL,
   in_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (in_id)
 ) TYPE=MyISAM;
@@ -444,7 +444,7 @@ CREATE TABLE playsms_tblSMSOutgoing (
   p_src varchar(100) NOT NULL default '',
   p_dst varchar(100) NOT NULL default '',
   p_footer varchar(11) NOT NULL default '',
-  p_msg text NOT NULL default '',
+  p_msg text NOT NULL,
   p_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   p_update varchar(20) NOT NULL default '0000-00-00 00:00:00',
   p_status tinyint(4) NOT NULL default '0',
@@ -468,7 +468,7 @@ CREATE TABLE playsms_tblSMSTemplate (
   tid int(11) NOT NULL auto_increment,
   uid int(11) NOT NULL default '0',
   t_title varchar(100) NOT NULL default '',
-  t_text text NOT NULL default '',
+  t_text text NOT NULL,
   PRIMARY KEY  (tid)
 ) TYPE=MyISAM;
 
@@ -557,7 +557,7 @@ CREATE TABLE playsms_tblUserInbox (
   in_id int(11) NOT NULL auto_increment,
   in_sender varchar(20) NOT NULL default '',
   in_uid int(11) NOT NULL default '0',
-  in_msg text NOT NULL default '',
+  in_msg text NOT NULL,
   in_datetime varchar(20) NOT NULL default '0000-00-00 00:00:00',
   in_hidden tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (in_id)
