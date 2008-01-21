@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `playsms_featAutoSend` (
   `id` int(11) NOT NULL auto_increment,
   `frequency` enum('hourly','daily','weekly','monthly') NOT NULL default 'daily',
   `number` varchar(100) NOT NULL,
-  `msg` text NOT NULL,
+  `msg` text NOT NULL default '',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
