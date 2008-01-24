@@ -104,7 +104,7 @@ function get_smscids($status, $xml) {
         $x = $a;
     }
 
-    return $n;
+    return trim($n);
 }
 
 function smsc_details($inst, $xml) { 
