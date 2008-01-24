@@ -57,4 +57,7 @@ function gw_set_incoming_action() {
 	// you must retrieve all informations needed by setsmsincomingaction()
 	// from incoming sms, have a look gnokii gateway module
 }
+
+function gw_waitForStartup() {
+}
 ?>

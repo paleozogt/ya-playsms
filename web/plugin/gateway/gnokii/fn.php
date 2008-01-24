@@ -98,4 +98,8 @@ function gw_set_incoming_action() {
         }
     }
 }
+
+function gw_waitForStartup() {
+}
+
 ?>

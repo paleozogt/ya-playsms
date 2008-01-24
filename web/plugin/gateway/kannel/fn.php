@@ -5,6 +5,7 @@ if (!defined("_SECURE_")) {
 };
 
 include "$apps_path[plug]/gateway/$gateway_module/config.php";
+include "$apps_path[plug]/gateway/$gateway_module/kannel-monitor/xmlfunc.php";
 
 define(KANNEL_DLR_DELIVERY_SUCCESS,  1);
 define(KANNEL_DLR_DELIVERY_FAILURE,  2);
@@ -157,5 +158,42 @@ function gw_set_incoming_action() {
     }
 }
 
+function gw_waitForStartup() {
+    $xml_parser = xml_parser_create();   
+    xml_set_element_handler($xml_parser, "startElement", "endElement");
+
+	$kannelSmscOnlineStatus= "online";
+	$kannelStatusUrl= loadKannelStatusUrl();
+
+	// first get the total number of SMSCs
+	$kannelStatusXml= file_get_contents($kannelStatusUrl);	
+	$ids= explode(' ', get_smscids('', $kannelStatusXml));
+	$numIds= count($ids);
+
+	// now keep waiting until the number of
+	// online SMSCs equals the total number
+	//
+	echo "waiting...";
+	while ($numIds != check_status($kannelSmscOnlineStatus, $kannelStatusXml)) {
+		echo ".";
+	    sleep(5);
+	    $kannelStatusXml= file_get_contents($kannelStatusUrl);
+	}
+	echo "\n";
+
+    xml_parser_free($xml_parser);
+}
+
+function loadKannelStatusUrl() {
+    $dbKannelConfig= DB_DataObject::factory('playsms_gwmodKannel_config');
+    $dbKannelConfig->limit(1);
+	$dbKannelConfig->find();
+	$dbKannelConfig->fetch();
+
+	$statusPort= 13000;
+    $url= 'http://' . $dbKannelConfig->cfg_bearerbox_host . ':' . $statusPort . 
+		  '/status.xml?password=' . $dbKannelConfig->cfg_password;
+	return $url;
+}
 
 ?>
