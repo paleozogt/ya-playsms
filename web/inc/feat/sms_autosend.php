@@ -8,6 +8,7 @@ $selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autosend";
 //
 if ($op == "autosend" && $_SERVER['REMOTE_ADDR'] == "127.0.0.1") {
 	include "../../init.php";
+	include "../../config.php";
 	include "$apps_path[libs]/function.php";
 }
 
@@ -131,20 +132,5 @@ function doDelete($selfurl, $id) {
 	header("Location: $selfurl&op=list&err=" . urlencode($error_string));
 }
 
-// TODO: have this return an http header
-// for success or failure
-//
-function doAutosend($frequency) {
-	echo("autosending for '$frequency' <br/>\n");
-	$do = DB_DataObject::factory(playsms_featAutoSend);
-	$do->frequency= $frequency;
-	$do->find();
-
-	while ($do->fetch()) {
-		echo("sending $do->id, $do->frequency, $do->number, \"$do->msg\"... <br/>\n");
-		websend2pv("admin", $do->number, $do->msg);
-	}
-
-}
 
 ?>

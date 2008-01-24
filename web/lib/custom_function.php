@@ -660,6 +660,24 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message
 	return $ok;
 }
 
+// TODO: have this return an http header
+// for success or failure
+//
+function doAutosend($frequency) {
+	echo("autosending for '$frequency' <br/>\n");
+	$do = DB_DataObject::factory(playsms_featAutoSend);
+	$do->frequency= $frequency;
+	$do->find();
+
+	if ($frequency == "startup")
+		gw_waitForStartup();
+
+	while ($do->fetch()) {
+		echo("sending $do->id, $do->frequency, $do->number, \"$do->msg\"... <br/>\n");
+		websend2pv("admin", $do->number, $do->msg);
+	}
+}
+
 function generateSmsInput($nameForm, $smsDisplayTitle, $smsContents, $nameSmsTextBox) {
 	if (!$nameSmsTextBox) {
 		$nameSmsTextBox = "message";
