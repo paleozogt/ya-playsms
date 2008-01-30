@@ -2,17 +2,22 @@
 
 set -e
 
-dbcnf_mysqluser='playsms/mysql-username'
-dbcnf_mysqlpass='playsms/mysql-password'
+package=playsms
 
-# start up debconf and tell it the protocol version
+# start up debconf
 . /usr/share/debconf/confmodule
-db_version 2.0
 
-# tell debconf what template questions to ask
-db_input high $dbcnf_mysqluser || true
-db_input high $dbcnf_mysqlpass || true
+# start up dbconfig-common
+# (uses debconf to config the database)
+#
+if [ -f /usr/share/dbconfig-common/dpkg/config.mysql ]; then
+	. /usr/share/dbconfig-common/dpkg/config.mysql 
 
-# tell debconf to ask the questions
-db_go || true
+    # first version that started using dbconfig-common
+	dbc_first_version="0.8.3"
+
+	#dbc_load_include="sh:/etc/$package/db.conf"
+
+	dbc_go $package $@
+fi
 
