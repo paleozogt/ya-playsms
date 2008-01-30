@@ -65,13 +65,15 @@ if [ "$1" = "configure" ]; then
 
      # reload services whose confs we've modified
      #
-	 logger "restarting apache and kannel"
+	 logger "restarting apache, kannel, cron..."
      if [ -x /usr/sbin/invoke-rc.d ]; then
           invoke-rc.d $webserver reload || true
           invoke-rc.d kannel restart || true
+          invoke-rc.d cron restart || true
      else
           /etc/init.d/$webserver reload || true
           /etc/init.d/kannel restart || true
+          /etc/init.d/cron restart || true
      fi   
 
 
