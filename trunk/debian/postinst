@@ -17,43 +17,31 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+package=playsms
 webserver=apache2
 webuser=www-data
-installpath=/usr/share/playsms
+installpath=/usr/share/$package
 binpath=$installpath/bin
-dbcnf_mysqluser='playsms/mysql-username'
-dbcnf_mysqlpass='playsms/mysql-password'
+
+logger "$package postinst args: $@"
+
+# start up debconf and dbconf-common
+#
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst.mysql
+
+# first version that started using dbconfig-common
+dbc_first_version="0.8.3"
+
+# tell dbconf to generate a config file for the database
+dbc_generate_include=php:/etc/$package/database.php
+
+# run dbconf-common
+dbc_go $package $@
+
 
 if [ "$1" = "configure" ]; then
-     # start up debconf and tell it the protocol version
-     #
-     . /usr/share/debconf/confmodule
-     db_version 2.0
-
-     # tell debconf to get the username/password
-     # that we asked the user for earlier
-     # (in the config script)
-     #
-     db_get $dbcnf_mysqluser
-     mysqlusername="$RET"
-     db_get $dbcnf_mysqlpass
-     mysqlpassword="$RET"
-
-     # reset the username/password; this way
-     # we won't have sensitive data 
-     # in the debconf database...
-     #
-     db_reset $dbcnf_mysqluser || true
-     db_reset $dbcnf_mysqlpass || true
-     db_fset  $dbcnf_mysqluser seen false || true
-     db_fset  $dbcnf_mysqlpass seen false || true
-
-     # run the mysql install scripts using
-     # the username and password
-     #
-     mysql --user=$mysqlusername --password=$mysqlpassword < $installpath/db/playsms-install.sql
-     mysql --user=$mysqlusername --password=$mysqlpassword < $installpath/db/playsms-makedb.sql
-
+     logger "$package upgrading from $2"
 
      # give apache user sudo rights for our scripts
      # by adding the webuser to the sudoers file, but
@@ -68,17 +56,16 @@ if [ "$1" = "configure" ]; then
         echo "\n\n$webuser_sudo" >> /etc/sudoers
      fi
 
-
      # add the kannel user to group 'dialout'
      # so that it can use bluetooth devices
      # that have been bound to /dev/rfcomm*,
      # which are usually root:dialout
      #
-     adduser kannel dialout
-
+     adduser --quiet kannel dialout
 
      # reload services whose confs we've modified
      #
+	 logger "restarting apache and kannel"
      if [ -x /usr/sbin/invoke-rc.d ]; then
           invoke-rc.d $webserver reload || true
           invoke-rc.d kannel restart || true

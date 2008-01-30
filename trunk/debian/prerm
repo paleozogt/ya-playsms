@@ -1,49 +1,8 @@
 #!/bin/sh
 
 set -e
+package=playsms
 
-installpath=/usr/share/playsms
-binpath=$installpath/bin
-dbcnf_mysqluser='playsms/mysql-username'
-dbcnf_mysqlpass='playsms/mysql-password'
-
-if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
-     # start up debconf and tell it the protocol version
-     #
-     . /usr/share/debconf/confmodule
-     db_version 2.0
-
-     # tell debconf what template questions to ask
-     db_input high $dbcnf_mysqluser || true
-     db_input high $dbcnf_mysqlpass || true
-     db_go || true
-
-
-     # tell debconf to get the username/password
-     # that we asked the user for earlier
-     # (in the config script)
-     #
-     db_get $dbcnf_mysqluser
-     mysqlusername="$RET"
-     db_get $dbcnf_mysqlpass
-     mysqlpassword="$RET"
-
-     # reset the username/password; this way
-     # we won't have sensitive data 
-     # in the debconf database...
-     #
-     db_reset $dbcnf_mysqluser || true
-     db_reset $dbcnf_mysqlpass || true
-     db_fset  $dbcnf_mysqluser seen false || true
-     db_fset  $dbcnf_mysqlpass seen false || true
-
-
-     # finally, use the username password to 
-     # run the uninstall sql script
-     mysql --user=$mysqlusername --password=$mysqlpassword < $installpath/db/playsms-uninstall.sql
-
-
-     # quit debconf
-     #
-     db_stop
-fi
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/prerm.mysql 
+dbc_go $package $@

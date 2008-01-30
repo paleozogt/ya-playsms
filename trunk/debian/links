@@ -5,8 +5,3 @@ etc/playsms/kannel/smsc.conf                /etc/kannel/smsc.conf
 etc/playsms/kannel/modems.conf              /etc/kannel/modems.conf
 etc/playsms/kannel/startbox-defaults.conf   /etc/default/kannel
 
-etc/playsms/cron/cron-hourly.sh             /etc/cron.hourly/playsms-hourly.sh
-etc/playsms/cron/cron-daily.sh              /etc/cron.daily/playsms-daily.sh
-etc/playsms/cron/cron-weekly.sh             /etc/cron.weekly/playsms-weekly.sh
-etc/playsms/cron/cron-monthlyl.sh           /etc/cron.monthly/playsms-monthlyl.sh
-

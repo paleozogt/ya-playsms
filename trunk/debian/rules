@@ -37,6 +37,14 @@ binary-indep: build install
 	dh_installdebconf	
 #	dh_installlogrotate
 	dh_installman
+	dh_installcron
+
+    # dh_install can't rename, so lets
+    # rename the database upgrade scripts
+    # in a way that dbconfig expects
+    #
+	rename -v 's/(.*\/).*?([\.0-9]+)\..*/\1\2/' debian/playsms/usr/share/dbconfig-common/data/playsms/upgrade/mysql/playsms-upgrade_*.sql
+
 	dh_link
 	dh_strip
 	dh_compress
@@ -46,6 +54,7 @@ binary-indep: build install
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
+
 
 # Build architecture-dependent files here.
 binary-arch:
