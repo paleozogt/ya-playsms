@@ -24,6 +24,13 @@ function makeEditForm($selfurl) {
         'cfg_system_from' => 'System messages <br/> (e.g., balance updates) are sent from:',
         'cfg_web_url' => 'Website URL:'
     );
+    
+    // infer the fields we're going to show
+    // from the list of formNames
+	$renderFields= array();
+	foreach ($formNames as $field => $name) {
+		$renderFields[]= $field;
+	}
 
     // List of gateway plugins.
     // TODO: make this get listing of the gw plugin files
@@ -41,7 +48,9 @@ function makeEditForm($selfurl) {
     $do->fetch();
 
     // create the form with the user-showable names
-    $fb = DB_DataObject_FormBuilder::create($do, array ("fieldLabels" => $formNames));
+    $fb = DB_DataObject_FormBuilder::create($do, 
+    		array("fieldLabels" => $formNames,
+    		      "fieldsToRender" => $renderFields));
 
     // set up gw_mod enum
     $fb->enumFields = array ('cfg_gateway_module');

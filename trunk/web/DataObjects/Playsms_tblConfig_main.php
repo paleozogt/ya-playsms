@@ -18,6 +18,7 @@ class DataObjects_Playsms_tblConfig_main extends DB_DataObject
     public $cfg_gateway_module;              // string(20)  
     public $cfg_gateway_number;              // string(100)  
     public $cfg_system_from;                 // string(100)  
+    public $version;                         // string(25)  
 
     /* Static get */
     function staticGet($k,$v=NULL) { return DB_DataObject::staticGet('DataObjects_Playsms_tblConfig_main',$k,$v); }
