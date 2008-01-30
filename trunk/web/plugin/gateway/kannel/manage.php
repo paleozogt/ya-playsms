@@ -100,7 +100,7 @@ switch ($op) {
 			$smsc_sel .= "\t<option value=\"$match[2]\">$match[1] ($match[2])</option>\n";
 		}
 		$smsc_sel .= "</select>";
-?>
+		?>
         <form name="smsc_bind" action="menu_admin.php?inc=gwmod_kannel&op=smsc_bind" method="post">
             <p/><?echo $smsc_sel?>
             <p/><input type="submit" class="button" value="Bind"/>

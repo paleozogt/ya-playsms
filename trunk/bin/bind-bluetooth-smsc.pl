@@ -12,6 +12,7 @@ if ($ARGV[0] eq "") {
      while ($output=~ m/(..:..:..:..:..:..)\s*(.*)/g) {
 	     @devices[$i++]= $1;
 	     print "$2 $1\n";
+         `/usr/bin/logger $2 $1`;
      }
      exit;
 }
@@ -19,6 +20,21 @@ if ($ARGV[0] eq "") {
 # choose which device to bind to...
 #
 $device= $ARGV[0];
+
+# set up launcher for a custom passkey agent
+# in the background so that when the phone
+# asks to bond/pair, it will get an answer
+$passkeyagent="/usr/bin/passkey-agent";
+$passkeyhelper="/usr/share/playsms/bin/pin-agent-simple";
+$passkeyhelper= "$passkeyagent $passkeyhelper $device &";
+
+
+# run the passkeyhelper in case 
+# we get a bonding attempt by the phone
+# while we're setting up
+#
+system($passkeyhelper);
+
 
 # get the first serial port on the device
 #
@@ -38,14 +54,29 @@ $rfcommentry= "rfcomm$rfcommport {\n" .
           "\tchannel $channel;\n" .
           "\tcomment \"Serial Port\";\n" .
      "}\n";
-open(RFCOMM, ">>", $rfcommfile) or die "can't write $rfcommfile";
-print RFCOMM $rfcommentry;
+
+# slurp up the whole rfcomm config file
+#
+open(RFCOMM, $rfcommfile);
+$rfcommconf= join('', <RFCOMM>);
 close(RFCOMM);
 
-# restart bluetooth service
+# if this entry doesn't already exist, then add it
+# TODO: what if there's a rfcommport conflict?
+#
+if ($rfcommconf!~ m/$rfcommentry/g) {
+    open(RFCOMM, ">>", $rfcommfile) or die "can't write $rfcommfile";
+    print RFCOMM $rfcommentry;
+    close(RFCOMM);
+}
+
+# restart bluetooth service so that the rfcomm
+# changes will get picked up
 #
 system("/etc/init.d/bluetooth restart") == 0 or die "can't restart bluetooth";
 
+# wait for the bluetooth restart to get going
+sleep(1);
 
 # create kannel smsc conf using the bound rfcomm path
 #
@@ -67,9 +98,13 @@ open(SMSC, ">", $smscfile) or die "can't write $smscfile";
 print SMSC $smscentry;
 close(RFCOMM);
 
-# restart kannel
+# restart kannel so that its smsc changes
+# will be picked up
 #
 system("/etc/init.d/kannel restart") == 0 or die "can't restart kannel";
 
+
+# run the passkeyhelper
+system($passkeyhelper);
 
 print "OK\n";
