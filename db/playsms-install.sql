@@ -10,3 +10,6 @@
 GRANT ALL PRIVILEGES ON `playsms%`.* TO 'playsms'@'localhost';
 SET PASSWORD FOR 'playsms'@'localhost' = password('playsms');
 
+-- create our database
+-- 
+CREATE DATABASE IF NOT EXISTS `playsms`;

@@ -4,11 +4,6 @@
 -- -------------------------------------------------------
 -- Server version	4.0.15-log
 
--- create and use the database
--- 
-CREATE DATABASE IF NOT EXISTS `playsms`;
-USE `playsms`;
-
 --
 -- Table structure for table `playsms_featAutoreply`
 --
@@ -401,6 +396,7 @@ CREATE TABLE playsms_tblConfig_main (
   cfg_gateway_module varchar(20) default NULL,
   cfg_gateway_number varchar(100) default NULL,
   cfg_system_from varchar(100) default NULL COMMENT 'comma-delimited',
+  version varchar(25) default NULL COMMENT 'DATABASE VERSION - DO NOT EDIT BY HAND',
   PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
@@ -408,7 +404,7 @@ CREATE TABLE playsms_tblConfig_main (
 -- Dumping data for table `playsms_tblConfig_main`
 --
 
-INSERT INTO playsms_tblConfig_main VALUES ('1', 'PlaySMS MPS (Mobile Portal System)', 'http://localhost/playsms', '','PlaySMS MPS (Mobile Portal System)','kannel','', '');
+INSERT INTO playsms_tblConfig_main VALUES ('1', 'PlaySMS MPS (Mobile Portal System)', 'http://localhost/playsms', '','PlaySMS MPS (Mobile Portal System)','kannel','', '', '0.8.3');
 
 --
 -- Table structure for table `playsms_tblSMSIncoming`
@@ -768,4 +764,3 @@ INSERT INTO playsms_tblUser_country VALUES (320,'Laos');
 INSERT INTO playsms_tblUser_country VALUES (325,'Serbia & Montenegro (Yugoslavia)');
 INSERT INTO playsms_tblUser_country VALUES (332,'Jersey');
 INSERT INTO playsms_tblUser_country VALUES (334,'OTHER (unlisted)');
-
