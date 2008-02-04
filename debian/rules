@@ -40,9 +40,10 @@ binary-indep: build install
 	dh_installcron
 
     # dh_install can't rename, so lets
-    # rename the database upgrade scripts
+    # rename the database install/upgrade scripts
     # in a way that dbconfig expects
     #
+	mv debian/playsms/usr/share/dbconfig-common/data/playsms/install/playsms-makedb.sql debian/playsms/usr/share/dbconfig-common/data/playsms/install/mysql
 	rename -v 's/(.*\/).*?([\.0-9]+)\..*/\1\2/' debian/playsms/usr/share/dbconfig-common/data/playsms/upgrade/mysql/playsms-upgrade_*.sql
 
 	dh_link
