@@ -10,6 +10,7 @@ class DataObjects_Playsms_gwmodClickatell_config extends DB_DataObject
     /* the code below is auto generated do not remove the above tag */
 
     public $__table = 'playsms_gwmodClickatell_config';    // table name
+    public $id;                              // int(11)  not_null primary_key auto_increment
     public $cfg_name;                        // string(20)  
     public $cfg_api_id;                      // string(20)  
     public $cfg_username;                    // string(100)  

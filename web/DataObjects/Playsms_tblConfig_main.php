@@ -18,6 +18,7 @@ class DataObjects_Playsms_tblConfig_main extends DB_DataObject
     public $cfg_gateway_module;              // string(20)  
     public $cfg_gateway_number;              // string(100)  
     public $cfg_system_from;                 // string(100)  
+    public $cfg_system_restart_frequency;    // string(7)  enum
     public $version;                         // string(25)  
 
     /* Static get */
