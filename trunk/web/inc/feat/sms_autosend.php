@@ -2,16 +2,6 @@
 $op = $_GET[op];
 $selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autosend";
 
-// cron will call us directly to do autosending,
-// so skip the security check in that case
-// but only if its a local connection
-//
-if ($op == "autosend" && $_SERVER['REMOTE_ADDR'] == "127.0.0.1") {
-	include "../../init.php";
-	include "../../config.php";
-	include "$apps_path[libs]/function.php";
-}
-
 // security check
 //
 if (!defined("_SECURE_")) {
@@ -32,10 +22,6 @@ error_log(print_r($_GET, true));
 error_log(print_r($_POST, true));
 
 switch ($op) {
-	case "autosend" :
-		doAutoSend($_GET[frequency]);
-		break;
-		
 	case "list" :
 		echo makeList($selfurl);
 		break;

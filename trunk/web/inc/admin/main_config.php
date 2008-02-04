@@ -12,17 +12,17 @@ require_once 'DB/DataObject/FormBuilder.php';
 makeEditForm($selfurl);
 return;
 
-function makeEditForm($selfurl) {
-    
+function makeEditForm($selfurl) {    
 	// nice names for each field
     $formNames = array (
         'cfg_web_title' => 'Website title:',
+        'cfg_web_url' => 'Website URL:',
         'cfg_email_service' => 'Website email',
         'cfg_email_footer' => 'Forwarded email footer:',
         'cfg_gateway_module' => 'Activated gateway module:',
         'cfg_gateway_number' => 'Gateway number:',
         'cfg_system_from' => 'System messages <br/> (e.g., balance updates) are sent from:',
-        'cfg_web_url' => 'Website URL:'
+        'cfg_system_restart_frequency' => 'Restart the entire system regularly?'
     );
     
     // infer the fields we're going to show
@@ -53,7 +53,7 @@ function makeEditForm($selfurl) {
     		      "fieldsToRender" => $renderFields));
 
     // set up gw_mod enum
-    $fb->enumFields = array ('cfg_gateway_module');
+    $fb->enumFields = array ('cfg_gateway_module', 'cfg_system_restart_frequency');
     $fb->enumOptions = array ('cfg_gateway_module' => $gw_mods);
 
     $form = $fb->getForm("$selfurl");

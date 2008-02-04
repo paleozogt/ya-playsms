@@ -184,6 +184,18 @@ function gw_waitForStartup() {
     xml_parser_free($xml_parser);
 }
 
+function gw_get_restart_freq() {
+    $dbKannelConfig= DB_DataObject::factory('playsms_gwmodKannel_config');
+	$dbKannelConfig->get(1);
+	return $dbKannelConfig->cfg_restart_frequency;
+}
+
+function gw_restart() {
+	$output= array();
+	exec("sudo /etc/init.d/kannel restart", $output);
+	echo implode('\n', $output);
+}
+
 function loadKannelStatusUrl() {
     $dbKannelConfig= DB_DataObject::factory('playsms_gwmodKannel_config');
     $dbKannelConfig->limit(1);

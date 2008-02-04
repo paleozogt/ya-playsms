@@ -256,6 +256,7 @@ CREATE TABLE playsms_gwmodClickatell_apidata (
 
 DROP TABLE IF EXISTS playsms_gwmodClickatell_config;
 CREATE TABLE playsms_gwmodClickatell_config (
+  id int(11) NOT NULL auto_increment,
   cfg_name varchar(20) default 'gnokii',
   cfg_api_id varchar(20) default NULL,
   cfg_username varchar(100) default NULL,
@@ -263,14 +264,15 @@ CREATE TABLE playsms_gwmodClickatell_config (
   cfg_sender varchar(20) default NULL,
   cfg_send_url varchar(250) default NULL,
   cfg_incoming_path varchar(250) default NULL,
-  cfg_credit int(11) NOT NULL default '0'
+  cfg_credit int(11) NOT NULL default '0',
+  PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_gwmodClickatell_config`
 --
 
-INSERT INTO playsms_gwmodClickatell_config VALUES ('clickatell','123456','playsms','pwd','PlaySMS','http://api.clickatell.com/http','/usr/local',10);
+INSERT INTO playsms_gwmodClickatell_config VALUES ('1', 'clickatell','123456','playsms','pwd','PlaySMS','http://api.clickatell.com/http','/usr/local',10);
 
 --
 -- Table structure for table `playsms_gwmodGnokii_config`
@@ -278,15 +280,17 @@ INSERT INTO playsms_gwmodClickatell_config VALUES ('clickatell','123456','playsm
 
 DROP TABLE IF EXISTS playsms_gwmodGnokii_config;
 CREATE TABLE playsms_gwmodGnokii_config (
+  id int(11) NOT NULL auto_increment,
   cfg_name varchar(20) NOT NULL default '',
-  cfg_path varchar(250) NOT NULL default ''
+  cfg_path varchar(250) NOT NULL default '',
+  PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_gwmodGnokii_config`
 --
 
-INSERT INTO playsms_gwmodGnokii_config VALUES ('gnokii','/usr/local');
+INSERT INTO playsms_gwmodGnokii_config VALUES ('1','gnokii','/usr/local');
 
 --
 -- Table structure for table `playsms_gwmodKannel_config`
@@ -294,6 +298,7 @@ INSERT INTO playsms_gwmodGnokii_config VALUES ('gnokii','/usr/local');
 
 DROP TABLE IF EXISTS playsms_gwmodKannel_config;
 CREATE TABLE playsms_gwmodKannel_config (
+  id int(11) NOT NULL auto_increment,
   cfg_name varchar(20) default NULL,
   cfg_incoming_path varchar(250) default NULL,
   cfg_username varchar(100) default NULL,
@@ -301,14 +306,16 @@ CREATE TABLE playsms_gwmodKannel_config (
   cfg_global_sender varchar(20) default NULL,
   cfg_bearerbox_host varchar(250) default NULL,
   cfg_sendsms_port varchar(10) default NULL,
-  cfg_playsms_web varchar(250) default NULL
+  cfg_playsms_web varchar(250) default NULL,
+  cfg_restart_frequency enum('hourly','daily','weekly','monthly') default NULL,
+  PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_gwmodKannel_config`
 --
 
-INSERT INTO playsms_gwmodKannel_config VALUES ('kannel','/usr/local','playsms','playsms','123','127.0.0.1','13031','http://localhost/playsms');
+INSERT INTO playsms_gwmodKannel_config VALUES ('1','kannel','/usr/local','playsms','playsms','123','127.0.0.1','13031','http://localhost/playsms', NULL);
 
 --
 -- Table structure for table `playsms_gwmodKannel_dlr`
@@ -333,15 +340,17 @@ CREATE TABLE playsms_gwmodKannel_dlr (
 
 DROP TABLE IF EXISTS playsms_gwmodTemplate_config;
 CREATE TABLE playsms_gwmodTemplate_config (
+  id int(11) NOT NULL auto_increment,
   cfg_name varchar(20) NOT NULL default '',
-  cfg_path varchar(250) NOT NULL default ''
+  cfg_path varchar(250) NOT NULL default '',
+  PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_gwmodTemplate_config`
 --
 
-INSERT INTO playsms_gwmodTemplate_config VALUES ('template','/usr/local');
+INSERT INTO playsms_gwmodTemplate_config VALUES ('1', 'template','/usr/local');
 
 --
 -- Table structure for table `playsms_gwmodUplink`
@@ -368,19 +377,21 @@ INSERT INTO playsms_gwmodUplink VALUES (1,3,259,1);
 
 DROP TABLE IF EXISTS playsms_gwmodUplink_config;
 CREATE TABLE playsms_gwmodUplink_config (
+  id int(11) NOT NULL auto_increment,
   cfg_name varchar(20) default NULL,
   cfg_master varchar(250) default NULL,
   cfg_username varchar(100) default NULL,
   cfg_password varchar(100) default NULL,
   cfg_global_sender varchar(20) default NULL,
-  cfg_incoming_path varchar(250) default NULL
+  cfg_incoming_path varchar(250) default NULL,
+  PRIMARY KEY (id)
 ) TYPE=MyISAM;
 
 --
 -- Dumping data for table `playsms_gwmodUplink_config`
 --
 
-INSERT INTO playsms_gwmodUplink_config VALUES ('uplink','http://cpanel.smsrakyat.net','playsms','pwd','','/usr/local');
+INSERT INTO playsms_gwmodUplink_config VALUES ('1','uplink','http://cpanel.smsrakyat.net','playsms','pwd','','/usr/local');
 
 --
 -- Table structure for table `playsms_tblConfig_main`
@@ -396,6 +407,7 @@ CREATE TABLE playsms_tblConfig_main (
   cfg_gateway_module varchar(20) default NULL,
   cfg_gateway_number varchar(100) default NULL,
   cfg_system_from varchar(100) default NULL COMMENT 'comma-delimited',
+  cfg_system_restart_frequency enum('hourly','daily','weekly','monthly') default NULL,
   version varchar(25) default NULL COMMENT 'DATABASE VERSION - DO NOT EDIT BY HAND',
   PRIMARY KEY (id)
 ) TYPE=MyISAM;
@@ -404,7 +416,7 @@ CREATE TABLE playsms_tblConfig_main (
 -- Dumping data for table `playsms_tblConfig_main`
 --
 
-INSERT INTO playsms_tblConfig_main VALUES ('1', 'PlaySMS MPS (Mobile Portal System)', 'http://localhost/playsms', '','PlaySMS MPS (Mobile Portal System)','kannel','', '', '0.8.3');
+INSERT INTO playsms_tblConfig_main VALUES ('1', 'PlaySMS MPS (Mobile Portal System)', 'http://localhost/playsms', '','PlaySMS MPS (Mobile Portal System)','kannel','', '', NULL, '0.8.3');
 
 --
 -- Table structure for table `playsms_tblSMSIncoming`
