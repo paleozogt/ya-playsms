@@ -20,8 +20,13 @@ if ($err) {
 
 switch ($op) {
     case "del" :
-    	delete($smslog_id, $uid, $selfurl);
+    	delete($_POST['smslog_id'], $uid, $selfurl);
     	break;
+
+    case "resend":
+        resend($_POST['smslog_id'], true);
+        header("Location: $selfurl&err=" . urlencode("Message has been queued for resending."));
+        break;
 
     case "get_status" :
     default:
@@ -62,7 +67,14 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
 	$linksPrevNext= "<a href='$prevUrl'>[ Prev] </a>
     		   		 <a href='$nextUrl'>[ Next ]</a>";
 
-    $content = "
+	// create hidden form with the 
+	// id to delete, this way it will
+	// get POSTed
+	//
+	$delForm   = generateActionSubmitter("del", "$selfurl&op=del", "smslog_id");
+	$resendForm= generateActionSubmitter("resend", "$selfurl&op=resend", "smslog_id");
+
+    $content = "$delForm \n $resendForm
     		    <h2>$pagetitle</h2>
     		    <p/>
 				$linksPrevNext
@@ -116,10 +128,11 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
             $p_gpcode = "&nbsp;";
         }
  
- 		$deleteCode= "javascript: " .
-					 "ConfirmURL('Are you sure you want to delete outgoing SMS to `$hide_p_dst`, number $db->smslog_id ?'," .
-					 "'menu.php?inc=get_status&op=del&smslog_id=$db->smslog_id'" .
-					 ")";
+ 		$deleteCode= "javascript: del($db->smslog_id, " .
+                     "'Are you sure you want to delete outgoing SMS to `$hide_p_dst`, number $db->smslog_id ?');";
+        $resendCode= "javascript: resend($db->smslog_id);";
+		$actionCode= "<a href=\"$deleteCode\">[Delete]</a> <br/>
+		              <a href=\"$resendCode\">[Resend]</a>";
  
 		$content .= "
 				<tr>
@@ -130,7 +143,7 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
 					<td valign=top class=box_text align=center width=8%>$p_status</td>
 					<td valign=top class=box_text align=center width=8%>$p_gpcode</td>
 					<td valign=top class=box_text align=center width=8%>
-						<a href=\"$deleteCode\">[ Delete ]</a>
+						$actionCode
 					</td>
 				</tr>
 			    ";
