@@ -7,11 +7,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # playsms autosend actions
 #
-@hourly       root    /usr/share/playsms/bin/cron.sh hourly
-@daily        root    /usr/share/playsms/bin/cron.sh daily
-@weekly       root    /usr/share/playsms/bin/cron.sh weekly
-@monthly      root    /usr/share/playsms/bin/cron.sh monthly
-@reboot       root    /usr/share/playsms/bin/cron.sh startup
+@hourly       root    cd /usr/share/playsms/bin ; ./cron.php hourly
+@daily        root    cd /usr/share/playsms/bin ; ./cron.php daily
+@weekly       root    cd /usr/share/playsms/bin ; ./cron.php weekly
+@monthly      root    cd /usr/share/playsms/bin ; ./cron.php monthly
+@reboot       root    cd /usr/share/playsms/bin ; ./cron.php startup
 
 # test (every minute)
 # * *    * * *  root    echo "playsms test"
