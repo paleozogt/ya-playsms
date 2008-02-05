@@ -154,19 +154,22 @@ function send2group($mobile_sender, $gp_code, $message, $sms_type = "text", $uni
 // we give the smslog_id to the gateway, it will
 // update the smslog with the new status.
 // 
-function resend($smslog_id) {
-    // pause for a bit to allow
-    // whatever's wrong with the gateway
-    // to clear itself out
-    sleep(RESEND_SLEEP);
-    
+function resend($smslog_id, $override= false) {
+    if (!$override) {
+        // pause for a bit to allow
+        // whatever's wrong with the gateway
+        // to clear itself out
+        sleep(RESEND_SLEEP);
+    }
+        
 	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
 	if ($db->get($smslog_id)) {
 	    
 		// increment the attempts count
 	    $db->send_tries++;
 	    $db->update();
-	    if ($db->send_tries <= SEND_TRY_MAX) {
+        
+	    if ($override || 0 == (int)fmod($db->send_tries, SEND_TRY_MAX)) {
 	    	error_log("resending (attempt $db->send_tries)");    
 
 		    gw_send_sms($db->p_src, $db->p_dst, $db->p_msg, PV, $db->uid, 
@@ -745,4 +748,20 @@ function getNumSmsMultipart($msg) {
     } else {
         return ceil($len / $SMS_SINGLE_MULTIPART_MAXCHARS);
     }	
+}
+
+function generateActionSubmitter($actionName, $actionUrl, $varName= "id") {
+	$actionFormName= $actionName . "_Form";
+    return "<form name=\"$actionFormName\" method=\"post\" action=\"$actionUrl\">
+                <input type=\"hidden\" name=\"$varName\" value=\"\"/>
+            </form>
+            <script language=\"JavaScript\"><!--
+                function $actionName($varName, msg) {
+                    if (msg == undefined || confirm(msg)) {
+                        var form= document.forms.$actionFormName;
+                        form.$varName.value=$varName;
+                        form.submit();
+                    }
+                }
+             --></script>";
 }
