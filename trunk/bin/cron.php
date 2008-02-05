@@ -5,6 +5,7 @@
 	include "$apps_path[libs]/function.php";
 
 	$frequency= @$_SERVER['argv'][1];
+	error_log("playsms cron - frequency \"$frequency\"");
 
 	// restart the gateway module?
 	if ($frequency == gw_get_restart_freq()) {
