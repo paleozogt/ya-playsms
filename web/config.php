@@ -22,8 +22,8 @@ define(LOGPFX, "playsms: ");
 // -----------------------------------------------------------------
 
 // base application directory
-//$base = "/usr/share/playsms";
-$base = "/home/mithrandir/Development/playsms/playsms";
+$base = "/usr/share/playsms";
+//$base = "/home/mithrandir/Development/playsms/playsms";
 
 // you can turn off PHP error reporting by uncommenting below line
 // on production level you should turn off PHP error reporting

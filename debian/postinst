@@ -22,6 +22,7 @@ webserver=apache2
 webuser=www-data
 installpath=/usr/share/$package
 binpath=$installpath/bin
+dbinfo=/etc/$package/dbinfo.php
 
 logger "$package postinst args: $@"
 
@@ -34,7 +35,7 @@ logger "$package postinst args: $@"
 dbc_first_version="0.8.3"
 
 # tell dbconf to generate a config file for the database
-dbc_generate_include=php:/etc/$package/database.php
+dbc_generate_include=php:$dbinfo
 
 # run dbconf-common
 dbc_go $package $@
@@ -42,6 +43,13 @@ dbc_go $package $@
 
 if [ "$1" = "configure" ]; then
      logger "$package upgrading from $2"
+
+     # remove the obsolete cron files
+     # from the old version
+     #
+	 if [ "$2" = "0.8.2" ]; then
+	 	rm -rf /etc/$package/cron
+	 fi
 
      # give apache user sudo rights for our scripts
      # by adding the webuser to the sudoers file, but
@@ -55,6 +63,10 @@ if [ "$1" = "configure" ]; then
      if [ "$ret" != "0" ]; then
         echo "\n\n$webuser_sudo" >> /etc/sudoers
      fi
+
+     # make sure we can read the database info
+     #
+	 chown www-data $dbinfo
 
      # add the kannel user to group 'dialout'
      # so that it can use bluetooth devices
