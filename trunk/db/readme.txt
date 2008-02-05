@@ -7,9 +7,11 @@ If you are NOT upgrading, then run...
         mysql < playsms-makedb.sql
 
 If you ARE upgrading...
-    Run the upgradedb-from-*.sql that corresponds to your current version.
-    e.g., if you are currently running 0.8.2 and are upgrading, then do this:
-        mysql < upgradedb-from-0.8.2.sql
+    Run the playsms-upgrade_*.sql that corresponds to the version you're are
+    upgrading TO (including all intermediate upgrades as they are not cumulative).
+    e.g., if you are currently running v0.8.1 and are upgrading to v0.8.3, then do this:
+        mysql < playsms-upgrade_0.8.2.sql
+        mysql < playsms-upgrade_0.8.3.sql
 
 If you are a developer...
     If you are making database structure changes, you need to do 3 things:

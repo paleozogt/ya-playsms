@@ -10,7 +10,7 @@ ALTER TABLE `playsms_gwmodKannel_config` ADD COLUMN `id` int(11) NOT NULL auto_i
 ALTER TABLE `playsms_gwmodClickatell_config` ADD COLUMN `id` int(11) NOT NULL auto_increment primary key first;
 ALTER TABLE `playsms_gwmodGnokii_config` ADD COLUMN `id` int(11) NOT NULL auto_increment primary key first;
 ALTER TABLE `playsms_gwmodTemplate_config` ADD COLUMN `id` int(11) NOT NULL auto_increment primary key first;
-ALTER TABLE `playsms_gwmodUplink_config` ADD COLUMN `id` int(11) NOT NULL auto_increment primary key first
+ALTER TABLE `playsms_gwmodUplink_config` ADD COLUMN `id` int(11) NOT NULL auto_increment primary key first;
 ALTER TABLE `playsms_tblConfig_main` ADD COLUMN `id` int(11) NOT NULL auto_increment primary key first;
 
 # remove text field length limits!

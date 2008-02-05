@@ -1,17 +1,21 @@
 playsms (0.8.3-1) unstable; urgency=high
-  * removed length limit in database for autoreplies
-  * added char count / sms count to autoreply listing
-  * added sms editor to templates page
-  * added support for autoreplying to unknown codes (using special "_UNKNOWN_" code)
+  * can now upgrade old databases! (see db/readme.txt and db/playsms-upgrade_*.sql)
+  * added char count/sms count to autoreply listing
+  * added support for autoreplying when the message doesn't match anything (using special "_UNKNOWN_" code)
+  * added resend-on-fail logic
+  * added manual resend from the Outbox
+  * can browse into older entries in Inbox/Outbox
+  * for admins, can now look at Inbox/Outbox for all users
   * added autosend 'startup'
-  * added resending logic
+  * added kannel restarting and full system restarting (unix only)
+  * added sms editor to templates page
+  * removed length limit in database for many sms fields (they were arbitrarily short??)
   * more DB_DataObject usage
-  * can now upgrade old databases!  (see db/playsms-upgrade_*.sql)
   * debian package:
-  *    now uses dbconfig-common, so database installation/upgrading now automated
-  *    cleaned up cron for autosending
+      - now uses dbconfig-common, so database installation/upgrading is automated
+      - cleaned up cron for autosending
 
- -- Aaron Simmons <mithrandir@ic.org>  16 Jan 2008 10:00:00 +0800
+ -- Aaron Simmons <mithrandir@ic.org>  5 Feb 2008 10:00:00 +0800
 
 playsms (0.8.2) unstable; urgency=high
 

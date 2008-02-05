@@ -1,6 +1,22 @@
 <?php
 include "config.php";
 
+# override the default database options
+#
+$dbinfos= array ('/etc/playsms/dbinfo.php', './dbinfo.php');
+foreach ($dbinfos as $dbinfo) {
+	if (file_exists($dbinfo)) {
+		include $dbinfo;
+
+        $db_param[type] = $dbtype;
+        $db_param[user] = $dbuser;
+        $db_param[pass] = $dbpass;
+        $db_param[name] = $dbname;
+
+		break;
+	}
+}
+
 // --------------------------------------------------------------------------------
 if (!$DAEMON_PROCESS) {
 	if (trim($SERVER_PROTOCOL) == "HTTP/1.1") {
