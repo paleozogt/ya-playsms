@@ -48,6 +48,8 @@ if [ "$1" = "configure" ]; then
      # from the old version
      #
 	 if [ "$2" = "0.8.2" ]; then
+        rm -rf /etc/cron.hourly/$package-hourly /etc/cron.daily/$package-daily
+        rm -rf /etc/cron.weekly/$package-weekly /etc/cron.monthly/$package-monthly
 	 	rm -rf /etc/$package/cron
 	 fi
 
