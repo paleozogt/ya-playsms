@@ -8,7 +8,7 @@ Other new things: auto-resending on failure, better inbox/outbox, and autoreply 
 = Details =
   * can now upgrade old databases! (see `db/readme.txt` and `db/playsms-upgrade_*.sql`)
   * added char count/sms count to autoreply listing
-  * added support for autoreplying when the message doesn't match anything (using special "_UNKNOWN_" code)
+  * added support for autoreplying when the message doesn't match anything (using special `"_UNKNOWN_"` code)
   * added resend-on-fail logic
   * added manual resend from the Outbox
   * can browse into older entries in Inbox/Outbox
