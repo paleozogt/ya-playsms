@@ -17,6 +17,17 @@ foreach ($dbinfos as $dbinfo) {
 	}
 }
 
+// configure DB_DataObject
+$dboptions = &PEAR::getStaticProperty('DB_DataObject','options');
+$dataobjname="DataObjects";
+$dboptions = array(
+    'database'         => "mysql://$db_param[user]:$db_param[pass]@localhost/$db_param[name]",
+    'schema_location'  => "$apps_path[base]/$dataobjname",
+    'class_location'   => "$apps_path[base]/$dataobjname",
+    'require_prefix'   => "{$dataobjname}/",
+    'class_prefix'     => "{$dataobjname}_",
+);
+
 // --------------------------------------------------------------------------------
 if (!$DAEMON_PROCESS) {
 	if (trim($SERVER_PROTOCOL) == "HTTP/1.1") {

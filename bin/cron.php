@@ -22,7 +22,7 @@
 	if ($frequency == $dbMainConfig->cfg_system_restart_frequency) {
 		$output= array();
 		$rebootwait= 5;
-		exec("sudo shutdown -r +$rebootwait 'playsms reboot in $rebootwait minutes...' > /dev/null 2>&1 &", $output);
+		exec("sudo shutdown -r +$rebootwait 'playsms $frequency reboot' > /dev/null 2>&1 &", $output);
 		echo implode('\n', $output);
 	}
 ?>

@@ -23,7 +23,6 @@ define(LOGPFX, "playsms: ");
 
 // base application directory
 $base = "/usr/share/playsms";
-//$base = "/home/mithrandir/Development/playsms/playsms";
 
 // you can turn off PHP error reporting by uncommenting below line
 // on production level you should turn off PHP error reporting
@@ -56,15 +55,4 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $custompearpath);
 
 require_once 'PEAR.php';
 
-
-// configure DB_DataObject
-$dboptions = &PEAR::getStaticProperty('DB_DataObject','options');
-$dataobjname="DataObjects";
-$dboptions = array(
-    'database'         => "mysql://$db_param[user]:$db_param[pass]@localhost/$db_param[name]",
-    'schema_location'  => "$apps_path[base]/$dataobjname",
-    'class_location'   => "$apps_path[base]/$dataobjname",
-    'require_prefix'   => "{$dataobjname}/",
-    'class_prefix'     => "{$dataobjname}_",
-);
 ?>
