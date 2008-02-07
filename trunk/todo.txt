@@ -1,18 +1,31 @@
 TODO:
 
-- sync svn with google code
-- display better logs (show all incoming and all outgoing, not just by user)
-- add bar graphing of incoming / outgoing autoreplies
-- fix kannel's geturl to not hit the database on load (possible?)
+    - overhaul pattern-matching for 'features' (autoreply, polls, etc)
+        - allow for multiple patterns to go to one feature (e.g., keyword variations)
 
-- have kannel's confs setup for multiple smsc modems? how to test? how are they routed?
-- start overhauling php database code to use formbuilder
+    inbox/outbox:
+        - preserve returns in inbox/outbox
+        - incoming/outgoing log output as csv
+        - add visual graphing of incoming / outgoing autoreplies
 
-- automated suoders (visudo)
-- adduser (remove user from groups?)
-- get referrer info for easy "go back"
+    kannel:
+        - fix kannel's geturl to not hit the database on load (possible?)
+        - have kannel's confs setup for multiple smsc modems? how to test? how are they routed?
+
+    - start overhauling php database code to use formbuilder
+    - automated suoders on install/uninstall (visudo)
+    - get referrer info for easy "go back"
 
 DONE:
+
+- easy database upgrading
+- resending
+- resend link for outbox to automate resending
+
+
+- sync svn with google code
+- display better logs (show all incoming and all outgoing, not just by user)
+- adduser (remove user from groups?)
 
 - POST with javascript?
 - handle incoming balance check (broadcast to admin group)
