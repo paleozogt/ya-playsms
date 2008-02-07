@@ -1,7 +1,7 @@
-PlaySMS
-URL: http://playsms.sourceforge.net
-Version 0.8.1
-Last update 060506
+YA-PlaySMS (Yet Another PlaySMS)
+http://code.google.com/p/ya-playsms/
+Version 0.8.3
+Last update 2008-Feb-07
 
 
 Description
@@ -39,38 +39,8 @@ Installation
 Please read INSTALL and then FAQ
 
 
-Main Author
------------
-Anton Raharja 
-URL	 : http://sleepless.ngoprek.org
-Email	 : anton@ngoprek.org
-Address	 : Jl. Pangkalan Jati II/B1, Jakarta Timur, DKI Jakarta, Indonesia, 13620
-Mobile	 : +6281383413543
-Yahoo ID : anton_rd
-
-
-Developers
-----------
-Anton Raharja (anton@ngoprek.org)
-Abdul Hanan (hanan@wan-dki.net)
-
-
-Special Thanks
---------------
-Donny B.U (dbu@ictwatch.com)
-Sindu Irawan (sindu@wan-dki.net)
-Cinta Cute
-
-
-Sponsored By
-------------
-- http://www.ictcentre.net
-- http://www.ictwatch.com
-- http://www.sourceforge.net
-- http://www.wan-dki.net
-
-
 Words of Wisdom
 ---------------
-Please send email to me (anton@ngoprek.org) and/or post messages to PlaySMS mailing list 
-(playsms-devel@yahoogroups.com) if you use this application
+Please post messages to PlaySMS mailing list 
+(playsms-devel@yahoogroups.com) if you use this application.
+

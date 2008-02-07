@@ -1,6 +1,6 @@
 DESCRIPTION
 -----------
-This document explain about howto install or setup PlaySMS version 0.8.1
+This document explain about howto install or setup PlaySMS.
 
 
 WARNING !!!
@@ -35,15 +35,19 @@ Minimum Required Server Operator (or Developer)
     - Always find reading README, INSTALL, FAQ and other docs as a fun activity :)
 
 
-UPGRADE FROM 0.8 TO 0.8.1
+UPGRADING
 -------------------------
-I do not provide a way to upgrade until version 1.0
+Simply overwrite the playsms directory with the new one.  In addition, you must
+update the database.  See db/readme.txt
 
    
 INSTALLATION on Linux
 ---------------------
 
 Note:
+- It is recommended to use the debian package installer, which automates
+  much of the setup.  If you want to do it by hand then read on.
+
 - I assumed that you have root priviledge. If you dont, understand that im trying to 
   guide you to install PlaySMS on /home/playsms under user 'playsms'. You may use your own
   username and your own home directory or any preferred directory.
