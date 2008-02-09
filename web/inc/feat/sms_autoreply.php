@@ -19,7 +19,7 @@ switch ($op) {
 		        <h2>List/Manage/Delete SMS autoreplies</h2>
 		        <p>
 		        <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_add\">[ Add SMS autoreply ]</a>
-		        <p>
+		        <hr><p>
 		    ";
 		if (!isadmin()) {
 			$query_user_only = "WHERE uid='$uid'";
@@ -34,12 +34,8 @@ switch ($op) {
 			"<b>Code:</b> $db_row[autoreply_code] &nbsp;&nbsp;<b>User:</b> $owner<br><br>";
 		}
 		echo $content;
-		echo "
-		        <p>
-		        <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_add\">[ Add SMS autoreply ]</a>
-		    ";
 		    
-		echo "<p/>$special_codes_notice";    
+		echo "<hr><p/>$special_codes_notice";    
 		    
 		break;
 	case "sms_autoreply_manage" :
@@ -66,7 +62,10 @@ switch ($op) {
 	            &nbsp
 	            <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_edit&autoreply_code=$manage_autoreply_code&autoreply_id=$autoreply_id\">
 	            	[ Rename ]</a>
-		        <p>
+	            &nbsp
+	            <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_list\">
+	            	[ Back ]</a>
+		        <hr><p>
 		    ";
 		$db_query = "SELECT * FROM playsms_featAutoreply_scenario WHERE autoreply_id='$autoreply_id' ORDER BY autoreply_scenario_param1";
 		$db_result = dba_query($db_query);
@@ -74,8 +73,9 @@ switch ($op) {
 			$owner = uid2username($o_uid);
 			$list_of_param = "";
 			for ($i = 1; $i <= 7; $i++) {
-				$list_of_param .= $db_row["autoreply_scenario_param$i"] . "&nbsp";
+				$list_of_param .= $db_row["autoreply_scenario_param$i"] . " ";
 			}
+			$list_of_param= trim($list_of_param);
 			
 			// make sure to normalize line endings
 			// before doing a char-count
@@ -84,19 +84,21 @@ switch ($op) {
 			$msg = str_replace("\r", "\n", $msg);
 			$result_len= strlen($msg);
 			$result_num_smses= getNumSmsMultipart($msg);
+			$result= nl2br($db_row[autoreply_scenario_result]);
 
-			$content .= "[<a href=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_edit&autoreply_id=$autoreply_id&autoreply_scenario_id=$db_row[autoreply_scenario_id]>e</a>] " .
+			$content .= "<p/>[<a href=menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_edit&autoreply_id=$autoreply_id&autoreply_scenario_id=$db_row[autoreply_scenario_id]>e</a>] " .
 			"[<a href=\"javascript: ConfirmURL('Are you sure you want to delete this SMS autoreply scenario ?'," .
 			"'menu.php?inc=sms_autoreply_scenario&op=sms_autoreply_scenario_del&autoreply_scenario_id=$db_row[autoreply_scenario_id]&autoreply_id=$autoreply_id')\">x</a>] " .
-			"<b>Param:</b> $list_of_param&nbsp;<br/>" .
-			"<b>Return:</b> $db_row[autoreply_scenario_result]&nbsp;&nbsp;<b>User:</b> $owner<br/>" .
+			"<b>Param:</b> \"$list_of_param\" &nbsp;" .
+			"<b>User:</b> $owner &nbsp" .
 			"<b>Length:</b> $result_len chars ; $result_num_smses SMSes<br/>" .
+			"$result " .
 			"<br/>";
 		}
 		$content .= "
 		        <p>
 		        </form>
-		    <p/>$special_codes_notice";
+		    <hr><p/>$special_codes_notice";
 		echo $content;
 		break;
 	case "sms_autoreply_del" :
