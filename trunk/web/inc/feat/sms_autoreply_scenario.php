@@ -46,7 +46,7 @@ switch ($op)
                                     $add_autoreply_scenario_result, "add_autoreply_scenario_result");
 	    $content.= "<p><input type=submit class=button value=Add>" .
 	        "<p><li>" . 
-            "<a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
+            "<a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">[ Back ]</a>
 	        </form>
 	    ";
 	    echo $content;
@@ -124,7 +124,7 @@ switch ($op)
 	    $content.= generateSmsInput($formName, "SMS autoreply scenario result:", 
                                         $edit_autoreply_scenario_result, "edit_autoreply_scenario_result");
 	    $content.= "<p/><input type=submit class=button value=\"Save\">
-	        <p/><li><a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">Back</a>
+	        <p/><li><a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_manage&autoreply_id=$autoreply_id\">[ Back ]</a>
 	        </form>
 	    ";
 	    echo $content;
