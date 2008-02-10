@@ -4,6 +4,8 @@ if (!defined("_SECURE_")) {
 	die("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
 };
 
+require_once 'HTML/QuickForm.php';
+
 $op = $_GET[op];
 $selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autoreply";
 error_log("op=$op");
@@ -18,7 +20,8 @@ switch ($op) {
 		$content .= "
 		        <h2>List/Manage/Delete SMS autoreplies</h2>
 		        <p>
-		        <a href=\"menu.php?inc=sms_autoreply&op=sms_autoreply_add\">[ Add SMS autoreply ]</a>
+		        <a href=\"$selfurl&op=sms_autoreply_add\">[ Add SMS autoreply ]</a>
+		       	<a href=\"$selfurl&op=test\">[ Test Autoreply ]</a>
 		        <hr><p>
 		    ";
 		if (!isadmin()) {
@@ -130,7 +133,10 @@ switch ($op) {
 		break;
 	case "sms_autoreply_edit_yes" :
 		doAddEdit(false, $_POST[autoreply_code], $_GET[autoreply_id]);
+		break;
 
+	case "test":
+		testAutoreply($selfurl);
 		break;
 }
 
@@ -195,4 +201,22 @@ function doAddEdit($add, $autoreply_code, $autoreply_id = "") {
 	}
 	header("Location: $gotourl&err=" . urlencode($error_string));
 }
+
+function testAutoreply($selfurl) {
+    $form = new HTML_QuickForm('autoreply_test', 'post', "$selfurl&op=test");
+
+	// Add some elements to the form
+	$form->addElement('textarea', 'message', 'Test Message:');
+	setupSmsCounting($form, 'message');
+	$form->addElement('submit', 'submit', 'Test');
+	
+	if ($form->validate()) {
+	    echo matchAutoreply($form->exportValue('message'));
+	    exit;
+	}
+	
+	// Output the form
+	$form->display();
+}
+
 ?>

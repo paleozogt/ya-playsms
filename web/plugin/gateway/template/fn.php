@@ -53,7 +53,7 @@ function gw_set_incoming_action() {
 	// $sms_datetime	: incoming sms datetime
 	// $target_code	: target code
 	// $message		: incoming sms message
-	// setsmsincomingaction($sms_datetime,$sms_sender,$target_code,$message)
+	// setsmsincomingaction($sms_datetime,$sms_sender,$message)
 	// you must retrieve all informations needed by setsmsincomingaction()
 	// from incoming sms, have a look gnokii gateway module
 }
