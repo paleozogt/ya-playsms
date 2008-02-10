@@ -1,5 +1,31 @@
 TODO:
 
+	- interesting mis-texts:
+		pill #1
+		stds # 7
+		condom2
+		hivaids_6
+		genfacts 7.
+
+		info stds
+		set pill
+		c0nd0m 2 
+		genfact 8
+		ex: set
+		preg,
+
+		set genfacts, c0nd0m
+		pill 1 5 7 9
+		iud 1,2,3,4
+
+	- lenient keyword matching:
+		- concat keywords from db using more than just space: no-space, pound, pound-space, underscore
+		- if no immediate match, match with sql like and %
+		- have top-level 'alias' checkbox to point to other top-level keyword (eg, genfact -> genfacts)
+		- have special syntax for scenario results to point to other scenarios
+			- eg, for 'set pill' it would be '##pill##'
+			- have param variables?
+
     - overhaul pattern-matching for 'features' (autoreply, polls, etc)
         - allow for multiple patterns to go to one feature (e.g., keyword variations)
 
