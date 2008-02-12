@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+#set -x
+
+package=playsms
+
+# start up debconf
+. /usr/share/debconf/confmodule
+
+# start up dbconfig-common
+# (uses debconf to config the database)
+#
+if [ -f /usr/share/dbconfig-common/dpkg/config.mysql ]; then
+	. /usr/share/dbconfig-common/dpkg/config.mysql 
+
+    # first version that started using dbconfig-common
+	dbc_first_version="0.8.3"
+
+	# tell dbc where to get the login
+	# info from pre-dbc versions
+	#
+	dbc_load_include="php:/usr/share/$package/web/config.php"
+	dbc_load_include_args="--dbuser=db_param[user] --dbpass=db_param[pass] --dbname=db_param[name]"
+
+	dbc_go $package $@
+fi
+

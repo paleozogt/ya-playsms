@@ -1,0 +1,4 @@
+#!/bin/sh
+logger "pin agent used"
+exec /bin/echo PIN:1234
+

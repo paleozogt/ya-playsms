@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+package=playsms
+
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/prerm.mysql 
+dbc_go $package $@

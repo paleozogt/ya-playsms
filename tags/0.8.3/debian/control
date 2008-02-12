@@ -1,0 +1,12 @@
+Source: playsms
+Section: unknown
+Priority: extra
+Maintainer: Aaron Simmons <mithrandir@ic.org>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: playsms
+Architecture: all
+Depends: dbconfig-common, apache2, php5, mysql-server (>= 5), kannel, php5-mysql, libapache2-mod-php5, curl, bluez-utils, obexfs, php-pear, php-db, php-config, php-xml-parser, php-xml-util
+Replaces: kannel
+Description: PlaySMS is a flexible Web-based Mobile Portal System that it can be made to fit to various services such as an SMS gateway, personal messaging systems, corporate and group communication tools.

@@ -1,0 +1,46 @@
+YA-PlaySMS (Yet Another PlaySMS)
+http://code.google.com/p/ya-playsms/
+Version 0.8.3
+Last update 2008-Feb-07
+
+
+Description
+-----------
+PlaySMS is a flexible Web-based Mobile Portal System that it can be made to fit to 
+various services such as an SMS gateway, personal messaging systems, corporate and 
+group communication tools
+
+Current Features
+----------------
+- Multiple database engine supported (using PEAR DB)
+- Available for shared database usage (tables using its own prefix)
+- Send SMS to single mobile phone (web2mobile)
+- Send SMS broadcasted to a group of mobile phones (web2mobiles)
+- Support sending flash and unicode message
+- Receive private SMS to Inbox (mobile2web)
+- Forward single SMS from mobile phone to a group of mobile phones (mobile2mobiles)
+- SMS autoreply, for easy autoreplying formatted incoming SMS
+- SMS board, forward received SMS to email,html and/or xml page
+- SMS command, execute server side shell script using SMS
+- SMS custom, forward incoming SMS to custom SMS application
+- SMS poll, manage polling system using SMS
+- Simple webservices for sending SMS and retrieving delivery reports (ws.php)
+- Create your own gateway module other than Gnokii, Kannel or sms server Clickatell
+- Easy webbased control panel
+
+
+License
+-------
+GPL as in GNU General Public License, please read LICENSE
+
+
+Installation
+------------
+Please read INSTALL and then FAQ
+
+
+Words of Wisdom
+---------------
+Please post messages to PlaySMS mailing list 
+(playsms-devel@yahoogroups.com) if you use this application.
+
