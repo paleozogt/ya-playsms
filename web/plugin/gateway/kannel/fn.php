@@ -143,9 +143,15 @@ function gw_set_incoming_action() {
             for ($lc = 2; $lc < count($lines); $lc++) {
                 $message .= trim($lines[$lc]);
             }
-            $messsage= urldecode($message);
-
-            if (setsmsincomingaction($sms_datetime, $sms_sender, $message)) {
+            $array_target_code = explode(" ", urldecode($message));
+            $target_code = strtoupper(trim($array_target_code[0]));
+            $message = $array_target_code[1];
+            for ($i = 2; $i < count($array_target_code); $i++) {
+                $message .= " " . $array_target_code[$i];
+            }
+            // collected:
+            // $sms_datetime, $sms_sender, $target_code, $message
+            if (setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message)) {
                 @ unlink($tobe_deleted);
             }
         }

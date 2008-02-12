@@ -23,6 +23,14 @@ if ($t && $q && $a) {
 	$sms_datetime = trim($t);
 	$sms_sender = trim($q);
 	$message = trim($a);
-	setsmsincomingaction($sms_datetime, $sms_sender, $message);
+	$array_target_code = explode(" ", $message);
+	$target_code = strtoupper(trim($array_target_code[0]));
+	$message = $array_target_code[1];
+	for ($i = 2; $i < count($array_target_code); $i++) {
+		$message .= " " . $array_target_code[$i];
+	}
+	// collected:
+	// $sms_datetime, $sms_sender, $target_code, $message
+	setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message);
 }
 ?>

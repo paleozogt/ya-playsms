@@ -464,184 +464,65 @@ function processcustom($sms_datetime, $sms_sender, $custom_code, $custom_param) 
 	return $ok;
 }
 
-define(KEYWORD_MAX, 8);
-define(VARMARKER  , "##");
-define(REMATCH    , "##REMATCH##");			// invoke a rematching
-define(KEYWORDS   , "##KEYWORDS##");		// all keywords
-define(SUBKEYWORDS, "##SUBKEYWORDS##");		// all keywords but first one
-define(KEYWORD    , "##KEYWORD");			// specific keyword (partial)
-
-function simpleMatchAutoreply($keywords) {
-	error_log("simpleMatchAutoreply: " . print_r($keywords, true));
-
-    $autoreply= DB_DataObject::factory('playsms_featAutoreply');
-    $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
-
-	$i= 0;
-    $autoreply->autoreply_code= $keywords[$i++];
-	$scenario->autoreply_scenario_param1= $keywords[$i++];
-	$scenario->autoreply_scenario_param2= $keywords[$i++];
-	$scenario->autoreply_scenario_param3= $keywords[$i++];
-	$scenario->autoreply_scenario_param4= $keywords[$i++];
-	$scenario->autoreply_scenario_param5= $keywords[$i++];
-	$scenario->autoreply_scenario_param6= $keywords[$i++];
-	$scenario->autoreply_scenario_param7= $keywords[$i++];
-	$autoreply->limit(1);
-	$autoreply->joinAdd($scenario);
-
-	if ($autoreply->find() && $autoreply->fetch()) {
-		$match= $autoreply->toArray();
-		$match['keywords']= $keywords;
-		return $match;
-	}
-}
-
-function nodelimiterMatchAutoreply($message) {
-	error_log("nodelimiterMatchAutoreply");  
-
-    $autoreply= DB_DataObject::factory('playsms_featAutoreply');
-    $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
-
-	// glom all the keywords together with no delimiters
-	$fullmessage= 'full_message';
-	$select= "concat(playsms_featAutoreply.autoreply_code";
-	for ($i= 1; $i < KEYWORD_MAX; $i++) {
-	    $select.= ", playsms_featAutoreply_scenario.autoreply_scenario_param" . $i;
-	}
-	$select.= ") as $fullmessage";
-
-	$autoreply->selectAdd($select);
-	$autoreply->having("$fullmessage = \"$message\"");
-	$autoreply->limit(1);
-	$autoreply->joinAdd($scenario);
-
-	if ($autoreply->find() && $autoreply->fetch()) {  
-		$match= $autoreply->toArray();
-		$match['keywords']= array(
-            $autoreply->autoreply_code, $autoreply->autoreply_scenario_param1, 
-            $autoreply->autoreply_scenario_param2, $autoreply->autoreply_scenario_param3, 
-            $autoreply->autoreply_scenario_param4, $autoreply->autoreply_scenario_param5, 
-            $autoreply->autoreply_scenario_param6, $autoreply->autoreply_scenario_param7);
-		return $match;
-	}
-}
-
-function multiMatchAutoreply($message) {    
-
-	// try mmore creative keyword delimiters
-	//
-	$delimiter= "/[\s,_#\.]+/";
-	$keywords= preg_split($delimiter, $message, KEYWORD_MAX);
-	$match= simpleMatchAutoreply($keywords);
-	if ($match) return $match;
-	
-	// try with no delimiters
-	$match= nodelimiterMatchAutoreply($message);
-	if ($match) return $match;
-	
-	// if we haven't found anything so far, then
-	// match against the special unknown under the first keyword
-    // (make sure we keep the original keywords, not the unknown keywords,
-    // as this matters for later reply evaluation)
-	$match= simpleMatchAutoreply(array($keywords[0], '_UNKNOWN_'));
-	if ($match) {
-	    $match['keywords']= $keywords;
-        return $match;
-    }
-    
-	// if we *still* haven't found anything, then
-	// match against the top-level unknown
-    // (make sure we keep the original keywords, not the unknown keywords,
-    // as this matters for later reply evaluation)
-	$match= simpleMatchAutoreply(array('_UNKNOWN_'));
-	if ($match) {
-        $match['keywords']= $keywords;
-        return $match;
-    }
-    
-	return $match;
-}
-
-function matchAutoreply($message, $simple= true) {
-error_log("matchAutoreply " . $message);    
-
-	if ($simple) {
-		// try simple (and quick!) keyword delimiters
-		//
-		$delimiter= ' ';
-		$keywords= explode($delimiter, $message, KEYWORD_MAX);
-		$match= simpleMatchAutoreply($keywords);
-		if (!$match) return $match;
-	} else {
-	    $match= multiMatchAutoreply($message);
-		if (!$match) return $match;
-	}
-
-	$match['autoreply_scenario_result']= evaluateAutoreply($match['keywords'], $match['autoreply_scenario_result']);
-	error_log("match= \"" . $match['autoreply_scenario_result'] . "\"");
-	return $match;
-}
-
-function evaluateAutoreply($keywords, $result) {
-error_log("evaluateAutoreply " . print_r($keywords, true));    
-
-	// To save time, check if there are any special variable markers.
-	// If there are any, then we replace them with the
-	// appropriate values and/or take special action
-	//
-	if (stristr($result, VARMARKER)) {
-		if (stristr($result, KEYWORDS))
-			$result= str_ireplace(KEYWORDS, implode(' ', $keywords), $result);
-		if (stristr($result, SUBKEYWORDS)) {
-	    	$result= str_ireplace(SUBKEYWORDS, implode(' ', array_slice($keywords, 1)), $result);
-		}
-		
-		// to save time, check if there are any
-		// specific keyword references
-		//
-		if (stristr($result, KEYWORD)) {
-		    for ($i= 0; $i < KEYWORD_MAX; $i++) {
-		    	$var= KEYWORD . $i . VARMARKER;
-		        $result= str_ireplace($var, $keywords[$i], $result);
-		    }
-		}
-		
-		// if the result of this match
-		// says to do a rematch, then do a match
-		// using the result itself.  this
-		// allows autoreplies to 'point' to each
-		// other for variations in spelling, etc
-		//
-		if (stristr($result, REMATCH)) {
-		    $result= str_ireplace(REMATCH, "", $result);
-		    $match= matchAutoreply($result, false);
-		    $result= $match['autoreply_scenario_result'];
-		}
-	}
-	    
-    return $result;
-}
-
-function processAutoreply($sms_datetime, $sms_sender, $message, $simple= true) {
+// part of SMS autoreply
+function processautoreply($sms_datetime, $sms_sender, $autoreply_code, $autoreply_param) {
 	global $datetime_now;
+	$ok = false;
+	$autoreply_request = $autoreply_code . " " . $autoreply_param;
+	$array_autoreply_request = explode(" ", $autoreply_request);
+	for ($i = 0; $i < count($array_autoreply_request); $i++) {
+		$autoreply_part[$i] = trim($array_autoreply_request[$i]);
+		$tmp_autoreply_request .= $array_autoreply_request[$i] . " ";
+	}
+	$autoreply_request = trim($tmp_autoreply_request);
+	for ($i = 1; $i < 8; $i++) {
+		$autoreply_scenario_param_list .= "autoreply_scenario_param$i='" . $autoreply_part[$i] . "' AND ";
+	}
+	$db_query = "
+		SELECT autoreply_scenario_result FROM playsms_featAutoreply, playsms_featAutoreply_scenario 
+		WHERE 
+	        playsms_featAutoreply.autoreply_id=playsms_featAutoreply_scenario.autoreply_id AND 
+	        autoreply_code='$autoreply_code' AND 
+	        $autoreply_scenario_param_list 1=1
+	    ";
+	$db_result = dba_query($db_query);
+	$db_row = dba_fetch_array($db_result);
+	if ($autoreply_scenario_result = $db_row[autoreply_scenario_result]) {
+		$db_query = "
+			    INSERT INTO playsms_featAutoreply_log
+			    (sms_sender,autoreply_log_datetime,autoreply_log_code,autoreply_log_request) 
+			    VALUES
+			    ('$sms_sender','$datetime_now','$autoreply_code','$autoreply_request')
+			";
+		if ($new_id = @ dba_insert_id($db_query)) {
+			$ok = true;
+		}
+	}
+	// if we don't understand the params, then process
+	// the message as a special _UNKNOWN_ message
+	else if (0 != strcasecmp($autoreply_param, _UNKNOWN_)) {
+		$ok= processautoreply($sms_datetime, $sms_sender, $autoreply_code, _UNKNOWN_);
+	}
 
-	// find the autoreply
-	$match= matchAutoreply($message, $simple);
-	if (!$match) return false;
-
-	// save a log of the match
-	$log= DB_DataObject::factory('playsms_featAutoreply_log');    
-    $log->sms_sender= $sms_sender;
-    $log->autoreply_log_datetime= $datetime_now;
-    $log->autoreply_log_code= $match['keywords'][0];
-    $log->autoreply_log_request= $message;
-	$ok= $log->insert();
-	if (!$ok) return $ok;
-
-	// send the autoreply
-	$c_username = uid2username($match['uid']);
-	$ok= websend2pv($c_username, $sms_sender, $match['autoreply_scenario_result']);
+	if ($ok) {
+		$ok = false;
+		$db_query = "SELECT uid FROM playsms_featAutoreply WHERE autoreply_code='$autoreply_code'";
+		$db_result = dba_query($db_query);
+		$db_row = dba_fetch_array($db_result);
+		$c_uid = $db_row[uid];
+		$c_username = uid2username($c_uid);
+		$smslog_id = websend2pv($c_username, $sms_sender, $autoreply_scenario_result);
+		if ($smslog_id) {
+			$ok = true;
+		}
+	}
 	return $ok;
+}
+
+function processUnknown($sms_datetime, $sms_sender, $target_code, $message) {
+	// when we don't understand what the user texted us, 
+	// reply with the special unknown autoreply
+	processautoreply($sms_datetime, $sms_sender, _UNKNOWN_, "");
 }
 
 // part of SMS poll
@@ -688,15 +569,11 @@ function processSystemMessage($sms_sender, $message) {
 
 // check incoming SMS for available codes
 // and sets the action
-function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
+function setsmsincomingaction($sms_datetime, $sms_sender, $target_code, $message) {
 	global $system_from;
 	$ok = false;
-	$message= strtoupper($message);
-	$keywords= explode(' ', $message);
-	$target_code= $keywords[0];
-	
 	switch ($target_code) {
-		case 'BC' :
+		case BC :
 			$array_target_group = explode(" ", $message);
 			$target_group = strtoupper(trim($array_target_group[0]));
 			$message = $array_target_group[1];
@@ -707,7 +584,7 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
 				$ok = true;
 			}
 			break;
-		case 'PV' :
+		case PV :
 			$array_target_user = explode(" ", $message);
 			$target_user = strtoupper(trim($array_target_user[0]));
 			$message = $array_target_user[1];
@@ -719,8 +596,13 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
 			}
 			break;
 		default :
-			// try as autoreply
-			$ok= processAutoreply($sms_datetime, $sms_sender, $message);
+			// maybe its for sms autoreply
+			if (!$ok) {
+				$db_query = "SELECT autoreply_id FROM playsms_featAutoreply WHERE autoreply_code='$target_code'";
+				if ($db_result = dba_num_rows($db_query)) {
+					$ok= processautoreply($sms_datetime, $sms_sender, $target_code, $message);
+				}
+			}
 			
 			// maybe its for sms poll
 			if (!$ok) {
@@ -759,35 +641,24 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
 			$syssenders= explode(',', $system_from);
 			foreach ($syssenders as $syssender) {
 				if (0 == strcasecmp($sms_sender, $syssender)) {
-				    $saveToInbox= true;
 					$ok= processSystemMessage($sms_sender, "$target_code $message");
 				}
 			}
-			break;
 	}
-    	
 	if (!$ok) {
-		$saveToInbox= true;
-
-		// If all else failed, then check the autoreplies again,
-		// this time with a more sophisticated match.
-		//
-		// Note that since this can result in autoreply error messages,
-		// we only do this if its a regular number, not a shortcode or 
-		// some special cell provider number
+		$message = $target_code . " " . $message;
+		if (insertsmstoinbox($sms_datetime, $sms_sender, "admin", $message)) {
+			$ok = true;
+		}
+		
+		// only do unknown processing if its a regular number,
+		// not a shortcode or some special cell provider number
 		// (if we don't check we can get into an infinite loop, us
 		// sending an error message to another autmoated system, which
 		// sends us an error message...)
-		
 		if (strlen($sms_sender) > 4 && ereg('^\+?[0-9]+$', $sms_sender)) {
-			processAutoreply($sms_datetime, $sms_sender, $message, false);
+			processUnknown($sms_datetime, $sms_sender, $target_code, $message);
 		}
-	}
-	
-	if ($saveToInbox) {
-		if (insertsmstoinbox($sms_datetime, $sms_sender, "admin", $message)) {
-			$ok = true;
-		}    
 	}
 	return $ok;
 }
@@ -851,19 +722,14 @@ function generateSmsCounters($nameForm, $nameSmsTextBox) {
 }
 
 function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore) {	
-	$form->updateElementAttr($nameSmsTextBox, 
+	$form->updateElementAttr(msg, 
 				array("onKeyUp"   => 'this.updateSmsCounts();',
 					  "onKeyDown" => 'this.updateSmsCounts();',
 					  "cols" => "39", "rows" => "5"));
 
 	$elem=& HTML_QuickForm::createElement('static', "counters", null, 
-				   	            generateSmsCounters($form->getAttribute('name'), $nameSmsTextBox));
-
-	if (isset($nameInsertBefore)) {
-		$form->insertElementBefore($elem, $nameInsertBefore);
-	} else {
-	    $form->addElement($elem);
-	}
+				   	            generateSmsCounters($form->getAttribute(name), $nameSmsTextBox));
+	$form->insertElementBefore($elem, $nameInsertBefore);
 }
 
 function getNumSmsMultipart($msg) {

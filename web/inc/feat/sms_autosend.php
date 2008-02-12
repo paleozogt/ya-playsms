@@ -92,7 +92,7 @@ function makeEditForm($selfurl, $id= null) {
 	$fb->enumFields= array('frequency');
 	$form = $fb->getForm("{$selfurl}&op=edit");
 
-	setupSmsCounting($form, 'msg', '__submit__');
+	setupSmsCounting($form, msg, __submit__);
 
 	if ($form->validate()) {
     	$form->process(array(&$fb,'processForm'), false);    	
