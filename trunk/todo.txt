@@ -34,6 +34,9 @@ TODO:
         - incoming/outgoing log output as csv
         - add visual graphing of incoming / outgoing autoreplies
 
+	autoreply:
+		- import/export config file of keywords/replies
+
     kannel:
         - fix kannel's geturl to not hit the database on load (possible?)
         - have kannel's confs setup for multiple smsc modems? how to test? how are they routed?
