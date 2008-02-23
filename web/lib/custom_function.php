@@ -465,17 +465,21 @@ function processcustom($sms_datetime, $sms_sender, $custom_code, $custom_param) 
 }
 
 define(KEYWORD_MAX, 8);
-define(VARMARKER  , "##");
-define(REMATCH    , "##REMATCH##");			// invoke a rematching
-define(KEYWORDS   , "##KEYWORDS##");		// all keywords
-define(SUBKEYWORDS, "##SUBKEYWORDS##");		// all keywords but first one
-define(KEYWORD    , "##KEYWORD");			// specific keyword (partial)
+define(VARMARKER  , '##');
+define(REMATCH    , '##REMATCH##');			// invoke a rematching
+define(KEYWORDS   , '##KEYWORDS##');		// all keywords
+define(SUBKEYWORDS, '##SUBKEYWORDS##');		// all keywords but first one
+define(KEYWORD    , '##KEYWORD');			// specific keyword (partial)
+define(UNKNOWN    , '_UNKNOWN_');           // special 'unknown' match
 
 function simpleMatchAutoreply($keywords) {
 	error_log("simpleMatchAutoreply: " . print_r($keywords, true));
 
     $autoreply= DB_DataObject::factory('playsms_featAutoreply');
     $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
+
+    // make sure each keyword is set, even if its blank
+    $keywords= array_pad($keywords, KEYWORD_MAX, "");
 
 	$i= 0;
     $autoreply->autoreply_code= $keywords[$i++];
@@ -528,37 +532,36 @@ function nodelimiterMatchAutoreply($message) {
 
 function multiMatchAutoreply($message) {    
 
-	// try mmore creative keyword delimiters
+	// try more creative keyword delimiters
 	//
 	$delimiter= "/[\s,_#\.]+/";
-	$keywords= preg_split($delimiter, $message, KEYWORD_MAX);
+	$keywords= preg_split($delimiter, $message, KEYWORD_MAX, PREG_SPLIT_NO_EMPTY);
 	$match= simpleMatchAutoreply($keywords);
 	if ($match) return $match;
 	
 	// try with no delimiters
+    //
 	$match= nodelimiterMatchAutoreply($message);
 	if ($match) return $match;
 	
 	// if we haven't found anything so far, then
-	// match against the special unknown under the first keyword
-    // (make sure we keep the original keywords, not the unknown keywords,
-    // as this matters for later reply evaluation)
-	$match= simpleMatchAutoreply(array($keywords[0], '_UNKNOWN_'));
-	if ($match) {
-	    $match['keywords']= $keywords;
-        return $match;
+	// match against the special unknown code,
+    // either for the first keyword or, as a last
+    // resort, the top-level unknown code
+    //
+    $unknowns= array( 
+        array($keywords[0], UNKNOWN), 
+        array(UNKNOWN) );
+    foreach ($unknowns as $unknown) {
+    	$match= simpleMatchAutoreply($unknown);
+    	if ($match) {
+            // (make sure we keep the original keywords, not the unknown keywords,
+            // as this matters for later reply evaluation)
+    	    $match['keywords']= $keywords;
+            return $match;
+        }
     }
-    
-	// if we *still* haven't found anything, then
-	// match against the top-level unknown
-    // (make sure we keep the original keywords, not the unknown keywords,
-    // as this matters for later reply evaluation)
-	$match= simpleMatchAutoreply(array('_UNKNOWN_'));
-	if ($match) {
-        $match['keywords']= $keywords;
-        return $match;
-    }
-    
+
 	return $match;
 }
 
@@ -569,7 +572,7 @@ error_log("matchAutoreply " . $message);
 		// try simple (and quick!) keyword delimiters
 		//
 		$delimiter= ' ';
-		$keywords= explode($delimiter, $message, KEYWORD_MAX);
+		$keywords= explode($delimiter, $message, KEYWORD_MAX);      
 		$match= simpleMatchAutoreply($keywords);
 		if (!$match) return $match;
 	} else {
@@ -610,10 +613,11 @@ error_log("evaluateAutoreply " . print_r($keywords, true));
 		// says to do a rematch, then do a match
 		// using the result itself.  this
 		// allows autoreplies to 'point' to each
-		// other for variations in spelling, etc
+		// other for variations in spelling, aliases, etc
 		//
 		if (stristr($result, REMATCH)) {
 		    $result= str_ireplace(REMATCH, "", $result);
+            $result= trim($result);
 		    $match= matchAutoreply($result, false);
 		    $result= $match['autoreply_scenario_result'];
 		}
@@ -768,6 +772,7 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
     	
 	if (!$ok) {
 		$saveToInbox= true;
+        error_log("no match found");
 
 		// If all else failed, then check the autoreplies again,
 		// this time with a more sophisticated match.
@@ -850,7 +855,7 @@ function generateSmsCounters($nameForm, $nameSmsTextBox) {
 	return $html;
 }
 
-function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore) {	
+function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore="") {	
 	$form->updateElementAttr($nameSmsTextBox, 
 				array("onKeyUp"   => 'this.updateSmsCounts();',
 					  "onKeyDown" => 'this.updateSmsCounts();',
