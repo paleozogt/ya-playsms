@@ -1,10 +1,14 @@
 <?php
 if (!defined("_SECURE_")) {
-
 	die("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
 };
 
 require_once 'HTML/QuickForm.php';
+require_once "lib/readwriteIniFile.php";
+
+define(INI_SECTION_AUTOREPLIES, 'autoreplies');
+define(INI_COMMENTS, ';');
+
 
 $op = $_GET[op];
 $selfurl = $_SERVER['PHP_SELF'] . "?inc=sms_autoreply";
@@ -20,8 +24,10 @@ switch ($op) {
 		$content .= "
 		        <h2>List/Manage/Delete SMS autoreplies</h2>
 		        <p>
-		        <a href=\"$selfurl&op=sms_autoreply_add\">[ Add SMS autoreply ]</a>
-		       	<a href=\"$selfurl&op=test\">[ Test Autoreply ]</a>
+		        <a href=\"$selfurl&op=sms_autoreply_add\">[ Add ]</a>
+                <a href=\"$selfurl&op=export\">[ Export ]</a>
+                <a href=\"$selfurl&op=import\">[ Import ]</a>
+                <a href=\"$selfurl&op=test\">[ Test ]</a>
 		        <hr><p>
 		    ";
 		if (!isadmin()) {
@@ -138,6 +144,14 @@ switch ($op) {
 	case "test":
 		testAutoreply($selfurl);
 		break;
+        
+    case "import":
+        importAutoreply($selfurl);
+        break;
+    
+    case "export":
+        exportAutoreply($selfurl);
+        break;
 }
 
 function makeAddEditForm($add, $err, $autoreply_code = "", $autoreply_id = "") {
@@ -207,16 +221,140 @@ function testAutoreply($selfurl) {
 
 	// Add some elements to the form
 	$form->addElement('textarea', 'message', 'Test Message:');
-	setupSmsCounting($form, 'message');
+	setupSmsCounting($form, 'message', null);
 	$form->addElement('submit', 'submit', 'Test');
 	
 	if ($form->validate()) {
-	    echo matchAutoreply($form->exportValue('message'));
+	    $match= matchAutoreply($form->exportValue('message'), false);
+        echo "<b>reply:</b> <br/>" . nl2br($match['autoreply_scenario_result']);
 	    exit;
 	}
 	
-	// Output the form
 	$form->display();
+}
+
+function exportAutoreply($selfurl) {
+    $form = new HTML_QuickForm('autoreply_export', 'post', "$selfurl&op=export&noheaderfooter=true");
+
+    $msg= "<p>This will export your autoreplies.</p><br/>";
+    $form->addElement('static', '', '', $msg);
+    $form->addElement('submit', 'submit', 'Export');
+    
+    if ($form->validate()) {
+        doAutoreplyExport();
+        exit;
+    }
+    
+    $form->display();
+}
+
+function importAutoreply($selfurl) {
+    $form = new HTML_QuickForm('autoreply_import', 'post', "$selfurl&op=import");
+
+    $msg= "<p>This will import your autoreplies.</p><br/>";
+    $form->addElement('static', '', '', $msg);
+    $fileupload= &$form->addElement('file', 'importfile', 'Autoreply file');
+    $form->addElement('submit', 'submit', 'Import');
+    
+    if ($form->validate()) {
+
+        if ($fileupload->isUploadedFile()) {
+            $fileinfo= $fileupload->getValue();
+            $importfile=$fileinfo['tmp_name'];
+
+            doAutoreplyImport($importfile);
+            unlink($importfile);
+        }
+
+        exit;
+    }
+    
+    $form->display();
+}
+
+function doAutoreplyImport($importfile) {
+    global $uid;
+    
+    $imports= readINIFile($importfile, INI_COMMENTS);
+    $imports= $imports[INI_SECTION_AUTOREPLIES];
+
+    echo "<b>importing...</b><br/><br/>";    
+    foreach ($imports as $keywords => $reply) {        
+        $autoreply= DB_DataObject::factory('playsms_featAutoreply');
+        $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
+        echo "<br/><b>$keywords</b> <br/>" . nl2br($reply);
+
+        $keywords= explode(' ', $keywords);
+        $k= 0;
+        $added= false;
+
+        $autoreply->autoreply_code= $keywords[$k++];
+        $autoreply->uid= $uid;
+        if (!$autoreply->find(true))
+            $added= $autoreply->insert();
+        
+        $scenario->autoreply_id= $autoreply->autoreply_id;
+        $scenario->autoreply_scenario_param1= $keywords[$k++];
+        $scenario->autoreply_scenario_param2= $keywords[$k++];
+        $scenario->autoreply_scenario_param3= $keywords[$k++];
+        $scenario->autoreply_scenario_param4= $keywords[$k++];
+        $scenario->autoreply_scenario_param5= $keywords[$k++];
+        $scenario->autoreply_scenario_param6= $keywords[$k++];
+        $scenario->autoreply_scenario_param7= $keywords[$k++];
+        $scenario->autoreply_scenario_result= $reply;
+        if (!$scenario->find(true))
+            $added= $scenario->insert();
+        
+        if ($added)
+            echo "<br/><b>...added</b><br/>";
+        else
+            echo "<br/><b>...already exists</b><br/>";
+    }
+}
+
+function doAutoreplyExport() {
+    $autoreply= DB_DataObject::factory('playsms_featAutoreply');
+    $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
+
+    // glom all the keywords together
+    $select= "concat(playsms_featAutoreply.autoreply_code";
+    for ($i= 1; $i < KEYWORD_MAX; $i++) {
+        $select.= ", ' ', playsms_featAutoreply_scenario.autoreply_scenario_param" . $i;
+    }
+    $select.= ") as keywords";
+    
+    $autoreply->selectAdd($select);    
+    $autoreply->orderBy('keywords');    
+    $autoreply->joinAdd($scenario);
+    
+    $autoreply->find();
+    while ($autoreply->fetch()) {
+        $keywords= trim($autoreply->keywords);
+        $result= trim($autoreply->autoreply_scenario_result);
+
+        // escape special characters
+        $result= str_ireplace("\\", "\\\\", $result);
+        $result= str_ireplace("\"", "\\\"", $result);
+        $result= str_ireplace("\r\n", "\n", $result);
+        $result= str_ireplace("\n", '\n', $result);
+        
+        $export[$keywords]= $result;
+    }
+
+    // create a temporary ini file
+    $comment= "autoreply export made on " . date(DATE_RFC822) . "\n";
+    $exportfile=tempnam(sys_get_temp_dir(), "playsms");
+    writeINIFile($exportfile, array(INI_SECTION_AUTOREPLIES=>$export), 
+                 INI_COMMENTS, $comment);
+
+    // send the file contents to the browser
+    // so that it'll prompt the user to save it
+    header('Content-type: text/plain');
+    header('Content-Disposition: attachment; filename="autoreplies.txt"');
+    echo file_get_contents($exportfile);
+
+    // delete the temp file    
+    unlink($exportfile);
 }
 
 ?>
