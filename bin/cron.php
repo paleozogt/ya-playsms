@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 	include '../web/init.php';
-	include '../web/config.php';
+	include '../web/configure.php';
 	include "$apps_path[libs]/function.php";
 
 	$frequency= @$_SERVER['argv'][1];

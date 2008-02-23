@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-	require_once '../web/config.php';
+	require_once '../web/configure.php';
 	require_once 'DB.php';
 	require_once 'DB/DataObject/Generator.php';
 
