@@ -18,8 +18,8 @@ include("xmlfunc.php");
 
 $configs = array(
             array( "base_url" => "http://localhost:13000",
-                   "status_passwd" => "pwd",
-                   "admin_passwd" => "pwd",
+                   "status_passwd" => "playsms",
+                   "admin_passwd" => "playsms",
                    "name" => "PlaySms"
                  )/*,
             array( "base_url" => "http://kannel.yourdomain.com:23000",
