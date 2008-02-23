@@ -1,5 +1,5 @@
 <?php
-include "config.php";
+include "configure.php";
 
 # override the default database options
 #
