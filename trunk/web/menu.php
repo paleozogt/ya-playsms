@@ -2,8 +2,9 @@
 include "init.php";
 include "$apps_path[libs]/function.php";
 
-$inc = $_GET[inc];
-$err = $_GET[err];
+$inc = $_GET['inc'];
+$err = $_GET['err'];
+$noheaderfooter = $_GET['noheaderfooter'];
 $username = $_COOKIE[vc2];
 $uid = username2uid($username);
 $mobile = username2mobile($username);
@@ -15,7 +16,8 @@ if (!valid()) {
 	forcelogout();
 };
 
-include "html_header.php";
+if (!$noheaderfooter)
+    include "html_header.php";
 
 switch ($inc) {
 	case "dir_create" :
@@ -72,5 +74,7 @@ switch ($inc) {
 
 }
 
-include "html_footer.php";
+if (!$noheaderfooter)
+    include "html_footer.php";
+
 ?>
