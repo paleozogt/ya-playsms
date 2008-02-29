@@ -538,8 +538,8 @@ function showAutoreplyHelp($selfurl) {
     </p>
     
     <p>
-    Autoreply scenarios are grouped by their first keyword.  Keywords are separated by spaces.
-    Replies are sent by <em>matching</em> keywords that are texted to PlaySms with keywords that have been entered into PlaySms.
+    Autoreply "scenarios" are grouped by their first keyword.  Keywords are separated by spaces.
+    Replies are sent by <em>matching</em> keywords that are texted to PlaySms with keywords in the autoreply scenarios.
     </p>
 
     <p>
