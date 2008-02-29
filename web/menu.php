@@ -47,9 +47,6 @@ switch ($inc) {
 	case "sms_autoreply" :
 		include $apps_path[incs] . "/feat/sms_autoreply.php";
 		break;
-	case "sms_autoreply_scenario" :
-		include $apps_path[incs] . "/feat/sms_autoreply_scenario.php";
-		break;
 	case "sms_board" :
 		include $apps_path[incs] . "/feat/sms_board.php";
 		break;

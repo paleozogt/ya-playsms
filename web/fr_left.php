@@ -52,7 +52,7 @@ $content = "
     <li><a href=menu.php?inc=user_pref&op=user_pref target=fr_right>Preferences</a></li>
     <p>
     <h2>Features:</h2>
-    <li><a href=menu.php?inc=sms_autoreply&op=sms_autoreply_list target=fr_right>Manage SMS autoreplies</a></li>
+    <li><a href=menu.php?inc=sms_autoreply&op=list target=fr_right>Manage SMS autoreplies</a></li>
     <li><a href=menu.php?inc=sms_board&op=sms_board_list target=fr_right>Manage SMS boards</a></li>
     $admin_feat
     <li><a href=menu.php?inc=sms_custom&op=sms_custom_list target=fr_right>Manage SMS customs</a></li>
