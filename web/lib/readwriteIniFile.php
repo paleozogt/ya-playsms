@@ -50,7 +50,7 @@ function readINIfile($filename, $commentchar) {
                 $delimiter = strpos($dataline, '=');
                 if ($delimiter > 0) {
                     //...with a value
-                    $key = strtolower(trim(substr($dataline, 0, $delimiter)));
+                    $key = trim(substr($dataline, 0, $delimiter));
                     $value = trim(substr($dataline, $delimiter +1));
                     if (substr($value, 0, 1) == '"' && substr($value, -1, 1) == '"') {
                         $value = substr($value, 1, -1);

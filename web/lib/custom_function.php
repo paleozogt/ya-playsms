@@ -466,11 +466,13 @@ function processcustom($sms_datetime, $sms_sender, $custom_code, $custom_param) 
 
 define(KEYWORD_MAX, 8);
 define(VARMARKER  , '##');
-define(REMATCH    , '##REMATCH##');			// invoke a rematching
-define(KEYWORDS   , '##KEYWORDS##');		// all keywords
-define(SUBKEYWORDS, '##SUBKEYWORDS##');		// all keywords but first one
-define(KEYWORD    , '##KEYWORD');			// specific keyword (partial)
-define(UNKNOWN    , '_UNKNOWN_');           // special 'unknown' match
+define(REMATCH    , '##REMATCH##');			    // invoke a rematching
+define(KEYWORDS   , '##KEYWORDS##');		    // all keywords
+define(SUBKEYWORDS, '##SUBKEYWORDS##');		    // all keywords but first one
+define(KEYWORD    , '##KEYWORD');			    // specific keyword (partial)
+define(KEYWORD0   , KEYWORD . '0' . VARMARKER); // first (main) keyword
+define(KEYWORD7   , KEYWORD . '7' . VARMARKER); // last keyword
+define(UNKNOWN    , '_UNKNOWN_');               // special 'unknown' match
 
 function simpleMatchAutoreply($keywords) {
 	error_log("simpleMatchAutoreply: " . print_r($keywords, true));
@@ -507,15 +509,14 @@ function nodelimiterMatchAutoreply($message) {
     $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
 
 	// glom all the keywords together with no delimiters
-	$fullmessage= 'full_message';
 	$select= "concat(playsms_featAutoreply.autoreply_code";
 	for ($i= 1; $i < KEYWORD_MAX; $i++) {
 	    $select.= ", playsms_featAutoreply_scenario.autoreply_scenario_param" . $i;
 	}
-	$select.= ") as $fullmessage";
+	$select.= ") as keywords";
 
 	$autoreply->selectAdd($select);
-	$autoreply->having("$fullmessage = \"$message\"");
+	$autoreply->having("keywords = \"$message\"");
 	$autoreply->limit(1);
 	$autoreply->joinAdd($scenario);
 
@@ -855,7 +856,7 @@ function generateSmsCounters($nameForm, $nameSmsTextBox) {
 	return $html;
 }
 
-function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore="") {	
+function setupSmsCounting($form, $nameSmsTextBox, $nameInsertBefore=null) {	
 	$form->updateElementAttr($nameSmsTextBox, 
 				array("onKeyUp"   => 'this.updateSmsCounts();',
 					  "onKeyDown" => 'this.updateSmsCounts();',
