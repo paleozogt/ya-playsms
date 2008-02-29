@@ -8,6 +8,7 @@ $selfurl = $_SERVER['PHP_SELF'] . "?inc=user_inbox";
 
 require_once 'DB/DataObject.php';
 require_once 'DB/DataObject/FormBuilder.php';
+require_once "$apps_path[libs]/inboxoutbox_importexport.php";
 
 $op = $_GET[op];
 $showall = $_GET[showall];
@@ -15,6 +16,10 @@ $showall = $_GET[showall];
 switch ($op) {
     case "del" :
         delete($_POST['id'], $uid, $selfurl);
+        break;
+
+    case "export":
+        makeExportForm($selfurl, true);
         break;
 
     case "user_inbox" :
@@ -78,8 +83,10 @@ function makeList($uid, $selfurl, $offset = 0, $numShow = 75) {
 	
 	$newOffset= $offset+$numShow;
 	$nextUrl= "$selfurl&offset=$newOffset";
+    $exportUrl= "$selfurl&op=export";
 	$linksPrevNext= "<a href='$prevUrl'>[ Prev] </a>
-    		   		 <a href='$nextUrl'>[ Next ]</a>";
+    		   		 <a href='$nextUrl'>[ Next ]</a>
+                     <a href='$exportUrl'>[ Export ]</a>";
 
 	// create hidden form with the 
 	// id to delete, this way it will

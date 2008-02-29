@@ -8,6 +8,8 @@ $selfurl = $_SERVER['PHP_SELF'] . "?inc=get_status";
 
 require_once 'DB/DataObject.php';
 require_once 'DB/DataObject/FormBuilder.php';
+require_once 'HTML/QuickForm.php';
+require_once "$apps_path[libs]/inboxoutbox_importexport.php";
 
 $op = $_GET[op];
 $smslog_id = $_GET[smslog_id];
@@ -26,6 +28,10 @@ switch ($op) {
     case "resend":
         resend($_POST['smslog_id'], true);
         header("Location: $selfurl&err=" . urlencode("Message has been queued for resending."));
+        break;
+
+    case "export":
+        makeExportForm($selfurl, false);
         break;
 
     case "get_status" :
@@ -64,8 +70,10 @@ function makeList($uid, $selfurl, $offset= 0, $numShow= 75) {
 	
 	$newOffset= $offset+$numShow;
 	$nextUrl= "$selfurl&offset=$newOffset";
+    $exportUrl= "$selfurl&op=export";
 	$linksPrevNext= "<a href='$prevUrl'>[ Prev] </a>
-    		   		 <a href='$nextUrl'>[ Next ]</a>";
+    		   		 <a href='$nextUrl'>[ Next ]</a>
+                     <a href='$exportUrl'>[ Export ]</a>";
 
 	// create hidden form with the 
 	// id to delete, this way it will
