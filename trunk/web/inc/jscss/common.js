@@ -34,6 +34,20 @@ function ConfirmURL(inputText, inputURL)
     if (confirm(inputText)) document.location=inputURL
 }
 
+function toggleShow(id, link, showText, hideText) {
+    toggleDisplay(id);
+    link.innerHTML = (link.innerHTML != showText ? showText : hideText);
+}
+
+function toggleDisplay(id) {
+    el= document.getElementById(id);
+	if (el.style.display != 'none') {
+		el.style.display= 'none';
+	} else {
+		el.style.display= '';
+		window.scroll(0, el.offsetTop);
+	}
+}
 
 // this function needs to be a method of a form input object
 // (input text, textarea, etc) that has had wireupSmsCountUpdate
