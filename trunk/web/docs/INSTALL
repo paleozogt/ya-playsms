@@ -14,7 +14,7 @@ Kids must:
 4. Be serious after this WARNING
 
 
-REQUIREMENT
+REQUIREMENTS
 -----------
 Minimum Required Hardware
     - Web server's hardware (Equal to at least Pentium III 733 MHz, 128 MB RAM)
@@ -23,8 +23,8 @@ Minimum Required Software
     - Operating System *NIX based (Linux preferred)
     - Web Server (Apache preferred http://httpd.apache.org)
     - Database Server MySQL 4.x.x or latest stable release (http://www.mysql.com)
-    - PHP 4.3.10 or latest stable release with mysql module enabled and CGI/CLI version 
-      (http://www.php.net)
+    - PHP 5+ or latest stable release with mysql module enabled and CGI/CLI version (http://www.php.net)
+    - PHP PEAR
     - Access to SMTP server (ability to send email via SMTP server)
 Minimum Required Server Operator (or Developer)
     - Understand howto make sure installed PHP has MySQL module enabled (phpinfo)
