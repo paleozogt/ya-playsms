@@ -373,6 +373,7 @@ function exportAutoreply($selfurl) {
     $form = new HTML_QuickForm('autoreply_export', 'post', "$selfurl&op=export&noheaderfooter=true");
 
     $msg= "<p>This will export your autoreplies.</p><br/>";
+    $form->addElement('header', '', 'Autoreply Import');
     $form->addElement('static', '', '', $msg);
     $form->addElement('submit', 'submit', 'Export');
     
@@ -388,6 +389,7 @@ function importAutoreply($selfurl) {
     $form = new HTML_QuickForm('autoreply_import', 'post', "$selfurl&op=import");
 
     $msg= "<p>This will import your autoreplies.</p><br/>";
+    $form->addElement('header', '', 'Autoreply Import');
     $form->addElement('static', '', '', $msg);
     $fileupload= &$form->addElement('file', 'importfile', 'Autoreply file');
     $form->addElement('submit', 'submit', 'Import');
@@ -413,7 +415,6 @@ function doAutoreplyImport($importfile) {
     
     $imports= readINIFile($importfile, INI_COMMENTS);
     $imports= $imports[INI_SECTION_AUTOREPLIES];
-echo nl2br(print_r($imports, true));
 
     echo "<b>importing...</b><br/><br/>";    
     foreach ($imports as $keywords => $reply) {
