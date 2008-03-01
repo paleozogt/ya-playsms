@@ -1,0 +1,320 @@
+FAQ (Frequently Asked Questions)
+--------------------------------
+
+PlaySMS version 0.8.1
+
+
+Q: Why GPL?
+A: So that any commercial SMS gateway forced tobe at least twice better than the GPL one, PlaySMS
+
+
+A. LOGIN
+--------
+1.  How to login for the first time after installation?
+    Answer:
+    Please read INSTALL, INSTALLATION on Linux, PlaySMS Web Interface, step 11
+
+2.  What should I do next after I logged in as Administrator?
+    Answer:
+    Change you default password, add new user, setup main configuration, 
+    create group and add mobiles number
+
+3.  What should I do for the first time as Normal user?
+    Answer:
+    Change your default password given by Administrator, create group and add 
+    mobiles number
+
+
+B. SEND SMS
+-----------    
+1.  Howto send single SMS from web?
+    Answer:
+    Use Send single SMS link, destination mobile listed on your group
+
+2.  Howto send group SMS from web?
+    Answer:
+    Use Send broadcast SMS link, destination group defined previously
+
+3.  Is there any delivery status reported?
+    Answer:
+    Yes! Follow Delivery report link, you will found status for every SMS
+    Status "Failed" for failed attempt, "Pending" for queued SMS (on server),
+    "Sent" for SMS sent (sent to gateway) and "Delivered" for SMS delivered to phone
+
+4.  Can we delete delivery report?
+    Answer:
+    Yes, but its not really deleted, its just permanently hidden from delivery report page
+
+5.  Can we retrieve deleted delivery report?
+    Answer:
+    No, not at the moment
+
+6.  If we delete delivery report, is it affecting SMS transmission?
+    Answer:
+    No, as I said, delete means hidden from delivery report page
+
+7.  How is my sent SMS looks like?
+    Answer:
+    If you set the Sender ID in your Personal data, than Sender ID will be added to 
+    your SMS, this is useful when using gateway module with no ability to set sender's number
+    Gateway module which can sets sender's number is Kannel using direct SMSC or Clickatell
+    Sender's number taken from field mobile in your Personal data
+    
+
+C. RECEIVE SMS
+--------------    
+1.  Can I receive SMS?
+    Answer:
+    You can, your incoming SMS are stored on Inbox and forwarded to your email
+    specified on Personal data
+
+2.  What should sender do to send me private SMS (like on question no. 6)?
+    Answer:
+    Send SMS to your GSM Modem (or Nokia handset) with format:
+    PV [your_username] [their message]
+    eg: 
+	PV anton your application works!
+	pv anton i want to help you developing this application :)
+	
+3.  Can I forward SMS from my mobile phone to my group?
+    Answer:
+    When you create a group from web, you must fill Group Code. Use that Group
+    Code as parameter to forward SMS to group. Send SMS to your GSM Modem 
+    (or Nokia handset) with format:
+    BC [group code] [your message]
+    eg: 
+	BC DEV thx for joining our crussade :p
+	bc DEV dont forget to read function.php
+    Note: your mobile phone number must be sets on your Personal data stated in
+    international format
+
+4.  Can I forward SMS from my mobile phone to group belongs to someone else?
+    Answer:
+    No, your SMS will be ignored
+
+
+D. SMS BOARD
+------------
+1.  What is SMS code?
+    Answer:
+    Administrator can add new SMS code other than PV and BC which will be use
+    to accept and deffer incoming SMS. Every code has their on webpage and can
+    be forwarded to their own specified email.
+    From version 0.4 this term will be replaced by new term, SMS board.
+
+2.  If I add SMS code named INFO, howto access webpage for that code?
+    Answer:
+    Webpage for code INFO (thus we called SMS Board INFO) would be accessable
+    trough this url: 
+    http://your_playsms_web_domain/output.php?code=INFO
+    Other parameter you can use:
+    line	: show x line number of rows 
+    bodybgcolor	: set body background color
+    oddbgcolor	: set odd row backround color
+    evenbgcolor	: set even row backround color
+    refresh=yes	: check latest incoming sms and refresh webpage output
+    eg:
+    http://your_playsms_web_domain/output.php?code=INFO&line=15
+    using refresh link:
+    <a href="http://your_playsms_web_domain/output.php?code=INFO&line=15&refresh=yes">[ Refresh Board ]</a>
+    
+3.  Can I retrieve incoming SMS for that code INFO in XML format?
+    Answer:
+    Other than webpage, incoming SMS for that code INFO can be retrieve in RSS 0.8.11
+    format trough this url:
+    http://your_playsms_web_domain/output.php?code=INFO&type=xml
+    Other parameter you can use:
+    line	: show x line number of rows in xml file
+    refresh=yes	: check latest incoming sms and refresh webpage output
+    
+4.  Howto put that webpage on my main website?
+    Answer:
+    Use IFRAME html tag. Customize your IFRAME to match your main website look and feel.
+    eg:
+	<IFRAME src="http://your_playsms_web_domain/output.php?code=INFO"></IFRAME>
+
+5.  Can I use my own form on other website to send SMS from this SMS Gateway?
+    Answer:
+    Yes you can, more information how to use this feature can be read in ws.php
+    Note: ws.php reads given query string. Since ws.php is currently intended for 
+    developer only, this FAQ will not discuss any further about it. Please see ws.php
+
+6.  Can I retrieve delivery status remotely so I can process it from other website?
+    Answer:
+    Yes you can, delivery status retrieved in CSV form, more information how to
+    use this feature can be read in ws.php
+
+
+E. SMS COMMAND
+--------------    
+1.  Can I command server todo something?
+    Answer:
+    You can. Use SMS command feature from administrator menu.
+
+2.  Howto setup SMS command?
+    Answer:
+    Add new SMS command from administrator menu, and then setup executed command.
+    PlaySMS passes variables to executed command. Command or shell script must be
+    within directory $feat_command_path['bin'] (read config.php)
+    Variables:
+    ##SMSDATETIME## replaced by SMS incoming date/time
+    ##SMSSENDER## replaced by sender mobile phones number
+    ##COMMANDCODE## replaced by command CODE
+    ##COMMANDPARAM## replaced by command parameter    
+
+3.  Howto use defined SMS command?
+    Answer:
+    Send SMS to your GSM Modem (or Nokia handset) with format:
+    [COMMAND CODE] [COMMAND PARAM]
+    eg: 
+	reg email anton@ngoprek.org
+	retr pop3 pop3.ngoprek.org anton mypwd
+	uptime
+
+4.  Howto make information retrieval system?
+    Answer:
+    Use SMS command so the gateway get informations from databases, and then setup
+    a script to use ws.php to send informations back to your sender.
+    Read carefully ws.php
+    Please have a look shell scripts on PlaySMS package directory contrib/script/
+
+5.  Can I command server to shutdown/reboot?
+    Answer:
+    Not that simple :) but yes you can.
+    You should understand that those command's im talking about above, is executed 
+    as web servers user
+
+
+F. SMS CUSTOM
+-------------    
+1.  What is SMS CUSTOM?
+    Answer:
+    Use this to process incoming SMS by passing it to other URL.
+    [sender] --GSM network-- [PlaySMS] --internet-- [other host processing SMS]
+
+2.  Howto setup SMS custom?
+    Answer:
+    Add new SMS custom from menu, and then set custom URL which handling SMS.
+    PlaySMS passes variables to custom URL. 
+    Variables:
+    ##SMSDATETIME## replaced by SMS incoming date/time
+    ##SMSSENDER## replaced by sender mobile phones number
+    ##COMMANDCODE## replaced by custom code
+    ##COMMANDPARAM## replaced by custom parameter
+
+3.  Howto use defined SMS custom?
+    Answer:
+    Send SMS to your GSM Modem (or Nokia handset) with format:
+    [CUSTOM CODE] [CUSTOM PARAM]
+    eg: 
+	reg email anton@ngoprek.org
+	retr pop3 pop3.ngoprek.org anton mypwd
+	pres aminrais
+
+4.  Howto make information retrieval system with SMS custom?
+    Answer:
+    Use SMS custom so the server located in custom URL get informations from their database, 
+    and using ws.php method send informations back to SMS sender.
+    Read carefully ws.php
+
+
+G. SMS POLL
+-----------
+1.  Howto use SMS poll system?
+    Answer:
+    Add new poll or list/edit/delete it. Write down Poll Code and each Choice Code 
+    you defined. I hope you can figure it out the rest of the story
+    by now.
+    If you are voters, send SMS to PlaySMS SMS gateway mobile number with format:
+    [POLL CODE] [CHOICE CODE]
+    eg:
+    food chicken
+    pres 3
+
+2.  Howto show results of SMS poll in other website?
+    Answer:
+    For example polling with code PRES
+    Webpage for poll named PRES would be accessable trough this url: 
+    http://your_playsms_web_domain/output.php?show=poll&code=PRES
+    Other parameter you can use:
+    bodybgcolor	: set body background color
+    refresh=yes	: check latest incoming sms and refresh webpage output
+    Use IFRAME html tag.
+    eg:
+	<IFRAME src="http://your_playsms_web_domain/output.php?show=poll&code=PRES"></IFRAME>
+
+
+H. GATEWAY MODULE
+-----------------    
+1.  I've heard that from version 0.5 PlaySMS support any gateway other than gnokii.
+    Is that true?
+    Answer:
+    Yes. From now on you can write gateway module and place it inside directory 
+    on $apps_path[plug]/gateway. Take a look gnokii gateway module, im sure
+    you'll understand howto make one for your gateway :)
+
+2.  So if I dont have GSM modem or nokia 5110, say I have access to SMSC or
+    Internet SMS Gateway like http://www.clickatell.com or http://www.simplewire.com,
+    can I still use PlaySMS?
+    Answer:
+    Yes. Use gateway module kannel for connecting directly to providers SMSC
+    or use gateway module clickatell and uplink for connecting to other sms gateway/server
+    such as Clickatell or another PlaySMS SMS Gateway
+    Please see $apps_path[plug]/gateway/clickatell/ and $apps_path[plug]/gateway/uplink/
+        
+3.  Is kannel (http://kannel.org) supported by PlaySMS?
+    Answer:
+    Yes, starting version 0.6
+    Please see $apps_path[plug]/gateway/kannel/
+
+4.  How can I configure each gateway module?
+    Answer: 
+    Starting from version 0.8 webbased control panel for gateway modules configurations
+    is available, you must login as Administrator
+
+5.  How can I setup which gateway module active?
+    Answer:
+    Login as Adminsitrator and activate any gateway you want by clicking "Activate" menu on each 
+    gateway module configuration
+
+6.  Can I build my own gateway module ?
+    Answer:
+    Yes, please have a look files in $apps_path[plug]/gateway/template/ 
+    you can modify files in it to match your requirements
+    If you write new gateway module, please send your work so i can have a look
+    and put it on next releases
+    
+
+I. TELL ME ABOUT IT
+-------------------        
+1.  Should I tell you when I install PlaySMS on my site?
+    Answer:
+    Please do, send email to anton@ngoprek.org and/or to PlaySMS mailing list 
+    at playsms-devel@yahoogroups.com
+    
+2.  If I have some wishes, what should I do, who should I inform?
+    Answer:
+    If its about PlaySMS, just throw it to the mailing list. If its about your life, 
+    you have to stay on your path, be brave and never give up!
+    
+3.  If I found bugs and/or security holes, what should I do?
+    Answer:
+    Please send it (as clear as soon as possible) to the mailing list
+
+
+J. CONTACT
+----------    
+1.  Where or how can I reach you?
+    Answer:
+    Send me email (anton@ngoprek.org) or contact me at my Yahoo ID: anton_rd
+
+2.  When?
+    Answer:
+    Anytime you need to, if im available I'll be glad to answer all your question.
+
+3.  Are there any place where I can discuss PlaySMS?
+    Answer:
+    Yes. PlaySMS mailing list. It is intended for users and developers.
+    Please join the group by sending empty email to playsms-devel-subscribe@yahoogroups.com
+
+

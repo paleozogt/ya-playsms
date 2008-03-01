@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# playsmsd must be in PATH eg: /usr/bin or /usr/local/bin
+
+playsmsd &

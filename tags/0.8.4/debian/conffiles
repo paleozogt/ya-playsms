@@ -1,0 +1,6 @@
+etc/playsms/apache2/apache2.conf
+etc/playsms/kannel/kannel.conf
+etc/playsms/kannel/smsc.conf
+etc/playsms/kannel/modems.conf
+etc/playsms/kannel/startbox-defaults.conf
+
