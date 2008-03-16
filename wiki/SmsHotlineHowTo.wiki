@@ -23,7 +23,7 @@ There is one small change we need to make to Ubuntu before we proceed—we need 
   #)	Check everything listed under “components” and click “OK”.
   #)	It may then ask you to reload your list of packages, which you should choose to do.
 
-Step Three: Get PlaySms
+==Step Three: Get PlaySms==
 
   #)	Download the latest PlaySms from here (look under “Featured Downloads”).  When you open the file, it will download everything else that it needs.  PlaySms has many requirements—this may take some time.
   #)	PlaySms’s installer will ask you a question about your database—simply accept the defaults.
