@@ -88,8 +88,7 @@ Step Three: Get PlaySms
     * A good program for troubleshooting the phone is the Blueman Bluetooth Manager.  Use to to bond/pair your phone.  Attempt to browse the phone and send/receive a file.
 
   * _After running for a long time the computer can’t send/receive texts anymore!_
-    * It may be that the phone or Kannel (the underlying phone software) is getting confused.
-Go to “Manage Gateway” (under “Administration”) and change “Restart Kannel Regularly?” to “Daily”.  Try that for a while.  If that doesn’t work, increase how often it restarts to “Hourly”.
+    * It may be that the phone or Kannel (the underlying phone software) is getting confused.  Go to “Manage Gateway” (under “Administration”) and change “Restart Kannel Regularly?” to “Daily”.  Try that for a while.  If that doesn’t work, increase how often it restarts to “Hourly”.
 If you are still having problems, 
 
 	
