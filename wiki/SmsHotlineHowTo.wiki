@@ -25,7 +25,7 @@ There is one small change we need to make to Ubuntu before we proceed—we need 
 
 ==Step Three: Get PlaySms==
 
-  #)	Download the latest PlaySms from here (look under “Featured Downloads”).  When you open the file, it will download everything else that it needs.  PlaySms has many requirements—this may take some time.
+  #)	Download the latest PlaySms from [http://code.google.com/p/ya-playsms here] (look under “Featured Downloads”).  When you open the file, it will download everything else that it needs.  PlaySms has many requirements—this may take some time.
   #)	PlaySms’s installer will ask you a question about your database—simply accept the defaults.
 
 ==Step Four: Configure PlaySms==
