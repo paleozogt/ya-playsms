@@ -198,6 +198,7 @@ function genDelForm($name, $action) {
 
 function makeEditAutoreplyForm($selfurl, $id= null) {    
     global $uid, $addText, $backText;
+    $errNoSpaces= "You cannot have spaces in a keyword; keywords are separated <em>by</em> spaces.";
     
     $do = DB_DataObject::factory('playsms_featAutoreply');
     if ($id)
@@ -205,10 +206,11 @@ function makeEditAutoreplyForm($selfurl, $id= null) {
     else
         $do->uid= $uid;
     $fb = DB_DataObject_FormBuilder::create($do, array(
-            "fieldsToRender" => array("autoreply_code"))
-          );
-    
+            'fieldsToRender' => array('autoreply_code'), 
+          ));
+    $fb->submitText= "Save";
     $form = $fb->getForm("{$selfurl}&op=edit&id=$id");
+    $form->addRule('autoreply_code', $errNoSpaces, 'regex', '/^[^ ]+$/');
 
     if ($form->validate()) {
         $form->process(array(&$fb,'processForm'), false);

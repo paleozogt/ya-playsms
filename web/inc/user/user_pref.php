@@ -91,20 +91,20 @@ switch ($op) {
 			    <table width=100% cellpadding=1 cellspacing=1 border=0>
 			    <tr><td colspan=3><h2>Login Information</h2><hr></td></tr>
 			    <tr><td width=200>Username</td><td>:</td><td><b>$username</b></td></tr>
-			    <tr><td width=200>Email $nd</td><td>:</td><td><input type=text size=30 maxlength=30 name=up_email value=\"$email\"></td></tr>
+			    <tr><td width=200>Email</td><td>:</td><td><input type=text size=30 maxlength=30 name=up_email value=\"$email\"></td></tr>
 			    <tr><td width=200>Password</td><td>:</td><td><input type=password size=30 maxlength=30 name=up_password></td></tr>
 			    <tr><td width=200>Re-Type Password</td><td>:</td><td><input type=password size=30 maxlength=30 name=up_password_conf></td></tr>
 			    <tr><td colspan=3>&nbsp;</td></tr>
 			    <tr><td colspan=3><h2>Personal Information</h2><hr></td></tr>
-			    <tr><td width=200>Name $nd</td><td>:</td><td><input type=text size=40 maxlength=100 name=up_name value=\"$name\"></td></tr>
-			    <tr><td width=200>Birthday $nd</td><td>:</td><td><input type=text name=up_birthday value=\"$birthday\" size=10> <img src=\"./inc/jscss/calendar/calendar.gif\" onclick=\"return showCalendar('up_birthday', 'y-mm-dd')\"> (Format: yyyy-mm-dd)</td></tr>
-			    <tr><td width=200>Gender $nd</td><td>:</td><td><select name=up_gender>$option_gender</select></td></tr>
+			    <tr><td width=200>Name</td><td>:</td><td><input type=text size=40 maxlength=100 name=up_name value=\"$name\"></td></tr>
+			    <tr><td width=200>Birthday</td><td>:</td><td><input type=text name=up_birthday value=\"$birthday\" size=10> <img src=\"./inc/jscss/calendar/calendar.gif\" onclick=\"return showCalendar('up_birthday', 'y-mm-dd')\"> (Format: yyyy-mm-dd)</td></tr>
+			    <tr><td width=200>Gender</td><td>:</td><td><select name=up_gender>$option_gender</select></td></tr>
 			    <tr><td width=200>Marital status</td><td>:</td><td><select name=up_marital>$option_marital</select></td></tr>
 			    <tr><td width=200>Education</td><td>:</td><td><select name=up_education>$option_education</select></td></tr>
-			    <tr><td width=200>Address $nd</td><td>:</td><td><input type=text size=40 maxlength=250 name=up_address value=\"$address\"></td></tr>
-			    <tr><td width=200>City $nd</td><td>:</td><td><input type=text size=40 maxlength=100 name=up_city value=\"$city\"></td></tr>
-			    <tr><td width=200>State/Province $nd</td><td>:</td><td><input type=text size=40 maxlength=100 name=up_state value=\"$state\"></td></tr>
-			    <tr><td width=200>Country $nd</td><td>:</td><td><select name=up_country>$option_country</select></td></tr>
+			    <tr><td width=200>Address</td><td>:</td><td><input type=text size=40 maxlength=250 name=up_address value=\"$address\"></td></tr>
+			    <tr><td width=200>City</td><td>:</td><td><input type=text size=40 maxlength=100 name=up_city value=\"$city\"></td></tr>
+			    <tr><td width=200>State/Province</td><td>:</td><td><input type=text size=40 maxlength=100 name=up_state value=\"$state\"></td></tr>
+			    <tr><td width=200>Country</td><td>:</td><td><select name=up_country>$option_country</select></td></tr>
 			    <tr><td width=200>Zipcode</td><td>:</td><td><input type=text size=10 maxlength=10 name=up_zipcode value=\"$zipcode\"></td></tr>
 			    <tr><td colspan=3>&nbsp;</td></tr>
 			    <tr><td colspan=3><h2>Application Information</h2><hr></td></tr>
@@ -139,36 +139,32 @@ switch ($op) {
 		$db_query = "SELECT photo1,photo2,photo3 FROM playsms_tblUser WHERE uid='$uid'";
 		$db_result = dba_query($db_query);
 		$error_string = "No changes made!";
-		if ($up_name && $up_mobile && $up_email && $up_birthday && $up_gender && $up_address && $up_city && $up_state && $up_country) {
-			$up_uname = $username;
-			$db_query = "SELECT email FROM playsms_tblUser WHERE email=$up_email' AND NOT username='$up_uname'";
-			$db_result = dba_num_rows($db_query);
-			if ($db_result > 0) {
-				$error_string = "Email `$email` already in use by other username";
-			} else {
-				$chg_pwd = "";
-				if ($up_password && $up_password_conf && ($up_password == $up_password_conf)) {
-					$chg_pwd = ",password='$up_password'";
-				}
-				$db_query = "
-						    UPDATE playsms_tblUser 
-						    SET 
-							name='$up_name',email='$email',mobile='$up_mobile',sender='$up_sender'$chg_pwd,
-							gender='$up_gender',address='$up_address',city='$up_city',state='$up_state',country='$up_country',
-							birthday='$up_birthday',marital='$up_marital',education='$up_education',zipcode='$up_zipcode',junktimestamp='" . mktime() . "'
-						    WHERE uid='$uid'";
-				if (@ dba_affected_rows($db_query)) {
-					if ($up_password && $up_password_conf && ($up_password == $up_password_conf)) {
-						$error_string = "Preferences has been saved and password updated";
-					} else {
-						$error_string = "Preferences has been saved";
-					}
-				} else {
-					$error_string = "Fail to save preferences for `$up_uname`";
-				}
-			}
+		$up_uname = $username;
+		$db_query = "SELECT email FROM playsms_tblUser WHERE email=$up_email' AND NOT username='$up_uname'";
+		$db_result = dba_num_rows($db_query);
+		if ($db_result > 0) {
+			$error_string = "Email `$email` already in use by other username";
 		} else {
-			$error_string = "Empty field is not allowed";
+			$chg_pwd = "";
+			if ($up_password && $up_password_conf && ($up_password == $up_password_conf)) {
+				$chg_pwd = ",password='$up_password'";
+			}
+			$db_query = "
+					    UPDATE playsms_tblUser 
+					    SET 
+						name='$up_name',email='$email',mobile='$up_mobile',sender='$up_sender'$chg_pwd,
+						gender='$up_gender',address='$up_address',city='$up_city',state='$up_state',country='$up_country',
+						birthday='$up_birthday',marital='$up_marital',education='$up_education',zipcode='$up_zipcode',junktimestamp='" . mktime() . "'
+					    WHERE uid='$uid'";
+			if (@ dba_affected_rows($db_query)) {
+				if ($up_password && $up_password_conf && ($up_password == $up_password_conf)) {
+					$error_string = "Preferences has been saved and password updated";
+				} else {
+					$error_string = "Preferences has been saved";
+				}
+			} else {
+				$error_string = "Fail to save preferences for `$up_uname`";
+			}
 		}
 		header("Location: menu.php?inc=user_pref&op=user_pref&err=" . urlencode($error_string));
 		break;
