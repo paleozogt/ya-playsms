@@ -71,6 +71,7 @@ INSERT INTO playsms_featAutoreply_scenario VALUES (2,1,'WEBMAIL','PASSWORD','ERR
 -- Table structure for table `playsms_featAutoSend`
 -- 
 
+DROP TABLE IF EXISTS playsms_featAutoSend;
 CREATE TABLE IF NOT EXISTS `playsms_featAutoSend` (
   `id` int(11) NOT NULL auto_increment,
   `frequency` enum('hourly','daily','weekly','monthly','startup') NOT NULL default 'daily',
