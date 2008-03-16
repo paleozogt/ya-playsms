@@ -1,5 +1,4 @@
-#summary One-sentence summary of this page.
-How To Set Up Your Own SMS Hotline
+#summary How To Set Up Your Own SMS Hotline
 
 = Introduction =
 
