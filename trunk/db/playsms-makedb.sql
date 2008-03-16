@@ -520,7 +520,7 @@ CREATE TABLE playsms_tblUser (
 -- Dumping data for table `playsms_tblUser`
 --
 
-INSERT INTO playsms_tblUser VALUES (1,2,'d0b3239a5da9504a1a38f7745790c3c4','admin','admin','Administrator','+628568809027','','',0,1,0,'','','',334,'',1,1,'0','');
+INSERT INTO playsms_tblUser VALUES (1,2,'d0b3239a5da9504a1a38f7745790c3c4','admin','admin','Administrator','','','',0,1,0,'','','',334,'',1,1,'0','');
 
 --
 -- Table structure for table `playsms_tblUserGroupPhonebook`
@@ -539,7 +539,7 @@ CREATE TABLE playsms_tblUserGroupPhonebook (
 -- Dumping data for table `playsms_tblUserGroupPhonebook`
 --
 
-INSERT INTO playsms_tblUserGroupPhonebook VALUES (1,1,'Friends','FR');
+INSERT INTO playsms_tblUserGroupPhonebook VALUES (1,1,'Administrators','ADMIN');
 
 --
 -- Table structure for table `playsms_tblUserGroupPhonebook_public`

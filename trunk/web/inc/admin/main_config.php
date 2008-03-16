@@ -51,6 +51,7 @@ function makeEditForm($selfurl) {
     $fb = DB_DataObject_FormBuilder::create($do, 
     		array("fieldLabels" => $formNames,
     		      "fieldsToRender" => $renderFields));
+    $fb->submitText= "Save";
 
     // set up gw_mod enum
     $fb->enumFields = array ('cfg_gateway_module', 'cfg_system_restart_frequency');

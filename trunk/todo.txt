@@ -1,5 +1,24 @@
 TODO:
 
+    inbox/outbox:
+        - add visual graphing of incoming / outgoing autoreplies
+
+	- new feature: subscriptions
+
+	- can get rid of playsms url?
+
+    kannel:
+        - fix kannel's geturl to not hit the database on load (possible?)
+        - have kannel's confs setup for multiple smsc modems? how to test? how are they routed?
+
+    - start overhauling php database code to use formbuilder
+    - automated suoders on install/uninstall (visudo)
+    - get referrer info for easy "go back"
+
+DONE:
+
+	- import/export config file of keywords/replies
+
 	- interesting mis-texts:
 		pill #1
 		stds # 7
@@ -29,27 +48,9 @@ TODO:
     - overhaul pattern-matching for 'features' (autoreply, polls, etc)
         - allow for multiple patterns to go to one feature (e.g., keyword variations)
 
-    inbox/outbox:
-        - preserve returns in inbox/outbox
-        - incoming/outgoing log output as csv
-        - add visual graphing of incoming / outgoing autoreplies
 
-	autoreply:
-		- import/export config file of keywords/replies
-
-	- new feature: subscriptions
-
-	- can get rid of playsms url?
-
-    kannel:
-        - fix kannel's geturl to not hit the database on load (possible?)
-        - have kannel's confs setup for multiple smsc modems? how to test? how are they routed?
-
-    - start overhauling php database code to use formbuilder
-    - automated suoders on install/uninstall (visudo)
-    - get referrer info for easy "go back"
-
-DONE:
+- preserve returns in inbox/outbox
+- incoming/outgoing log output as csv
 
 - easy database upgrading
 - resending
