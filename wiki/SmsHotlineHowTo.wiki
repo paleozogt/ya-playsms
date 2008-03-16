@@ -1,10 +1,10 @@
 #summary How To Set Up Your Own SMS Hotline
 
 = What You Need (Hardware): =
-# Computer
-# Bluetooth USB Dongle
-# Bluetooth-capable Cellphone
-# Broadband Internet Connection
+  # Computer
+  # Bluetooth USB Dongle
+  # Bluetooth-capable Cellphone
+  # Broadband Internet Connection
 
 =Step One: Get Ubuntu=
 
