@@ -12,7 +12,7 @@
 
 ==Step One: Get Ubuntu==
 
-Your computer needs an operating system.  We will be using the free Ubuntu Linux, Desktop Edition.  You can download it from [http://www.ubuntu.com/products/WhatIsUbuntu/desktopedition here].  I won’t go into how to install Ubuntu—there are many good tutorials on that, such as [http://howtoforge.com/the_perfect_desktop_ubuntu_gutsy_gibbon this one].
+    Your computer needs an operating system.  We will be using the free Ubuntu Linux, Desktop Edition.  You can download it from [http://www.ubuntu.com/products/WhatIsUbuntu/desktopedition here].  I won’t go into how to install Ubuntu—there are many good tutorials on that, such as [http://howtoforge.com/the_perfect_desktop_ubuntu_gutsy_gibbon this one].
 
 ==Step Two: Configure Ubuntu==
 
