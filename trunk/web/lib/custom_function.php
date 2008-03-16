@@ -502,65 +502,91 @@ function simpleMatchAutoreply($keywords) {
 	}
 }
 
-function nodelimiterMatchAutoreply($message) {
-	error_log("nodelimiterMatchAutoreply");  
+
+function stringMatchAutoreply($keywords) {
+    error_log("stringMatchAutoreply");
 
     $autoreply= DB_DataObject::factory('playsms_featAutoreply');
     $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
 
-	// glom all the keywords together with no delimiters
-	$select= "concat(playsms_featAutoreply.autoreply_code";
-	for ($i= 1; $i < KEYWORD_MAX; $i++) {
-	    $select.= ", playsms_featAutoreply_scenario.autoreply_scenario_param" . $i;
-	}
-	$select.= ") as keywords";
+    // Glom all the keywords together with no delimiters.
+    // Note the % wildcard at the end of kewords.
+    //
+    $message= implode('', $keywords);
+    $keywordExpr= 'concat(
+        autoreply_code           , autoreply_scenario_param1,
+        autoreply_scenario_param2, autoreply_scenario_param3,
+        autoreply_scenario_param4, autoreply_scenario_param5,
+        autoreply_scenario_param6, autoreply_scenario_param7,
+        "%") as keywords';
+    $autoreply->selectAdd($keywordExpr);
 
-	$autoreply->selectAdd($select);
-	$autoreply->having("keywords = \"$message\"");
-	$autoreply->limit(1);
-	$autoreply->joinAdd($scenario);
+    // Do a like match for the message.  This way,
+    // if any autoreply is a prefix of the message
+    // then it will match.
+    //
+    $autoreply->having("\"$message\" like keywords");
 
-	if ($autoreply->find() && $autoreply->fetch()) {  
-		$match= $autoreply->toArray();
-		$match['keywords']= array(
+    // Since we're going to be doing some lenient string
+    // matching, we don't want to be *too* lenient.
+    // If we're going to match against the first keyword
+    // with no subkeywords, we want it to be exact.
+    //
+    $where= "autoreply_scenario_param1 != \"\"
+            OR
+            autoreply_code=\"$message\"";
+    $autoreply->whereAdd($where);
+
+    // Our lenient string matching could match against
+    // several autoreplies, so sort it so the longest
+    // set of keywords is first.
+    $autoreply->orderBy("char_length(keywords) DESC");
+    $autoreply->limit(1);
+    $autoreply->joinAdd($scenario);
+
+    if ($autoreply->find() && $autoreply->fetch()) {  
+        $match= $autoreply->toArray();
+        $match['keywords']= array(
             $autoreply->autoreply_code, $autoreply->autoreply_scenario_param1, 
             $autoreply->autoreply_scenario_param2, $autoreply->autoreply_scenario_param3, 
             $autoreply->autoreply_scenario_param4, $autoreply->autoreply_scenario_param5, 
             $autoreply->autoreply_scenario_param6, $autoreply->autoreply_scenario_param7);
-		return $match;
-	}
+        return $match;
+    }    
 }
 
 function multiMatchAutoreply($message) {    
 
-	// try more creative keyword delimiters
+	// get the keywords using more creative delimiters
 	//
 	$delimiter= "/[\s,_#\.]+/";
 	$keywords= preg_split($delimiter, $message, KEYWORD_MAX, PREG_SPLIT_NO_EMPTY);
-	$match= simpleMatchAutoreply($keywords);
-	if ($match) return $match;
 	
-	// try with no delimiters
+    // try matching the keywords treating
+    // it all like one big string
     //
-	$match= nodelimiterMatchAutoreply($message);
-	if ($match) return $match;
+    $match= stringMatchAutoreply($keywords);
+    if ($match) return $match;
 	
-	// if we haven't found anything so far, then
-	// match against the special unknown code,
+    // if we haven't found anything so far, then
+    // match against the special unknown code,
     // either for the first keyword or, as a last
     // resort, the top-level unknown code
     //
-    $unknowns= array( 
-        array($keywords[0], UNKNOWN), 
-        array(UNKNOWN) );
-    foreach ($unknowns as $unknown) {
-    	$match= simpleMatchAutoreply($unknown);
-    	if ($match) {
-            // (make sure we keep the original keywords, not the unknown keywords,
-            // as this matters for later reply evaluation)
-    	    $match['keywords']= $keywords;
-            return $match;
-        }
+    $autoreply= DB_DataObject::factory('playsms_featAutoreply');
+    $scenario = DB_DataObject::factory('playsms_featAutoreply_scenario');
+    $autoreply->joinAdd($scenario);
+    $autoreply->whereAdd("autoreply_code = '" . UNKNOWN . "' OR " .
+                        "(autoreply_code = '$keywords[0]' AND autoreply_scenario_param1 = '" . UNKNOWN . "')");
+    $autoreply->orderBy("autoreply_scenario_param1 DESC, autoreply_code");
+    $autoreply->limit(1);
+    if ($autoreply->find(true)) {
+        // (make sure we keep the original keywords, not the unknown keywords,
+        // as this matters for later autreply evaluation)
+        $match= $autoreply->toArray();
+        $match['keywords']= $keywords;
+        $match[UNKNOWN]= true;
+        return $match;
     }
 
 	return $match;
@@ -568,6 +594,7 @@ function multiMatchAutoreply($message) {
 
 function matchAutoreply($message, $simple= true) {
 error_log("matchAutoreply " . $message);    
+//DB_DataObject::debugLevel(5);
 
 	if ($simple) {
 		// try simple (and quick!) keyword delimiters
@@ -581,32 +608,34 @@ error_log("matchAutoreply " . $message);
 		if (!$match) return $match;
 	}
 
-	$match['autoreply_scenario_result']= evaluateAutoreply($match['keywords'], $match['autoreply_scenario_result']);
+	$match= evaluateAutoreply($match);
 	error_log("match= \"" . $match['autoreply_scenario_result'] . "\"");
 	return $match;
 }
 
-function evaluateAutoreply($keywords, $result) {
-error_log("evaluateAutoreply " . print_r($keywords, true));    
-
+function evaluateAutoreply($match) {
+    $keywords= &$match['keywords'];
+    $message= &$match['autoreply_scenario_result'];
+    error_log("evaluateAutoreply " . print_r($keywords, true));
+ 
 	// To save time, check if there are any special variable markers.
 	// If there are any, then we replace them with the
 	// appropriate values and/or take special action
 	//
-	if (stristr($result, VARMARKER)) {
-		if (stristr($result, KEYWORDS))
-			$result= str_ireplace(KEYWORDS, implode(' ', $keywords), $result);
-		if (stristr($result, SUBKEYWORDS)) {
-	    	$result= str_ireplace(SUBKEYWORDS, implode(' ', array_slice($keywords, 1)), $result);
+	if (stristr($message, VARMARKER)) {
+		if (stristr($message, KEYWORDS))
+			$message= str_ireplace(KEYWORDS, implode(' ', $keywords), $message);
+		if (stristr($message, SUBKEYWORDS)) {
+	    	$message= str_ireplace(SUBKEYWORDS, implode(' ', array_slice($keywords, 1)), $message);
 		}
 		
 		// to save time, check if there are any
 		// specific keyword references
 		//
-		if (stristr($result, KEYWORD)) {
+		if (stristr($message, KEYWORD)) {
 		    for ($i= 0; $i < KEYWORD_MAX; $i++) {
 		    	$var= KEYWORD . $i . VARMARKER;
-		        $result= str_ireplace($var, $keywords[$i], $result);
+		        $message= str_ireplace($var, $keywords[$i], $message);
 		    }
 		}
 		
@@ -616,15 +645,14 @@ error_log("evaluateAutoreply " . print_r($keywords, true));
 		// allows autoreplies to 'point' to each
 		// other for variations in spelling, aliases, etc
 		//
-		if (stristr($result, REMATCH)) {
-		    $result= str_ireplace(REMATCH, "", $result);
-            $result= trim($result);
-		    $match= matchAutoreply($result, false);
-		    $result= $match['autoreply_scenario_result'];
+		if (stristr($message, REMATCH)) {
+		    $message= str_ireplace(REMATCH, "", $message);
+            $message= trim($message);
+		    $match= matchAutoreply($message, false);
 		}
 	}
-	    
-    return $result;
+
+    return $match;
 }
 
 function processAutoreply($sms_datetime, $sms_sender, $message, $simple= true) {
@@ -646,6 +674,16 @@ function processAutoreply($sms_datetime, $sms_sender, $message, $simple= true) {
 	// send the autoreply
 	$c_username = uid2username($match['uid']);
 	$ok= websend2pv($c_username, $sms_sender, $match['autoreply_scenario_result']);
+    if (!$ok) return false;
+
+    // since unknown matches are
+    // really error messages, we
+    // count them as failures
+    //
+    if ($match[UNKNOWN]) {
+        $ok= false;
+    }
+
 	return $ok;
 }
 
@@ -696,9 +734,8 @@ function processSystemMessage($sms_sender, $message) {
 function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
 	global $system_from;
 	$ok = false;
-	$message= strtoupper($message);
 	$keywords= explode(' ', $message);
-	$target_code= $keywords[0];
+	$target_code= strtoupper($keywords[0]);
 	
 	switch ($target_code) {
 		case 'BC' :
@@ -773,7 +810,6 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
     	
 	if (!$ok) {
 		$saveToInbox= true;
-        error_log("no match found");
 
 		// If all else failed, then check the autoreplies again,
 		// this time with a more sophisticated match.
@@ -786,11 +822,13 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
 		// sends us an error message...)
 		
 		if (strlen($sms_sender) > 4 && ereg('^\+?[0-9]+$', $sms_sender)) {
-			processAutoreply($sms_datetime, $sms_sender, $message, false);
+			$ok= processAutoreply($sms_datetime, $sms_sender, $message, false);
+            $saveToInbox= !$ok;
 		}
 	}
 	
 	if ($saveToInbox) {
+	    error_log("saving to inbox...");
 		if (insertsmstoinbox($sms_datetime, $sms_sender, "admin", $message)) {
 			$ok = true;
 		}    
