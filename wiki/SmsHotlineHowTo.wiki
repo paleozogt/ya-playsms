@@ -2,14 +2,9 @@
 
 = What You Need (Hardware): =
 # Computer
-* A laptop is recommended, as its battery will allow the hotline to run during brief power outages.
 # Bluetooth USB Dongle
-* If you have a newer laptop Bluetooth may be built-in, in which case you will not need the dongle!
 # Bluetooth-capable Cellphone
-* This does not have to be some new 3G model—many older phones will work as well.
 # Broadband Internet Connection
-* Internet is only necessary during setup process, not for day-to-day operation
-
 
 =Step One: Get Ubuntu=
 
