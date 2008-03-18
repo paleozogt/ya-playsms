@@ -1,6 +1,9 @@
 TODO:
 
+	- have autosend do groups, phonebook names, as well as numbers
+
     inbox/outbox:
+		- export date histogram
         - add visual graphing of incoming / outgoing autoreplies
 
 	- new feature: subscriptions
