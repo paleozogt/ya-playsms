@@ -1,13 +1,14 @@
 <?php
 include "init.php";
 include "$apps_path[libs]/function.php";
+error_log("resend.php " . print_r($_GET, true));
 
 // this url should only be called from
 // playsms itself, so it should always
-// be from localhost
+// be from the server
 //
-$remote_addr = $_SERVER["REMOTE_ADDR"];
-if ($remote_addr != "127.0.0.1") {
+if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) {
+    error_log("Intruder: IP " . $_SERVER['REMOTE_ADDR']);
 	die();
 }
 
