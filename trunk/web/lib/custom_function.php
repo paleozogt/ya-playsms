@@ -168,6 +168,7 @@ function resend($smslog_id, $override= false) {
 
 	    if ($override || 0 != (int)fmod($newtrycount, SEND_TRY_MAX)) {
             $db->send_tries= $newtrycount;
+            $db->p_update= date();
             $db->update();
             
 	    	error_log("resending (attempt $db->send_tries)");    
@@ -276,7 +277,6 @@ function execcommoncustomcmd() {
 
 function setsmsdeliverystatus($smslog_id, $uid, $p_status) {
 	global $datetime_now, $web_url;
-$p_status = DLR_FAILED;
 	
 	$db = DB_DataObject::factory(playsms_tblSMSOutgoing);
 	$db->get($smslog_id);
