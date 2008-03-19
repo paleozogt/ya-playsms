@@ -29,14 +29,15 @@ switch ($op) {
 			$smsc_sel .= "\t<option value=\"$match[2]\">$match[1] ($match[2])</option>\n";
 		}
 		$smsc_sel .= "</select>";
-		?>
-        <form name="smsc_bind" action="$selfurl&op=smsc_bind" method="post">
-            <p/><?echo $smsc_sel?>
-            <p/><input type="submit" class="button" value="Bind"/>
+		
+        $html=
+        "<form name=\"smsc_bind\" action=\"$selfurl&op=smsc_bind\" method=\"post\">
+            <p/>$smsc_sel
+            <p/><input type=\"submit\" class=\"button\" value=\"Bind\"/>
         </form>
-        <?php
-
-
+        ";
+        
+        echo $html;
 		break;
 
 	case "smsc_bind" :
