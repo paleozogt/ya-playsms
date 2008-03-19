@@ -841,6 +841,8 @@ function setsmsincomingaction($sms_datetime, $sms_sender, $message) {
 //
 function doAutosend($frequency) {
 	echo("autosending for '$frequency' <br/>\n");
+    global $uid;
+    
 	$do = DB_DataObject::factory(playsms_featAutoSend);
 	$do->frequency= $frequency;
 	$do->find();
@@ -850,7 +852,11 @@ function doAutosend($frequency) {
 
 	while ($do->fetch()) {
 		echo("sending $do->id, $do->frequency, $do->number, \"$do->msg\"... <br/>\n");
-		websend2pv("admin", $do->number, $do->msg);
+        if (gpcode2gpid($uid, $do->number)) {
+            websend2group("admin", $do->number, $do->msg);
+        } else {
+            websend2pv("admin", $do->number, $do->msg);
+        }
 	}
 }
 

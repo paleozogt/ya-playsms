@@ -3,7 +3,6 @@ TODO:
 	- have autosend do groups, phonebook names, as well as numbers
 
     inbox/outbox:
-		- export date histogram
         - add visual graphing of incoming / outgoing autoreplies
 
 	- new feature: subscriptions
@@ -21,6 +20,7 @@ TODO:
 DONE:
 
 	- import/export config file of keywords/replies
+	- export date histogram
 
 	- interesting mis-texts:
 		pill #1
