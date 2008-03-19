@@ -13,6 +13,12 @@
 		gw_waitForStartup();
 	}
 
+    // usually the uid is whoever is
+    // using the website, but since this
+    // is cmd-line, we must act like we're the admin
+    global $uid;
+    if (!isset($uid)) $uid = username2uid("admin");
+
 	// do any autosending for this frequency
 	doAutoSend($frequency);
 

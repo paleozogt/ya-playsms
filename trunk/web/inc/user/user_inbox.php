@@ -81,6 +81,7 @@ function makeList($uid, $selfurl, $offset = 0, $numShow = 75) {
 	    $prevUrl= "#";
 	}
 	
+    $note= "<p>Note: This inbox shows messages not processed by any of the features (e.g., AutoReply, Poll, etc)</p>";
 	$newOffset= $offset+$numShow;
 	$nextUrl= "$selfurl&offset=$newOffset";
     $exportUrl= "$selfurl&op=export";
@@ -98,7 +99,7 @@ function makeList($uid, $selfurl, $offset = 0, $numShow = 75) {
 		    <h2>$pagetitle</h2>
 		    <p/>
 			$linksPrevNext
-		    <p/>
+		    <p/>$note
 		    <table width=100% cellpadding=1 cellspacing=1 border=1>
 		    <tr>
 		      <td align=center class=box_title width=4>*</td>

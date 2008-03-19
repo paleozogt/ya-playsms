@@ -85,9 +85,17 @@ function makeList($selfurl) {
 }
 
 function makeEditForm($selfurl, $id= null) {
+    // nice names for each field
+    $formNames = array (
+        'frequency' => 'Frequency:',
+        'number' => 'To:<br/><font size="1">(number or group code, <br/>e.g., "admin")</font>',
+        'msg' => 'Message:');
+
 	$do = DB_DataObject::factory(playsms_featAutoSend);
 	if ($id) $do->get($id);
-	$fb = DB_DataObject_FormBuilder::create($do);
+	$fb = DB_DataObject_FormBuilder::create($do, 
+                array("fieldLabels" => $formNames)
+          );
 	
 	$fb->enumFields= array('frequency');
 	$form = $fb->getForm("{$selfurl}&op=edit");
