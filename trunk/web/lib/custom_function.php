@@ -36,7 +36,7 @@ function websend2pv($username, $sms_to, $message, $sms_type = "text", $unicode =
 		$db->p_sms_type= $sms_type;
 		$db->unicode= $unicode;
 		$db->send_tries= 1;
-		$db->p_status= DLR_FAILED;	// default to failure
+		$db->p_status= DLR_PENDING;	// default to failure
 		if ($db->insert()) {
 			if (gw_send_sms($mobile_sender, $c_sms_to, $sms_msg, $gp_code, $uid, $db->smslog_id, $sms_type, $unicode)) {
 				$ok[$i] = $db->smslog_id;
@@ -86,7 +86,7 @@ function websend2group($username, $gp_code, $message, $sms_type = "text", $unico
 			$db->p_sms_type= $sms_type;
 			$db->unicode= $unicode;
 			$db->send_tries= 1;
-			$db->p_status= DLR_FAILED;	// default to failure
+			$db->p_status= DLR_PENDING;	// default to failure
 			if ($db->insert()) {
 				if (gw_send_sms($mobile_sender, $sms_to, $sms_msg, $c_gp_code, $uid, $db->smslog_id, $sms_type, $unicode)) {
 					$ok[$j] = $sms_to;
@@ -137,7 +137,7 @@ function send2group($mobile_sender, $gp_code, $message, $sms_type = "text", $uni
 					$db->p_sms_type= $sms_type;
 					$db->unicode= $unicode;
 					$db->send_tries= 1;
-					$db->p_status= DLR_FAILED;	// default to failure
+					$db->p_status= DLR_PENDING;	// default to failure
 					if ($db->insert()) {
 						$ok= gw_send_sms($mobile_sender, $sms_to, $sms_msg, $gp_code, $uid, $db->smslog_id);
 					}
@@ -284,7 +284,7 @@ function setsmsdeliverystatus($smslog_id, $uid, $p_status) {
 	$db->p_status=$p_status;
 	$ok= $db->update();
 
-	if ($p_status == DLR_FAILED) {
+	if ($p_status == DLR_FAILED || $p_status == DLR_PENDING) {
 	    error_log("sms send failure; invoking resend");
 	    $url= "$web_url/resend.php?smslog_id=$smslog_id";
 	    asyncCall($url);
